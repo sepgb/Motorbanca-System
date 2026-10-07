@@ -86,7 +86,8 @@ function op_card($m)
     if ($m['status'] === 'Queued') {   // tell the operator where they are in the queue
         [$dep, $q] = split_cluster(live_rows(), $m['cluster_id']);
         foreach ($q as $i => $r) if ($r['id'] == $m['id'])
-            echo "<p style='font-weight:800;color:#0b7285'>📍 " . tag_for((bool)$dep, $i) . "</p>";
+            echo "<p style='font-weight:800;color:#0b7285'>📍 " . tag_for((bool)$dep, $i) . "</p>" .
+                (($i + ($dep ? 1 : 0)) > 0 ? "<p class='muted'>You can add passengers once you are ON QUEUE.</p>" : '');
     }
 }
 // The ONLY place a status changes: keeps motorbanca + trip in sync.
@@ -162,8 +163,16 @@ function tag_for($hasDep, $i)
 }
 function mb_card($r, $pos, $tag)
 {
+    $wait = in_array($tag, ['NEXT TRIP', 'WAITING'], true);   // not boarding yet: just shown as available
     return "<article class='mb'><div class='mb-top'><span class='pos'>$pos</span><h3>" . e($r['name']) . "</h3>" . badge($r['status']) . "</div>" .
         ($tag ? "<p style='margin:.3em 0;font-size:.75rem;font-weight:800;letter-spacing:.06em;color:#0b7285'>$tag</p>" : '') .
-        count_html($r['pax'], $r['capacity']) . "<p class='muted'>passengers on board</p>" .
+        ($wait ? "<p class='muted' style='font-size:1rem'>✅ Available · capacity " . (int)$r['capacity'] . "</p>"
+            : count_html($r['pax'], $r['capacity']) . "<p class='muted'>passengers on board</p>") .
         ($r['status'] === 'Departed' ? cd_html($r['left_s']) : '') . "</article>";
+}
+// The one boat in a cluster that is ON QUEUE: it is the only one that takes passengers and can be departed.
+function on_queue_id($cid)
+{
+    [$dep, $q] = split_cluster(live_rows(), $cid);
+    return (!$dep && $q) ? $q[0]['id'] : null;
 }

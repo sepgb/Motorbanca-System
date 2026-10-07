@@ -9,7 +9,16 @@ if (!$m) {
 $tq = db()->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status<>'Cancelled' ORDER BY id DESC LIMIT 1");
 $tq->execute([$m['id']]);
 $trip = $tq->fetchColumn();
-$open = $trip && $m['status'] === 'Queued';
+$pos = null;
+$tag = '';
+if ($m['status'] === 'Queued') {   // 0 = ON QUEUE, 1 = NEXT TRIP, 2+ = WAITING
+  [$dep, $q] = split_cluster(live_rows(), $m['cluster_id']);
+  foreach ($q as $i => $r) if ($r['id'] == $m['id']) {
+    $pos = $i + ($dep ? 1 : 0);
+    $tag = tag_for((bool)$dep, $i);
+  }
+}
+$open = $trip && $m['status'] === 'Queued' && $pos === 0;
 $err = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $open) {
   $name = trim($_POST['name'] ?? '');
@@ -46,7 +55,9 @@ page_head('Passengers', 'operator');
 <?php if (!$trip): ?>
   <div class="alert bad">No active trip. Go Home and tap NEW TRIP.</div>
 <?php elseif (!$open): ?>
-  <div class="alert">This trip has departed. Go Home and tap NEW TRIP for the next one.</div>
+  <div class="alert"><?= $m['status'] === 'Queued'
+                        ? '⏳ Your boat is <b>' . e($tag) . '</b>. You can add passengers once your boat is ON QUEUE.'
+                        : 'This trip has departed. Go Home and tap NEW TRIP for the next one.' ?></div>
 <?php elseif ($full): ?>
   <div class="alert bad"><b>FULL</b> — no more passengers can be added.</div>
 <?php else: ?>
