@@ -60,18 +60,22 @@ function stats_html()
     $rows = live_rows();
     $nextCount = 0;
     foreach (db()->query("SELECT id FROM clusters")->fetchAll() as $c) if (split_cluster($rows, $c['id'])[2]) $nextCount++;
-    $s = [
-        'Total Motorbancas' => $q("SELECT COUNT(*) FROM motorbancas"),
-        'Available' => $q("SELECT COUNT(*) FROM motorbancas m WHERE m.status='Not Queued' OR (m.status='Departed' AND NOT " . DEP_RECENT . ")"),
-        'Currently Queued' => $q("SELECT COUNT(*) FROM motorbancas WHERE status='Queued'"),
-        'Currently Departed' => $q("SELECT COUNT(*) FROM motorbancas m WHERE m.status='Departed' AND " . DEP_RECENT),
-        'Next Trips' => $nextCount,
-        'Passengers Today' => $q("SELECT COUNT(*) FROM passengers p JOIN trips t ON t.id=p.trip_id
-                                WHERE t.trip_date=CURDATE() AND t.status<>'Cancelled'"),
+    $paxSql = "SELECT COUNT(*) FROM passengers p JOIN trips t ON t.id=p.trip_id WHERE t.status<>'Cancelled' AND t.trip_date=";
+    $today = $q($paxSql . "CURDATE()");
+    $yday = $q($paxSql . "CURDATE() - INTERVAL 1 DAY");
+    if ($yday > 0) {
+        $d = round(($today - $yday) / $yday * 100);
+        $delta = "<b class='" . ($d >= 0 ? 'up' : 'down') . "'>" . ($d >= 0 ? '+' : '') . "$d%</b> than yesterday";
+    } else $delta = $today > 0 ? "<b class='up'>+$today</b> than yesterday" : 'no passengers yet';
+    $cards = [
+        ['Currently Queued', $q("SELECT COUNT(*) FROM motorbancas WHERE status='Queued'"), 'waiting to depart'],
+        ['Currently Departed', $q("SELECT COUNT(*) FROM motorbancas m WHERE m.status='Departed' AND " . DEP_RECENT), 'left in the last 2 min'],
+        ['Next Trips', $nextCount, 'clusters with a next boat'],
+        ['Passengers Today', $today, $delta],
     ];
-    $icons = array_values(STAT_ICONS);
-    $n = 0;
-    foreach ($s as $k => $v) echo "<div class='stat'>" . ico($icons[$n++]) . "<b>$v</b><span>" . e($k) . "</span></div>";
+    $icons = array_slice(array_values(STAT_ICONS), 2);   // icons for the four cards
+    foreach ($cards as $i => [$label, $v, $foot])
+        echo "<div class='stat'>" . ico($icons[$i]) . "<span>" . e($label) . "</span><b>$v</b><p>$foot</p></div>";
 }
 function my_mb()
 {
