@@ -10,4 +10,5 @@ elseif ($v === 'fleet' && $role === 'admin') fleet_html();
 elseif ($v === 'op' && $role === 'operator') {
     $m = my_mb();
     if ($m) op_card($m);
-} else render_live();
+} elseif ($v === 'admin' && $role === 'admin') render_live(true);
+else render_live();

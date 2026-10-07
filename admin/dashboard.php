@@ -8,5 +8,5 @@ page_head('Dashboard', 'admin'); ?>
 <p class="lead">Here is what is happening at the port right now.</p>
 <div class="stats" data-live="<?= BASE ?>/api/live.php?v=stats"><?php stats_html(); ?></div>
 <h2 class="sub"><i class="dot"></i>Live queue</h2>
-<div class="clusters" data-live="<?= BASE ?>/api/live.php?v=passenger"><?php render_live(); ?></div>
+<div class="clusters" data-live="<?= BASE ?>/api/live.php?v=admin"><?php render_live(true); ?></div>
 <?php page_foot('admin');

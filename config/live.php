@@ -35,7 +35,7 @@ function live_rows()
         ORDER BY (m.status='Departed'), m.queued_at, m.id")->fetchAll();
 }
 // Live queue, grouped by cluster (used on passenger page and admin pages).
-function render_live()
+function render_live($admin = false)
 {
     process_departures();
     $rows = live_rows();
@@ -48,8 +48,9 @@ function render_live()
         echo "<div style='padding:12px 18px 0;font-size:.8rem;font-weight:700;color:#5b6e7c;letter-spacing:.06em'>ON QUEUE / DEPARTED</div>";
         if (!$dep && !$q) echo "<div class='mb'><p class='muted'>No motorbanca on queue right now.</p></div>";
         $pos = 0;
-        foreach ($dep as $r) echo mb_card($r, ++$pos, '');
-        foreach ($q as $i => $r) echo mb_card($r, ++$pos, tag_for((bool)$dep, $i));
+        foreach ($dep as $r) echo mb_card($r, ++$pos, '', $admin);
+        // only the ON QUEUE boat gets a card; the next-trip boat is shown in the banner above
+        foreach ($q as $i => $r) if (tag_for((bool)$dep, $i) === 'ON QUEUE') echo mb_card($r, ++$pos, 'ON QUEUE', $admin);
         echo "</section>";
     }
 }
@@ -161,18 +162,26 @@ function tag_for($hasDep, $i)
     $p = $i + ($hasDep ? 1 : 0);
     return $p === 0 ? 'ON QUEUE' : ($p === 1 ? 'NEXT TRIP' : 'WAITING');
 }
-function mb_card($r, $pos, $tag)
+function mb_card($r, $pos, $tag, $admin = false)
 {
     $wait = in_array($tag, ['NEXT TRIP', 'WAITING'], true);   // not boarding yet: just shown as available
     return "<article class='mb'><div class='mb-top'><span class='pos'>$pos</span><h3>" . e($r['name']) . "</h3>" . badge($r['status']) . "</div>" .
         ($tag ? "<p style='margin:.3em 0;font-size:.75rem;font-weight:800;letter-spacing:.06em;color:#0b7285'>$tag</p>" : '') .
         ($wait ? "<p class='muted' style='font-size:1rem'>✅ Available · capacity " . (int)$r['capacity'] . "</p>"
             : count_html($r['pax'], $r['capacity']) . "<p class='muted'>passengers on board</p>") .
-        ($r['status'] === 'Departed' ? cd_html($r['left_s']) : '') . "</article>";
+        ($r['status'] === 'Departed' ? cd_html($r['left_s']) : '') .
+        ($admin && $tag === 'ON QUEUE' ? depart_form($r['id']) : '') . "</article>";
 }
 // The one boat in a cluster that is ON QUEUE: it is the only one that takes passengers and can be departed.
 function on_queue_id($cid)
 {
     [$dep, $q] = split_cluster(live_rows(), $cid);
     return (!$dep && $q) ? $q[0]['id'] : null;
+}
+// Depart button (bottom-right of the ON QUEUE card). Only shown on admin pages; admin/depart.php re-checks everything.
+function depart_form($id)
+{
+    return "<form method='post' action='" . BASE . "/admin/depart.php' style='text-align:right;margin-top:8px'>" .
+        "<input type='hidden' name='mid' value='" . (int)$id . "'>" .
+        "<button class='btn sm red' onclick=\"return confirm('Mark this motorbanca as departed?')\">Depart</button></form>";
 }
