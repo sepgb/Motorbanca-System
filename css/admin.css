@@ -201,20 +201,31 @@ body.r-admin {
 .datechip {
     display: none;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     height: 42px;
-    padding: 0 15px;
+    padding: 0 18px;
     border-radius: 999px;
     background: #fff;
     border: 1px solid var(--ln);
-    font-weight: 600;
-    font-size: .82rem
+    font-weight: 500;
+    font-size: .85rem;
+    color: var(--mut);
+    white-space: nowrap
+}
+
+.datechip b {
+    color: var(--tx);
+    font-weight: 500
 }
 
 .datechip .ico {
-    width: 16px;
-    height: 16px;
-    color: var(--o)
+    width: 17px;
+    height: 17px;
+    color: #a39a92
+}
+
+.dt-date {
+    display: none
 }
 
 .a-burger {
@@ -251,10 +262,6 @@ body.nav-open .pills {
 
     .a-burger {
         display: none
-    }
-
-    .datechip {
-        display: flex
     }
 
     .atop {
@@ -604,6 +611,18 @@ body.nav-open .pills {
     border-radius: 8px;
     background: #fbf7f3;
     border-color: var(--ln)
+}
+
+@media(min-width:1100px) {
+    .datechip {
+        display: flex
+    }
+}
+
+@media(min-width:1400px) {
+    .dt-date {
+        display: inline
+    }
 }
 
 @media(prefers-reduced-motion:reduce) {

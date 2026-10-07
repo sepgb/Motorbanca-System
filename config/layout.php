@@ -24,7 +24,7 @@ function page_head($title, $role = 'public')
 <button class='ibtn a-burger' aria-label='Menu' onclick=\"document.body.classList.toggle('nav-open')\">" . ico('<path d="M4 7h16M4 12h16M4 17h16"/>') . "</button>
 <nav class='pills'>";
         foreach ($links as $f => $l) echo "<a href='$b/admin/$f'" . ($f === $me ? " class='on'" : '') . ">$l</a>";
-        echo "</nav><div class='tools'><span class='datechip'>" . ico('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>') . date('D, M j') . "</span>
+        echo "</nav><div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g.i A') . "</b></span>
 <a class='ibtn' href='$b/logout.php' title='Log out' aria-label='Log out'>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</a><span class='avatar'>PC</span></div></header><main class='main'>";
     } elseif ($role === 'operator') {
         echo "<header class='topbar'><b>🚤 Operator</b><a href='$b/logout.php'>Logout</a></header><main class='main'>";
