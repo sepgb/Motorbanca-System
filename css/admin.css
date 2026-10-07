@@ -283,8 +283,20 @@ body.nav-open .pills {
 }
 
 .r-admin .stats {
-    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 14px
+}
+
+@media(min-width:700px) {
+    .r-admin .stats {
+        grid-template-columns: repeat(3, 1fr)
+    }
+}
+
+@media(min-width:1100px) {
+    .r-admin .stats {
+        grid-template-columns: repeat(6, 1fr)
+    }
 }
 
 .r-admin .stat {

@@ -6,10 +6,10 @@ $greet = $h < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening'
 page_head('Dashboard', 'admin'); ?>
 <h1><?= $greet ?>, PCG!</h1>
 <p class="lead">Here is what is happening at the port right now.</p>
-<div class="dash">
+<div class="stats" data-live="<?= BASE ?>/api/live.php?v=stats"><?php stats_html(); ?></div>
+<div class="dash" style="margin-top:26px">
     <div>
-        <div class="stats" data-live="<?= BASE ?>/api/live.php?v=stats"><?php stats_html(); ?></div>
-        <h2 class="sub"><i class="dot"></i>Live queue</h2>
+        <h2 class="sub" style="margin-top:0"><i class="dot"></i>Live queue</h2>
         <div class="clusters" data-live="<?= BASE ?>/api/live.php?v=passenger"><?php render_live(); ?></div>
     </div>
     <aside>
