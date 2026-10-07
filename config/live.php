@@ -24,13 +24,13 @@ function count_html($p, $c)
 }
 // Passengers shown for a boat = those on its latest (non-cancelled) trip.
 const PAX_SQL = "IF(m.status='Not Queued',0,(SELECT COUNT(*) FROM passengers p WHERE p.trip_id=(SELECT MAX(t.id) FROM trips t WHERE t.motorbanca_id=m.id AND t.status<>'Cancelled')))";
-// A departed boat stays on the board for 5 minutes, then it is removed.
-const DEP_RECENT = "EXISTS(SELECT 1 FROM trips t WHERE t.motorbanca_id=m.id AND t.status='Departed' AND t.departure_time > NOW() - INTERVAL 5 MINUTE)";
+// A departed boat stays on the board for 2 minutes, then it is removed.
+const DEP_RECENT = "EXISTS(SELECT 1 FROM trips t WHERE t.motorbanca_id=m.id AND t.status='Departed' AND t.departure_time > NOW() - INTERVAL 2 MINUTE)";
 
 function live_rows()
 {
     return db()->query("SELECT m.id, m.motorbanca_name name, m.capacity, m.status, m.cluster_id, " . PAX_SQL . " pax,
-        (SELECT 300 - TIMESTAMPDIFF(SECOND, MAX(t.departure_time), NOW()) FROM trips t WHERE t.motorbanca_id=m.id AND t.status='Departed') left_s
+        (SELECT 120 - TIMESTAMPDIFF(SECOND, MAX(t.departure_time), NOW()) FROM trips t WHERE t.motorbanca_id=m.id AND t.status='Departed') left_s
         FROM motorbancas m WHERE m.status='Queued' OR (m.status='Departed' AND " . DEP_RECENT . ")
         ORDER BY (m.status='Departed'), m.queued_at, m.id")->fetchAll();
 }
@@ -139,7 +139,7 @@ function cd_html($s)
     $s = max(0, (int)$s);
     return sprintf("<p style='margin:.3em 0;color:#12468f;font-weight:600'>⏱ Leaves the board in <b class='cd' data-s='%d'>%d:%02d</b></p>", $s, intdiv($s, 60), $s % 60);
 }
-// Runs on every board refresh: 5 minutes after the PCG marks a boat Departed it is removed from the
+// Runs on every board refresh: 2 minutes after the PCG marks a boat Departed it is removed from the
 // board (status goes back to Not Queued). The next boat then moves up by itself, because
 // "on queue" and "next trip" are worked out from the queue order (see split_cluster).
 function process_departures()
@@ -147,7 +147,7 @@ function process_departures()
     db()->exec("UPDATE motorbancas m SET m.status='Not Queued' WHERE m.status='Departed' AND NOT " . DEP_RECENT);
 }
 // Queue order = the order operators tapped NEW TRIP. While a departed boat is still on the board
-// (its 5 minutes) it holds the "on queue" spot, so the first Queued boat is the Next Trip.
+// (its 2 minutes) it holds the "on queue" spot, so the first Queued boat is the Next Trip.
 // Otherwise the first Queued boat is on queue and the second one is the Next Trip.
 function split_cluster($rows, $cid)
 {
