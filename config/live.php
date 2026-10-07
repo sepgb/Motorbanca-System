@@ -42,16 +42,16 @@ function render_live($admin = false)
     foreach (db()->query("SELECT * FROM clusters ORDER BY id")->fetchAll() as $c) {
         [$dep, $q, $next] = split_cluster($rows, $c['id']);
         echo "<section class='cluster'><h2>" . e($c['name']) . "</h2>";
-        echo $next
-            ? "<div class='next yes'>⏭ Next Trip: <b>" . e($next['name']) . "</b></div>"
-            : "<div class='next no'>⛔ No Next Trip Available</div>";
-        echo "<div style='padding:12px 18px 0;font-size:.8rem;font-weight:700;color:#5b6e7c;letter-spacing:.06em'>ON QUEUE / DEPARTED</div>";
         if (!$dep && !$q) echo "<div class='mb'><p class='muted'>No motorbanca on queue right now.</p></div>";
         $pos = 0;
-        foreach ($dep as $r) echo mb_card($r, ++$pos, '', $admin);
-        // only the ON QUEUE boat gets a card; the next-trip boat is shown in the banner above
-        foreach ($q as $i => $r) if (tag_for((bool)$dep, $i) === 'ON QUEUE') echo mb_card($r, ++$pos, 'ON QUEUE', $admin);
-        echo "</section>";
+        foreach ($dep as $r) echo mb_card($r, ++$pos, '');
+        // only the ON QUEUE boat gets a card; the next-trip boat is shown in the footer below
+        foreach ($q as $i => $r) if (tag_for((bool)$dep, $i) === 'ON QUEUE') echo mb_card($r, ++$pos, 'ON QUEUE');
+        echo "<div class='cfoot'>" . ($next
+            ? "<div class='next yes'>⏭ Next Trip: <b>" . e($next['name']) . "</b></div>"
+            : "<div class='next no'>⛔ No Next Trip Available</div>");
+        if ($admin && !$dep && $q) echo depart_form($q[0]['id']);   // PCG only, bottom-right
+        echo "</div></section>";
     }
 }
 function stats_html()
@@ -138,7 +138,7 @@ function fleet_html()
 function cd_html($s)
 {
     $s = max(0, (int)$s);
-    return sprintf("<p style='margin:.3em 0;color:#12468f;font-weight:600'>⏱ Leaves the board in <b class='cd' data-s='%d'>%d:%02d</b></p>", $s, intdiv($s, 60), $s % 60);
+    return sprintf("<p style='margin:.3em 0;color:var(--cdc,#12468f);font-weight:600'>⏱ Leaves the board in <b class='cd' data-s='%d'>%d:%02d</b></p>", $s, intdiv($s, 60), $s % 60);
 }
 // Runs on every board refresh: 2 minutes after the PCG marks a boat Departed it is removed from the
 // board (status goes back to Not Queued). The next boat then moves up by itself, because
@@ -165,12 +165,12 @@ function tag_for($hasDep, $i)
 function mb_card($r, $pos, $tag, $admin = false)
 {
     $wait = in_array($tag, ['NEXT TRIP', 'WAITING'], true);   // not boarding yet: just shown as available
-    return "<article class='mb'><div class='mb-top'><span class='pos'>$pos</span><h3>" . e($r['name']) . "</h3>" . badge($r['status']) . "</div>" .
-        ($tag ? "<p style='margin:.3em 0;font-size:.75rem;font-weight:800;letter-spacing:.06em;color:#0b7285'>$tag</p>" : '') .
+    return "<article class='mb'><div class='mb-top'><span class='pos'>$pos</span><h3>" . e($r['name']) . "</h3>" . ($r['status'] === 'Departed' ? badge($r['status']) : '') . "</div>" .
+        ($tag ? "<p style='margin:.3em 0;font-size:.75rem;font-weight:800;letter-spacing:.06em;color:var(--tagc,#0b7285)'>$tag</p>" : '') .
         ($wait ? "<p class='muted' style='font-size:1rem'>✅ Available · capacity " . (int)$r['capacity'] . "</p>"
             : count_html($r['pax'], $r['capacity']) . "<p class='muted'>passengers on board</p>") .
         ($r['status'] === 'Departed' ? cd_html($r['left_s']) : '') .
-        ($admin && $tag === 'ON QUEUE' ? depart_form($r['id']) : '') . "</article>";
+        "</article>";
 }
 // The one boat in a cluster that is ON QUEUE: it is the only one that takes passengers and can be departed.
 function on_queue_id($cid)
@@ -181,7 +181,8 @@ function on_queue_id($cid)
 // Depart button (bottom-right of the ON QUEUE card). Only shown on admin pages; admin/depart.php re-checks everything.
 function depart_form($id)
 {
-    return "<form method='post' action='" . BASE . "/admin/depart.php' style='text-align:right;margin-top:8px'>" .
+    return "<form method='post' action='" . BASE . "/admin/depart.php' style='margin-left:auto'>" .
         "<input type='hidden' name='mid' value='" . (int)$id . "'>" .
-        "<button class='btn sm red' onclick=\"return confirm('Mark this motorbanca as departed?')\">Depart</button></form>";
+        "<button class='depart' onclick=\"return confirm('Mark this motorbanca as departed?')\">Depart<span>" .
+        ico('<path d="M7 17L17 7M8 7h9v9"/>') . "</span></button></form>";
 }

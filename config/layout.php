@@ -19,7 +19,7 @@ function page_head($title, $role = 'public')
             'queue.php' => 'Queue / Trips',
             'trip' . 's.php' => 'Trip History'
         ];
-        $logo = "<svg viewBox='0 0 40 40'><circle cx='20' cy='20' r='14' fill='none' stroke='#4f7a1f' stroke-width='8' stroke-dasharray='17 5' transform='rotate(-80 20 20)'/><circle cx='20' cy='20' r='5' fill='#4f7a1f'/></svg>";
+        $logo = "<svg viewBox='0 0 40 40'><circle cx='20' cy='20' r='14' fill='none' stroke='#f26b1d' stroke-width='8' stroke-dasharray='17 5' transform='rotate(-80 20 20)'/><circle cx='20' cy='20' r='5' fill='#f26b1d'/></svg>";
         echo "<header class='atop'><a class='logo' href='$b/admin/dashboard.php'>$logo<span>Port Control</span></a>
 <button class='ibtn a-burger' aria-label='Menu' onclick=\"document.body.classList.toggle('nav-open')\">" . ico('<path d="M4 7h16M4 12h16M4 17h16"/>') . "</button>
 <nav class='pills'>";
