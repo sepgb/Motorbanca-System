@@ -531,8 +531,9 @@ body.nav-open .pills {
     padding: 0 5px 0 20px;
     border: 0;
     border-radius: 999px;
-    background: var(--tx);
+    background: linear-gradient(135deg, #22a455, #15803d);
     color: #fff;
+    box-shadow: 0 10px 20px -8px #15803d99;
     font: 600 .88rem "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
     cursor: pointer;
     transition: transform .15s, box-shadow .15s
@@ -544,8 +545,8 @@ body.nav-open .pills {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: var(--o);
-    color: #fff;
+    background: #fff;
+    color: #15803d;
     transition: transform .25s
 }
 
@@ -556,7 +557,7 @@ body.nav-open .pills {
 
 .depart:hover {
     transform: translateY(-1px);
-    box-shadow: 0 10px 22px -6px #1f1a1760
+    box-shadow: 0 14px 26px -8px #15803dcc
 }
 
 .depart:hover span {
@@ -565,11 +566,11 @@ body.nav-open .pills {
 
 .depart:active {
     transform: none;
-    box-shadow: none
+    box-shadow: 0 6px 12px -6px #15803d99
 }
 
 .depart:focus-visible {
-    outline: 3px solid var(--o);
+    outline: 3px solid #15803d;
     outline-offset: 3px
 }
 
