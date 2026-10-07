@@ -69,7 +69,7 @@ function stats_html()
     } else $delta = $today > 0 ? "<b class='up'>+$today</b> than yesterday" : 'no passengers yet';
     $cards = [
         ['Currently Queued', $q("SELECT COUNT(*) FROM motorbancas WHERE status='Queued'"), 'waiting to depart'],
-        ['Currently Departed', $q("SELECT COUNT(*) FROM motorbancas m WHERE m.status='Departed' AND " . DEP_RECENT), 'left in the last 2 min'],
+        ['Currently Departed', $q("SELECT COUNT(*) FROM motorbancas m WHERE m.status='Departed' AND " . DEP_RECENT), 'left the port'],
         ['Next Trips', $nextCount, 'clusters with a next boat'],
         ['Passengers Today', $today, $delta],
     ];

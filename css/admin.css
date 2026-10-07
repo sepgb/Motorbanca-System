@@ -344,10 +344,10 @@ body.nav-open .pills {
     position: absolute;
     top: 14px;
     right: 14px;
-    width: 38px;
-    height: 38px;
-    padding: 10px;
-    border-radius: 11px;
+    width: 42px;
+    height: 42px;
+    padding: 11px;
+    border-radius: 12px;
     background: linear-gradient(145deg, #3b332d, #1f1a17);
     color: #fff;
     box-shadow: 0 8px 16px -6px #1f1a1780
@@ -356,14 +356,14 @@ body.nav-open .pills {
 .r-admin .stat span {
     display: block;
     color: var(--mut);
-    font-size: .8rem;
-    padding-right: 46px;
+    font-size: .9rem;
+    padding-right: 52px;
     min-height: 2.4em
 }
 
 .r-admin .stat b {
     display: block;
-    font-size: 1.5rem;
+    font-size: 1.85rem;
     font-weight: 700;
     letter-spacing: -.02em;
     color: var(--tx);
@@ -373,9 +373,9 @@ body.nav-open .pills {
 
 .r-admin .stat p {
     margin: auto 0 0;
-    padding-top: 10px;
+    padding-top: 11px;
     border-top: 1px solid #f4ede7;
-    font-size: .76rem;
+    font-size: .86rem;
     color: var(--mut)
 }
 
