@@ -497,3 +497,20 @@ body.nav-open .pills {
         animation: none
     }
 }
+
+/* Wide screens: logo | menu | tools in three equal zones, so the menu is exactly centred */
+@media(min-width:1000px) {
+    .atop {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center
+    }
+
+    .atop .pills {
+        margin: 0
+    }
+
+    .atop .tools {
+        justify-self: end
+    }
+}
