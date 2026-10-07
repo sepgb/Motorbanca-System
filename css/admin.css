@@ -12,7 +12,7 @@ body.r-admin {
     --ln: #efe7e0;
     --mut: #8c8279;
     --tx: #1f1a17;
-    --tagc: #b4470a;
+    --tagc: #15803d;
     --cdc: #b4470a;
     display: block;
     font: 1rem/1.55 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
@@ -409,14 +409,32 @@ body.nav-open .pills {
 .r-admin .cluster h2 {
     background: none;
     color: var(--tx);
-    padding: 18px 20px 10px;
+    padding: 16px 20px 14px;
     font-size: 1.05rem;
+    line-height: 1.3;
     margin: 0
 }
 
 .r-admin .mb {
-    padding: 14px 20px;
+    padding: 16px 20px 18px;
     border-top: 1px solid #f4ede7
+}
+
+.r-admin .mb-top {
+    gap: 12px;
+    align-items: center;
+    flex-wrap: nowrap
+}
+
+.r-admin .mb-top h3 {
+    line-height: 1.25;
+    margin: 0
+}
+
+.r-admin .mb .muted {
+    margin: 0;
+    font-size: .85rem;
+    line-height: 1.4
 }
 
 .r-admin .mb-top h3 {
@@ -431,6 +449,8 @@ body.nav-open .pills {
 
 .r-admin .count {
     font-size: 1.7rem;
+    line-height: 1;
+    margin-top: 16px;
     color: var(--tx)
 }
 
@@ -456,7 +476,8 @@ body.nav-open .pills {
 .r-admin .bar {
     height: 12px;
     background: #f4ece5;
-    border-radius: 999px
+    border-radius: 999px;
+    margin: 10px 0 8px
 }
 
 .r-admin .bar i {
@@ -494,7 +515,7 @@ body.nav-open .pills {
     justify-content: space-between;
     gap: 12px;
     flex-wrap: wrap;
-    padding: 14px 20px 18px;
+    padding: 14px 20px 16px;
     border-top: 1px solid #f4ede7
 }
 
