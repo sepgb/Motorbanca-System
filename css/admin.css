@@ -831,3 +831,115 @@ body.nav-open .pills {
         transition: none
     }
 }
+
+/* confirmation modal (Depart) */
+.mdl {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(31, 26, 23, .45);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s, visibility .2s
+}
+
+.mdl.open {
+    opacity: 1;
+    visibility: visible
+}
+
+.mdl-box {
+    width: 100%;
+    max-width: 380px;
+    background: #fff;
+    border-radius: 24px;
+    padding: 26px 24px 22px;
+    text-align: center;
+    box-shadow: 0 30px 60px -20px #1f1a1766;
+    transform: translateY(12px) scale(.97);
+    transition: transform .25s cubic-bezier(.2, .7, .2, 1)
+}
+
+.mdl.open .mdl-box {
+    transform: none
+}
+
+.mdl-ic {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    margin: 0 auto 14px;
+    display: grid;
+    place-items: center;
+    background: #dcfce7;
+    color: #15803d
+}
+
+.mdl-ic .ico {
+    width: 24px;
+    height: 24px
+}
+
+.mdl h3 {
+    margin: 0 0 6px;
+    font-size: 1.15rem
+}
+
+.mdl p {
+    margin: 0 0 20px;
+    color: var(--mut);
+    font-size: .9rem;
+    line-height: 1.5
+}
+
+.mdl-act {
+    display: flex;
+    gap: 10px
+}
+
+.mdl-act button {
+    flex: 1;
+    height: 46px;
+    border-radius: 999px;
+    border: 1px solid var(--ln);
+    background: #fff;
+    color: var(--tx);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: .92rem;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, background .15s
+}
+
+.mdl-act .no:hover {
+    background: #fbf7f3
+}
+
+.mdl-act .go {
+    border: 0;
+    background: linear-gradient(135deg, #22a455, #15803d);
+    color: #fff;
+    box-shadow: 0 10px 20px -8px #15803d99
+}
+
+.mdl-act .go:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 26px -8px #15803dcc
+}
+
+.mdl-act button:focus-visible {
+    outline: 3px solid #15803d;
+    outline-offset: 2px
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+    .mdl,
+    .mdl-box {
+        transition: none
+    }
+}
