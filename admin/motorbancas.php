@@ -28,14 +28,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 $list = db()->query("SELECT m.*, c.name cluster FROM motorbancas m JOIN clusters c ON c.id=m.cluster_id ORDER BY m.id DESC")->fetchAll();
-page_head('Motorbancas', 'admin');
+page_head('Register', 'admin');
 ?>
-<h1>Motorbancas</h1>
+<h1>Registered motorbanca</h1>
+<p class="lead">All registered boats. Use the form to add a new one.</p>
 <?php if ($msg) echo "<div class='alert ok'>$msg<br><small>Give these to the operator. You can view them later under Operators.</small></div>";
       if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
+<div class="reg">
+<div class="tablewrap"><table>
+  <tr><th>Name</th><th>Owner</th><th>Capacity</th><th>Cluster</th><th>Status</th></tr>
+  <?php foreach ($list as $m) echo "<tr><td>" . e($m['motorbanca_name']) . "</td><td>" . e($m['owner_name']) . "</td><td>{$m['capacity']}</td><td>" .
+        e($m['cluster']) . "</td><td>" . badge($m['status']) . "</td></tr>"; ?>
+</table></div>
 <div class="card">
-  <h2>Register a motorbanca</h2>
-  <form method="post" class="grid cols">
+  <h3>New registration</h3>
+  <form method="post" class="grid">
     <label>Motorbanca name<input name="name" placeholder="MB-01" maxlength="50" required></label>
     <label>Owner name<input name="owner" placeholder="Juan Dela Cruz" maxlength="100" required></label>
     <label>Capacity<input name="capacity" type="number" min="1" max="500" placeholder="45" required></label>
@@ -43,9 +50,5 @@ page_head('Motorbancas', 'admin');
     <button class="btn">Register and create login</button>
   </form>
 </div>
-<div class="tablewrap"><table>
-  <tr><th>Name</th><th>Owner</th><th>Capacity</th><th>Cluster</th><th>Status</th></tr>
-  <?php foreach ($list as $m) echo "<tr><td>" . e($m['motorbanca_name']) . "</td><td>" . e($m['owner_name']) . "</td><td>{$m['capacity']}</td><td>" .
-        e($m['cluster']) . "</td><td>" . badge($m['status']) . "</td></tr>"; ?>
-</table></div>
+</div>
 <?php page_foot('admin');
