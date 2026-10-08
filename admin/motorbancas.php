@@ -1,11 +1,15 @@
 <?php
-require_once '../config/layout.php'; need('admin');
+require_once '../config/layout.php';
+need('admin');
 $msg = $err = '';
 $clusters = db()->query("SELECT * FROM clusters ORDER BY id")->fetchAll();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? ''); $owner = trim($_POST['owner'] ?? '');
-    $cap = (int)($_POST['capacity'] ?? 0); $cid = (int)($_POST['cluster'] ?? 0);
-    $ok = db()->prepare("SELECT 1 FROM clusters WHERE id=?"); $ok->execute([$cid]);
+    $name = trim($_POST['name'] ?? '');
+    $owner = trim($_POST['owner'] ?? '');
+    $cap = (int)($_POST['capacity'] ?? 0);
+    $cid = (int)($_POST['cluster'] ?? 0);
+    $ok = db()->prepare("SELECT 1 FROM clusters WHERE id=?");
+    $ok->execute([$cid]);
     if ($name === '' || strlen($name) > 50 || $owner === '' || strlen($owner) > 100 || $cap < 1 || $cap > 500 || !$ok->fetch()) {
         $err = 'Please fill in every field. Capacity must be 1 to 500.';
     } else {
@@ -27,28 +31,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-$list = db()->query("SELECT m.*, c.name cluster FROM motorbancas m JOIN clusters c ON c.id=m.cluster_id ORDER BY m.id DESC")->fetchAll();
+$list = db()->query("SELECT m.*, c.name cluster, u.username, u.temp_password FROM motorbancas m
+    JOIN clusters c ON c.id=m.cluster_id LEFT JOIN users u ON u.motorbanca_id=m.id AND u.role='operator'
+    ORDER BY m.id DESC")->fetchAll();
 page_head('Register', 'admin');
 ?>
 <h1>Registered motorbanca</h1>
 <p class="lead">All registered boats. Use the form to add a new one.</p>
-<?php if ($msg) echo "<div class='alert ok'>$msg<br><small>Give these to the operator. You can view them later under Operators.</small></div>";
-      if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
+<?php if ($msg) echo "<div class='alert ok'>$msg<br><small>Give these to the operator. You can see them anytime in the list.</small></div>";
+if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
 <div class="reg">
-<div class="tablewrap"><table>
-  <tr><th>Name</th><th>Owner</th><th>Capacity</th><th>Cluster</th><th>Status</th></tr>
-  <?php foreach ($list as $m) echo "<tr><td>" . e($m['motorbanca_name']) . "</td><td>" . e($m['owner_name']) . "</td><td>{$m['capacity']}</td><td>" .
-        e($m['cluster']) . "</td><td>" . badge($m['status']) . "</td></tr>"; ?>
-</table></div>
-<div class="card">
-  <h3>New registration</h3>
-  <form method="post" class="grid">
-    <label>Motorbanca name<input name="name" placeholder="MB-01" maxlength="50" required></label>
-    <label>Owner name<input name="owner" placeholder="Juan Dela Cruz" maxlength="100" required></label>
-    <label>Capacity<input name="capacity" type="number" min="1" max="500" placeholder="45" required></label>
-    <label>Cluster<select name="cluster"><?php foreach ($clusters as $c) echo "<option value='{$c['id']}'>" . e($c['name']) . "</option>"; ?></select></label>
-    <button class="btn">Register and create login</button>
-  </form>
-</div>
+    <div class="tablewrap">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Capacity</th>
+                <th>Cluster</th>
+                <th>Username</th>
+                <th>Password</th>
+            </tr>
+            <?php foreach ($list as $m) echo "<tr><td>" . e($m['motorbanca_name']) . "</td><td>" . e($m['owner_name']) . "</td><td>{$m['capacity']}</td><td>" .
+                e($m['cluster']) . "</td><td><code>" . e($m['username']) . "</code></td><td><code>" . e($m['temp_password']) . "</code></td></tr>"; ?>
+        </table>
+    </div>
+    <div class="card">
+        <h3>New registration</h3>
+        <form method="post" class="grid">
+            <label>Motorbanca name<input name="name" placeholder="MB-01" maxlength="50" required></label>
+            <label>Owner name<input name="owner" placeholder="Juan Dela Cruz" maxlength="100" required></label>
+            <label>Capacity<input name="capacity" type="number" min="1" max="500" placeholder="45" required></label>
+            <label>Cluster<select name="cluster"><?php foreach ($clusters as $c) echo "<option value='{$c['id']}'>" . e($c['name']) . "</option>"; ?></select></label>
+            <button class="btn">Register and create login</button>
+        </form>
+    </div>
 </div>
 <?php page_foot('admin');

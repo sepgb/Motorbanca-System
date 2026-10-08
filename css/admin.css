@@ -691,15 +691,28 @@ body.nav-open .pills {
     align-items: start
 }
 
-@media(min-width:1000px) {
+.reg .card {
+    order: -1
+}
+
+@media(min-width:1200px) {
     .reg {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 400px)
+        grid-template-columns: minmax(0, 1fr) minmax(0, 380px)
+    }
+
+    .reg .card {
+        order: 0
     }
 }
 
 .reg .card,
 .reg .tablewrap {
     margin: 0
+}
+
+.reg td,
+.reg th {
+    padding: 12px
 }
 
 @media(prefers-reduced-motion:reduce) {

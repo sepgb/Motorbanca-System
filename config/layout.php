@@ -15,7 +15,6 @@ function page_head($title, $role = 'public')
         $links = [
             'dashboard.php' => 'Dashboard',
             'motorbancas.php' => 'Register',
-            'operators.php' => 'Operators',
             'queue.php' => 'Queue / Trips',
             'trip' . 's.php' => 'Trip History'
         ];
