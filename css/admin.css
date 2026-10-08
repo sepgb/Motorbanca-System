@@ -13,7 +13,7 @@ body.r-admin {
     --mut: #8c8279;
     --tx: #1f1a17;
     --tagc: #15803d;
-    --depc: #1f1a17;
+    --depc: #2563eb;
     --cdc: #b4470a;
     display: block;
     font: 1rem/1.55 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
@@ -466,7 +466,7 @@ body.nav-open .pills {
 }
 
 .r-admin .mb-top h3 {
-    line-height: 1.25;
+    line-height: 1.15;
     margin: 0
 }
 
