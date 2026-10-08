@@ -36,8 +36,7 @@ $list = db()->query("SELECT m.*, c.name cluster, u.username, u.temp_password FRO
     ORDER BY m.id DESC")->fetchAll();
 page_head('Register', 'admin');
 ?>
-<h1>Registered motorbanca</h1>
-<p class="lead">All registered boats. Use the form to add a new one.</p>
+<h1 style="margin-bottom:18px">Registered motorbanca</h1>
 <?php if ($msg) echo "<div class='alert ok'>$msg<br><small>Give these to the operator. You can see them anytime in the list.</small></div>";
 if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
 <div class="reg">

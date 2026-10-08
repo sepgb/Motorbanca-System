@@ -125,10 +125,13 @@ body.r-admin {
     border-radius: 999px;
     padding: 5px;
     gap: 2px;
-    box-shadow: 0 1px 2px #1f1a170a
+    box-shadow: 0 1px 2px #1f1a170a;
+    position: relative
 }
 
 .pills a {
+    position: relative;
+    z-index: 1;
     padding: 9px 18px;
     border-radius: 999px;
     color: #5b5049;
@@ -136,10 +139,10 @@ body.r-admin {
     font-size: .88rem;
     text-decoration: none;
     white-space: nowrap;
-    transition: background .15s, color .15s
+    transition: background .15s, color .25s
 }
 
-.pills a:hover {
+.pills a:not(.on):hover {
     background: var(--ot);
     color: var(--od)
 }
@@ -148,6 +151,41 @@ body.r-admin {
     background: var(--o);
     color: #fff;
     box-shadow: 0 6px 14px -4px #f26b1d99
+}
+
+/* sliding highlight (positioned by script.js); falls back to the plain active pill without JS */
+.pill-bg {
+    display: none;
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    left: 0;
+    width: 0;
+    border-radius: 999px;
+    background: var(--o);
+    box-shadow: 0 6px 14px -4px #f26b1d99;
+    z-index: 0;
+    transition: transform .38s cubic-bezier(.65, 0, .25, 1), width .38s cubic-bezier(.65, 0, .25, 1)
+}
+
+.pills.has-bg .pill-bg {
+    display: block
+}
+
+.pills.has-bg a.on {
+    background: none;
+    box-shadow: none
+}
+
+@media(max-width:999px) {
+    .pills.has-bg .pill-bg {
+        display: none
+    }
+
+    .pills.has-bg a.on {
+        background: var(--o);
+        box-shadow: 0 6px 14px -4px #f26b1d99
+    }
 }
 
 .tools {
@@ -724,6 +762,76 @@ body.nav-open .pills {
     .depart span,
     .btn,
     .stat {
+        transition: none
+    }
+}
+
+/* smooth motion for cards and forms */
+.r-admin input,
+.r-admin select {
+    transition: border-color .2s, box-shadow .2s
+}
+
+.r-admin td {
+    transition: background .15s
+}
+
+.r-admin .cluster,
+.r-admin .card {
+    transition: box-shadow .3s
+}
+
+.r-admin .cluster:hover,
+.r-admin .card:hover {
+    box-shadow: 0 1px 2px #1f1a1708, 0 22px 40px -20px #1f1a1733
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(12px)
+    }
+
+    to {
+        opacity: 1;
+        transform: none
+    }
+}
+
+@media(prefers-reduced-motion:no-preference) {
+
+    body.enter h1,
+    body.enter .alert,
+    body.enter .stat,
+    body.enter .cluster,
+    body.enter .card,
+    body.enter .tablewrap {
+        animation: rise .5s cubic-bezier(.2, .7, .2, 1) both
+    }
+
+    body.enter .stat:nth-child(2),
+    body.enter .cluster:nth-child(2) {
+        animation-delay: .07s
+    }
+
+    body.enter .stat:nth-child(3),
+    body.enter .cluster:nth-child(3) {
+        animation-delay: .14s
+    }
+
+    body.enter .stat:nth-child(4),
+    body.enter .cluster:nth-child(4) {
+        animation-delay: .21s
+    }
+
+    body.enter .card,
+    body.enter .tablewrap {
+        animation-delay: .08s
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    .pill-bg {
         transition: none
     }
 }
