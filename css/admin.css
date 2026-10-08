@@ -13,6 +13,7 @@ body.r-admin {
     --mut: #8c8279;
     --tx: #1f1a17;
     --tagc: #15803d;
+    --depc: #1f1a17;
     --cdc: #b4470a;
     display: block;
     font: 1rem/1.55 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
@@ -806,27 +807,22 @@ body.nav-open .pills {
     body.enter .cluster,
     body.enter .card,
     body.enter .tablewrap {
-        animation: rise .5s cubic-bezier(.2, .7, .2, 1) both
+        animation: rise .38s cubic-bezier(.2, .7, .2, 1) both
     }
 
     body.enter .stat:nth-child(2),
     body.enter .cluster:nth-child(2) {
-        animation-delay: .07s
+        animation-delay: .04s
     }
 
     body.enter .stat:nth-child(3),
     body.enter .cluster:nth-child(3) {
-        animation-delay: .14s
+        animation-delay: .08s
     }
 
     body.enter .stat:nth-child(4),
     body.enter .cluster:nth-child(4) {
-        animation-delay: .21s
-    }
-
-    body.enter .card,
-    body.enter .tablewrap {
-        animation-delay: .08s
+        animation-delay: .12s
     }
 }
 

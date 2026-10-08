@@ -22,8 +22,8 @@ setInterval(function () {
 (function () {
   var d = document.getElementById('clk-date'), t = document.getElementById('clk-time');
   if (!d || !t) return;
-  var D = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
-      M = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var D = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    M = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   function tick() {
     var n = new Date(), h = n.getHours();
     d.textContent = D[n.getDay()] + ', ' + n.getDate() + ' ' + M[n.getMonth()] + ' ' + n.getFullYear();
@@ -32,31 +32,5 @@ setInterval(function () {
   tick(); setInterval(tick, 1000);
 })();
 
-// Admin menu: the highlight slides to the clicked link, then the page opens.
-// The 'enter' class only lets cards fade in on first load (not on every live refresh).
-(function () {
-  setTimeout(function () { document.body.classList.remove('enter'); }, 1000);
-  var nav = document.querySelector('.pills'); if (!nav) return;
-  var bg = nav.querySelector('.pill-bg'), links = nav.querySelectorAll('a'), cur = nav.querySelector('a.on');
-  if (!bg || !cur) return;
-  function place(a, animate) {
-    bg.style.transition = animate ? '' : 'none';
-    bg.style.width = a.offsetWidth + 'px';
-    bg.style.transform = 'translateX(' + a.offsetLeft + 'px)';
-    if (!animate) { void bg.offsetWidth; bg.style.transition = ''; }
-  }
-  nav.classList.add('has-bg');
-  place(cur, false);
-  window.addEventListener('resize', function () { place(cur, false); });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { place(cur, false); });
-  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  links.forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      if (a === cur || still || window.innerWidth < 1000 || e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
-      e.preventDefault();
-      cur = a; place(a, true);
-      links.forEach(function (l) { l.classList.toggle('on', l === a); });
-      setTimeout(function () { location.href = a.href; }, 280);
-    });
-  });
-})();
+// Cards fade in only on first load (not on every live refresh)
+setTimeout(function () { document.body.classList.remove('enter'); }, 900);
