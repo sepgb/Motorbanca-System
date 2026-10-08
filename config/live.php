@@ -42,7 +42,7 @@ function render_live($admin = false)
     foreach (db()->query("SELECT * FROM clusters ORDER BY id")->fetchAll() as $c) {
         [$dep, $q, $next] = split_cluster($rows, $c['id']);
         echo "<section class='cluster'><h2>" . e($c['name']) . "</h2>";
-        if (!$dep && !$q) echo "<div class='mb'><p class='muted'>No motorbanca on queue right now.</p></div>";
+        if (!$dep && !$q) echo "<div class='mb empty'><p class='muted'>No motorbanca on queue right now.</p></div>";
         $pos = 0;
         foreach ($dep as $r) echo mb_card($r, ++$pos, 'DEPARTED');
         // only the ON QUEUE boat gets a card; the next-trip boat is shown in the footer below

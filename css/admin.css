@@ -329,15 +329,44 @@ body.nav-open .pills {
     }
 }
 
+/* cluster cards keep the same size whatever is inside them (empty, on queue, departed) */
 .clusters {
     display: grid;
-    gap: 16px
+    gap: 16px;
+    grid-template-columns: minmax(0, 1fr)
 }
 
-@media(min-width:800px) {
+@media(min-width:760px) {
     .clusters {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))
+        grid-template-columns: repeat(2, minmax(0, 1fr))
     }
+}
+
+@media(min-width:1100px) {
+    .clusters {
+        grid-template-columns: repeat(3, minmax(0, 1fr))
+    }
+}
+
+.clusters.offline::before {
+    grid-column: 1/-1
+}
+
+.r-admin .cluster {
+    display: flex;
+    flex-direction: column;
+    min-height: 390px
+}
+
+.r-admin .cluster .cfoot {
+    margin-top: auto
+}
+
+.r-admin .mb.empty {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    text-align: center
 }
 
 /* cards */
