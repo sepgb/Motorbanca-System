@@ -4,17 +4,18 @@ need('admin');
 $msg = $err = '';
 $clusters = db()->query("SELECT * FROM clusters ORDER BY id")->fetchAll();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
+    $rest = trim(preg_replace('#^\s*M\s*/\s*B\s*[-.:]?\s*#i', '', trim($_POST['name'] ?? '')));   // the M/B prefix is fixed
+    $name = 'M/B ' . $rest;
     $owner = trim($_POST['owner'] ?? '');
     $cap = (int)($_POST['capacity'] ?? 0);
     $cid = (int)($_POST['cluster'] ?? 0);
     $ok = db()->prepare("SELECT 1 FROM clusters WHERE id=?");
     $ok->execute([$cid]);
-    if ($name === '' || strlen($name) > 50 || $owner === '' || strlen($owner) > 100 || $cap < 1 || $cap > 500 || !$ok->fetch()) {
+    if ($rest === '' || strlen($rest) > 45 || $owner === '' || strlen($owner) > 100 || $cap < 1 || $cap > 500 || !$ok->fetch()) {
         $err = 'Please fill in every field. Capacity must be 1 to 500.';
     } else {
         try {
-            $base = preg_replace('/[^A-Z0-9]/', '', strtoupper($name)) ?: 'MB';
+            $base = preg_replace('/[^A-Z0-9]/', '', strtoupper($rest)) ?: 'MB';
             $user = $base . '_operator';
             $pass = $base . '@' . random_int(1000, 9999);
             db()->beginTransaction();
@@ -57,7 +58,7 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
     <div class="card">
         <h3>New registration</h3>
         <form method="post" class="grid">
-            <label>Motorbanca name<input name="name" placeholder="MB-01" maxlength="50" required></label>
+            <label>Motorbanca name<div class="pfx"><span>M/B</span><input name="name" placeholder="Ruiz" maxlength="45" required></div></label>
             <label>Owner name<input name="owner" placeholder="Juan Dela Cruz" maxlength="100" required></label>
             <label>Capacity<input name="capacity" type="number" min="1" max="500" placeholder="45" required></label>
             <label>Cluster<select name="cluster"><?php foreach ($clusters as $c) echo "<option value='{$c['id']}'>" . e($c['name']) . "</option>"; ?></select></label>

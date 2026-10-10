@@ -1039,3 +1039,47 @@ body.nav-open .pills {
     text-align: center;
     color: var(--mut)
 }
+
+/* barangays line on cluster cards + fixed M/B prefix in the register form */
+.r-admin .brgy {
+    background: #fbf7f3;
+    border-bottom: 1px solid #f4ede7;
+    padding: 10px 20px
+}
+
+.r-admin .brgy small {
+    color: var(--mut)
+}
+
+.r-admin .brgy span {
+    background: #fff;
+    border-color: var(--ln);
+    color: #5b5049;
+    font-size: .78rem;
+    padding: 3px 10px
+}
+
+.pfx {
+    display: flex;
+    align-items: stretch;
+    margin-top: 4px
+}
+
+.pfx span {
+    display: grid;
+    place-items: center;
+    padding: 0 16px;
+    background: var(--ot);
+    color: var(--od);
+    font-weight: 700;
+    border: 1px solid #e6dcd3;
+    border-right: 0;
+    border-radius: 13px 0 0 13px
+}
+
+.r-admin .pfx input {
+    margin-top: 0;
+    flex: 1;
+    min-width: 0;
+    border-radius: 0 13px 13px 0
+}

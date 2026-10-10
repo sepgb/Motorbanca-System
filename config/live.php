@@ -39,9 +39,16 @@ function render_live($admin = false)
 {
     process_departures();
     $rows = live_rows();
+    $bmap = [];
+    try {
+        foreach (db()->query("SELECT cluster_id, name FROM barangays ORDER BY id")->fetchAll() as $b) $bmap[$b['cluster_id']][] = $b['name'];
+    } catch (PDOException $x) {
+    }
     foreach (db()->query("SELECT * FROM clusters ORDER BY id")->fetchAll() as $c) {
         [$dep, $q, $next] = split_cluster($rows, $c['id']);
         echo "<section class='cluster'><h2>" . e($c['name']) . "</h2>";
+        if (!empty($bmap[$c['id']])) echo "<div class='brgy'><small>Barangays</small>" .
+            implode('', array_map(fn($b) => "<span>" . e($b) . "</span>", $bmap[$c['id']])) . "</div>";
         if (!$dep && !$q) echo "<div class='mb empty'><p class='muted'>No motorbanca on queue right now.</p></div>";
         $pos = 0;
         foreach ($dep as $r) echo mb_card($r, ++$pos, 'DEPARTED');

@@ -533,3 +533,33 @@ th {
 *::-webkit-scrollbar {
     display: none
 }
+
+/* barangays served by each cluster (passenger board) */
+.brgy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 16px;
+    background: #eef3f6;
+    border-bottom: 1px solid var(--line)
+}
+
+.brgy small {
+    width: 100%;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #5b6e7c
+}
+
+.brgy span {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: .88rem;
+    font-weight: 600;
+    color: var(--navy)
+}
