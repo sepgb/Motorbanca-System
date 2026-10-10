@@ -1126,3 +1126,57 @@ body.nav-open .pills {
     background: #faf7f4;
     color: var(--mut)
 }
+
+/* Registered list: fixed column widths; long values are cut with an ellipsis (full value on hover) */
+.regtbl {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 640px
+}
+
+.regtbl th:nth-child(1) {
+    width: 21%
+}
+
+.regtbl th:nth-child(2) {
+    width: 17%
+}
+
+.regtbl th:nth-child(3) {
+    width: 11%
+}
+
+.regtbl th:nth-child(4) {
+    width: 12%
+}
+
+.regtbl th:nth-child(5) {
+    width: 19%
+}
+
+.regtbl th:nth-child(6) {
+    width: 20%
+}
+
+.regtbl th,
+.regtbl td {
+    padding: 12px 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.regtbl th:first-child,
+.regtbl td:first-child {
+    padding-left: 18px
+}
+
+.regtbl code {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .82rem;
+    padding: 3px 8px
+}
