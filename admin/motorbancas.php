@@ -51,10 +51,10 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
                 <th>Username</th>
                 <th>Password</th>
             </tr>
-            <?php foreach ($list as $m) echo "<tr class='mb-row' title='Double-click to edit' data-id='{$m['id']}' data-name='" . e(preg_replace('#^M/B\s*#', '', $m['motorbanca_name'])) .
-                "' data-owner='" . e($m['owner_name'] === 'Not set' ? '' : $m['owner_name']) . "' data-cap='{$m['capacity']}' data-cluster='{$m['cluster_id']}' data-status='" . e($m['status']) . "'><td title='" . e($m['motorbanca_name']) . "'>" . e($m['motorbanca_name']) . "</td><td title='" . e($m['owner_name']) . "'>" . e($m['owner_name']) .
-                "</td><td>{$m['capacity']}</td><td title='" . e($m['cluster']) . "'>" . e($m['cluster']) . "</td><td title='" . e($m['username']) . "'><code>" . e($m['username']) .
-                "</code></td><td title='" . e($m['temp_password']) . "'><code>" . e($m['temp_password']) . "</code></td></tr>"; ?>
+            <?php foreach ($list as $m) echo "<tr class='mb-row' data-hint='Double-click to edit' data-id='{$m['id']}' data-name='" . e(preg_replace('#^M/B\s*#', '', $m['motorbanca_name'])) .
+                "' data-owner='" . e($m['owner_name'] === 'Not set' ? '' : $m['owner_name']) . "' data-cap='{$m['capacity']}' data-cluster='{$m['cluster_id']}' data-status='" . e($m['status']) . "'><td>" . e($m['motorbanca_name']) . "</td><td>" . e($m['owner_name']) .
+                "</td><td>{$m['capacity']}</td><td>" . e($m['cluster']) . "</td><td><code>" . e($m['username']) .
+                "</code></td><td><code>" . e($m['temp_password']) . "</code></td></tr>"; ?>
         </table>
     </div>
     <div class="card">

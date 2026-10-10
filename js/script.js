@@ -136,3 +136,45 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       .catch(function () { err.textContent = 'Could not save. Check your connection.'; err.hidden = false; busy = false; });
   });
 })();
+
+// Styled hint for double-clickable rows. It appears only after the cursor stops (it does not follow the cursor)
+// and also shows the full value of a cell that is cut with "...".
+(function () {
+  var tip, tx, timer = null, shown = false, ax = 0, ay = 0, lx = 0, ly = 0, lr = null, lt = null;
+  function build() {
+    tip = document.createElement('div');
+    tip.className = 'rtip';
+    tip.innerHTML = '<span class="rtip-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 7-6 2-2 6z"/></svg></span><span class="rtip-tx"></span>';
+    tx = tip.querySelector('.rtip-tx');
+    document.body.appendChild(tip);
+  }
+  function hide() { clearTimeout(timer); timer = null; shown = false; if (tip) tip.classList.remove('show'); }
+  function show() {
+    timer = null;
+    if (!lr || !document.body.contains(lr)) return;
+    if (!tip) build();
+    var cell = lt && lt.closest ? lt.closest('td') : null, full = '';
+    if (cell) { var el = cell.querySelector('code') || cell; if (el.scrollWidth > el.clientWidth + 1) full = cell.textContent.trim(); }
+    tx.textContent = '';
+    if (full) { var b = document.createElement('b'); b.textContent = full; tx.appendChild(b); }
+    var s = document.createElement(full ? 'small' : 'span'); s.textContent = lr.dataset.hint || ''; tx.appendChild(s);
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var x = Math.min(lx + 16, window.innerWidth - w - 8), y = ly + 20;
+    if (y + h > window.innerHeight - 8) y = ly - h - 14;
+    tip.style.left = Math.max(8, x) + 'px'; tip.style.top = Math.max(8, y) + 'px';
+    tip.classList.add('show');
+    shown = true; ax = lx; ay = ly;
+  }
+  document.addEventListener('mousemove', function (e) {
+    var r = e.target.closest ? e.target.closest('.mb-row,.trip-row') : null;
+    if (!r) { hide(); lr = null; return; }
+    if (shown && Math.abs(e.clientX - ax) < 6 && Math.abs(e.clientY - ay) < 6) return;   // tiny jitter: keep it
+    hide();
+    lr = r; lt = e.target; lx = e.clientX; ly = e.clientY;
+    timer = setTimeout(show, 450);   // shown only once the cursor has stopped for a moment
+  });
+  document.addEventListener('mouseleave', function () { hide(); lr = null; });
+  document.addEventListener('dblclick', function () { hide(); lr = null; });
+  document.addEventListener('mousedown', hide);
+  window.addEventListener('scroll', function () { hide(); lr = null; }, true);
+})();
