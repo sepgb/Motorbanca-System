@@ -22,8 +22,8 @@ setInterval(function () {
 (function () {
   var d = document.getElementById('clk-date'), t = document.getElementById('clk-time');
   if (!d || !t) return;
-  var D = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
-      M = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var D = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    M = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   function tick() {
     var n = new Date(), h = n.getHours();
     d.textContent = D[n.getDay()] + ', ' + n.getDate() + ' ' + M[n.getMonth()] + ' ' + n.getFullYear();
@@ -105,4 +105,34 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       .catch(function () { box.querySelector('.sub').textContent = 'Could not load the passengers.'; });
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box) box.classList.remove('open'); });
+})();
+
+// Register page: double-click a motorbanca row to edit it
+(function () {
+  var m = document.getElementById('edit-mdl'); if (!m) return;
+  var f = document.getElementById('edit-form'), err = document.getElementById('edit-err'), sub = document.getElementById('edit-sub'), busy = false;
+  function close() { m.classList.remove('open'); }
+  function el(n) { return f.elements[n]; }
+  document.addEventListener('dblclick', function (e) {
+    var r = e.target.closest ? e.target.closest('.mb-row') : null; if (!r) return;
+    if (window.getSelection) window.getSelection().removeAllRanges();
+    el('mid').value = r.dataset.id; el('name').value = r.dataset.name; el('owner').value = r.dataset.owner;
+    el('capacity').value = r.dataset.cap; el('cluster').value = r.dataset.cluster;
+    var locked = r.dataset.status !== 'Not Queued';
+    el('cluster').disabled = locked;
+    sub.textContent = locked ? 'The cluster cannot be changed while this boat is on the queue.' : 'Update the details of this motorbanca.';
+    err.hidden = true; busy = false;
+    void m.offsetWidth; m.classList.add('open'); el('name').focus();
+  });
+  m.addEventListener('click', function (e) { if (e.target === m || e.target.classList.contains('x') || e.target.classList.contains('no')) close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  f.addEventListener('submit', function (e) {
+    e.preventDefault(); if (busy) return; busy = true;
+    var d = new FormData(f);
+    if (el('cluster').disabled) d.set('cluster', el('cluster').value);
+    fetch(f.dataset.url, { method: 'POST', body: d, credentials: 'same-origin' })
+      .then(function (x) { return x.json(); })
+      .then(function (j) { if (j.ok) location.reload(); else { err.textContent = j.error || 'Could not save.'; err.hidden = false; busy = false; } })
+      .catch(function () { err.textContent = 'Could not save. Check your connection.'; err.hidden = false; busy = false; });
+  });
 })();

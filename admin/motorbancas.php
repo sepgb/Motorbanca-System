@@ -51,7 +51,8 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
                 <th>Username</th>
                 <th>Password</th>
             </tr>
-            <?php foreach ($list as $m) echo "<tr><td>" . e($m['motorbanca_name']) . "</td><td>" . e($m['owner_name']) . "</td><td>{$m['capacity']}</td><td>" .
+            <?php foreach ($list as $m) echo "<tr class='mb-row' title='Double-click to edit' data-id='{$m['id']}' data-name='" . e(preg_replace('#^M/B\s*#', '', $m['motorbanca_name'])) .
+                "' data-owner='" . e($m['owner_name'] === 'Not set' ? '' : $m['owner_name']) . "' data-cap='{$m['capacity']}' data-cluster='{$m['cluster_id']}' data-status='" . e($m['status']) . "'><td>" . e($m['motorbanca_name']) . "</td><td>" . e($m['owner_name']) . "</td><td>{$m['capacity']}</td><td>" .
                 e($m['cluster']) . "</td><td><code>" . e($m['username']) . "</code></td><td><code>" . e($m['temp_password']) . "</code></td></tr>"; ?>
         </table>
     </div>
@@ -63,6 +64,27 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
             <label>Capacity<input name="capacity" type="number" min="1" max="500" placeholder="45" required></label>
             <label>Cluster<select name="cluster"><?php foreach ($clusters as $c) echo "<option value='{$c['id']}'>" . e($c['name']) . "</option>"; ?></select></label>
             <button class="btn">Register and create login</button>
+        </form>
+    </div>
+</div>
+
+<!-- edit modal: opens when a row in the list is double-clicked -->
+<div class="mdl" id="edit-mdl" role="dialog" aria-modal="true">
+    <div class="mdl-box wide">
+        <div class="mdl-head">
+            <div>
+                <h3>Edit motorbanca</h3>
+                <p class="sub" id="edit-sub"></p>
+            </div><button type="button" class="x" aria-label="Close">&times;</button>
+        </div>
+        <form class="mdl-form grid" id="edit-form" data-url="<?= BASE ?>/admin/update_motorbanca.php">
+            <input type="hidden" name="mid">
+            <label>Motorbanca name<div class="pfx"><span>M/B</span><input name="name" maxlength="45" required></div></label>
+            <label>Owner name<input name="owner" maxlength="100" placeholder="Juan Dela Cruz" required></label>
+            <label>Capacity<input name="capacity" type="number" min="1" max="500" required></label>
+            <label>Cluster<select name="cluster"><?php foreach ($clusters as $c) echo "<option value='{$c['id']}'>" . e($c['name']) . "</option>"; ?></select></label>
+            <div class="alert bad" id="edit-err" hidden></div>
+            <div class="mdl-act"><button type="button" class="no">Cancel</button><button class="go">Save changes</button></div>
         </form>
     </div>
 </div>
