@@ -1280,3 +1280,12 @@ body.nav-open .pills {
 .r-admin .mb.empty {
     min-height: 190px
 }
+
+/* Philippine Coast Guard logo in the header */
+.logo img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    display: block;
+    flex: none
+}

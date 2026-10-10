@@ -112,11 +112,23 @@ function set_status($mid, $st)
     if ($st === 'Queued') {            // joining the queue = a new trip (unless one is already waiting)
         $x = $pdo->prepare("SELECT 1 FROM trips WHERE motorbanca_id=? AND status='Queued'");
         $x->execute([$mid]);
-        if (!$x->fetch()) $pdo->prepare(sprintf($new, ',start_time', 'Queued', ',NOW()'))->execute([$mid]);
+        if (!$x->fetch()) {
+            // The queued time is recorded only for the first boat in line. A boat that joins behind another
+            // queued boat (NEXT TRIP / WAITING) gets its time when the boat ahead of it departs.
+            $o = $pdo->prepare("SELECT COUNT(*) FROM motorbancas WHERE cluster_id=(SELECT cluster_id FROM motorbancas WHERE id=?) AND status='Queued' AND id<>?");
+            $o->execute([$mid, $mid]);
+            if ((int)$o->fetchColumn() === 0) $pdo->prepare(sprintf($new, ',start_time', 'Queued', ',NOW()'))->execute([$mid]);
+            else $pdo->prepare(sprintf($new, '', 'Queued', ''))->execute([$mid]);
+        }
     } elseif ($st === 'Departed') {
         $u = $pdo->prepare("UPDATE trips SET status='Departed', departure_time=NOW() WHERE motorbanca_id=? AND status='Queued'");
         $u->execute([$mid]);
         if (!$u->rowCount()) $pdo->prepare(sprintf($new, ',departure_time', 'Departed', ',NOW()'))->execute([$mid]);
+        // the boat now first in line (the next trip) gets its queued time
+        $f = $pdo->prepare("SELECT m.id FROM motorbancas m WHERE m.cluster_id=(SELECT cluster_id FROM motorbancas WHERE id=?) AND m.status='Queued' ORDER BY m.queued_at, m.id LIMIT 1");
+        $f->execute([$mid]);
+        if ($nid = $f->fetchColumn())
+            $pdo->prepare("UPDATE trips SET start_time=NOW() WHERE motorbanca_id=? AND status='Queued' AND start_time IS NULL")->execute([$nid]);
     }
     $pdo->commit();
 }
