@@ -1275,3 +1275,8 @@ body.nav-open .pills {
 .r-admin .brgy span {
     border-color: var(--ln)
 }
+
+/* an empty cluster keeps the height a boat card would take, so cards look the same with or without a boat on queue */
+.r-admin .mb.empty {
+    min-height: 190px
+}
