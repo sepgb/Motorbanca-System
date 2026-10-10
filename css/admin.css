@@ -1248,3 +1248,30 @@ body.nav-open .pills {
         transition: none
     }
 }
+
+/* cluster header: title + barangays share the same mild warm background, with a tighter gap between them */
+.r-admin .cluster h2 {
+    background: #fbf7f3;
+    padding: 16px 20px 6px
+}
+
+.r-admin .cluster h2:not(:has(+ .brgy)) {
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f4ede7
+}
+
+.r-admin .brgy {
+    background: #fbf7f3;
+    border-bottom: 1px solid #f4ede7;
+    padding: 0 20px 14px;
+    gap: 4px 6px
+}
+
+.r-admin .brgy small {
+    color: var(--mut);
+    line-height: 1.2
+}
+
+.r-admin .brgy span {
+    border-color: var(--ln)
+}

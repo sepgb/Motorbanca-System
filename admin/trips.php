@@ -15,13 +15,12 @@ page_head('Trip History', 'admin');
             <th>Motorbanca</th>
             <th>Cluster</th>
             <th>Passengers</th>
-            <th>Status</th>
             <th>Queued</th>
             <th>Departed</th>
         </tr>
         <?php foreach ($rows as $t) echo "<tr class='trip-row' data-hint='Double-click to see the passengers' data-name='" . e($t['n']) .
             "' data-url='" . BASE . "/admin/passengers.php?trip=" . (int)$t['id'] . "'><td>" . e($t['trip_date']) . "</td><td>" . e($t['n']) . "</td><td>" .
-            e($t['cname']) . "</td><td>{$t['pax']}</td><td>" . e($t['status']) . "</td><td>" . $tm($t['start_time']) . "</td><td>" . $tm($t['departure_time']) . "</td></tr>"; ?>
+            e($t['cname']) . "</td><td>{$t['pax']}</td><td>" . $tm($t['start_time']) . "</td><td>" . $tm($t['departure_time']) . "</td></tr>"; ?>
     </table>
 </div>
 <?php if (!$rows) echo "<p class='muted'>No trips yet.</p>";
