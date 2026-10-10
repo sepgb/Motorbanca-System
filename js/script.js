@@ -18,7 +18,7 @@ setInterval(function () {
   });
 }, 1000);
 
-// Admin header clock: "Sunday, 3 May 2026 - 4.39 PM" (uses the device's own time)
+// Admin header clock: "Sunday, 3 May 2026 - 4:39 PM" (uses the device's own time)
 (function () {
   var d = document.getElementById('clk-date'), t = document.getElementById('clk-time');
   if (!d || !t) return;
@@ -27,7 +27,7 @@ setInterval(function () {
   function tick() {
     var n = new Date(), h = n.getHours();
     d.textContent = D[n.getDay()] + ', ' + n.getDate() + ' ' + M[n.getMonth()] + ' ' + n.getFullYear();
-    t.textContent = ((h % 12) || 12) + '.' + ('0' + n.getMinutes()).slice(-2) + ' ' + (h < 12 ? 'AM' : 'PM');
+    t.textContent = ((h % 12) || 12) + ':' + ('0' + n.getMinutes()).slice(-2) + ' ' + (h < 12 ? 'AM' : 'PM');
   }
   tick(); setInterval(tick, 1000);
 })();
