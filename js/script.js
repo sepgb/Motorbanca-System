@@ -22,8 +22,8 @@ setInterval(function () {
 (function () {
   var d = document.getElementById('clk-date'), t = document.getElementById('clk-time');
   if (!d || !t) return;
-  var D = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    M = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var D = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+      M = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   function tick() {
     var n = new Date(), h = n.getHours();
     d.textContent = D[n.getDay()] + ', ' + n.getDate() + ' ' + M[n.getMonth()] + ' ' + n.getFullYear();
@@ -71,4 +71,38 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     box.querySelector('.go').focus();
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();
+
+// Trip history: double-click a row to see that trip's passengers
+(function () {
+  var box;
+  function build() {
+    box = document.createElement('div');
+    box.className = 'mdl';
+    box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+    box.innerHTML = '<div class="mdl-box wide"><div class="mdl-head"><div><h3></h3><p class="sub"></p></div>' +
+      '<button type="button" class="x" aria-label="Close">&times;</button></div><div class="mdl-body"></div></div>';
+    document.body.appendChild(box);
+    box.addEventListener('click', function (e) { if (e.target === box || e.target.classList.contains('x')) box.classList.remove('open'); });
+  }
+  document.addEventListener('dblclick', function (e) {
+    var r = e.target.closest ? e.target.closest('.trip-row') : null;
+    if (!r) return;
+    if (window.getSelection) window.getSelection().removeAllRanges();
+    if (!box) build();
+    box.querySelector('h3').textContent = r.dataset.name || 'Trip';
+    box.querySelector('.sub').textContent = 'Loading…';
+    box.querySelector('.mdl-body').innerHTML = '';
+    void box.offsetWidth;
+    box.classList.add('open');
+    fetch(r.dataset.url, { credentials: 'same-origin' })
+      .then(function (x) { return x.ok ? x.json() : Promise.reject(); })
+      .then(function (d) {
+        box.querySelector('h3').textContent = d.title;
+        box.querySelector('.sub').textContent = d.sub;
+        box.querySelector('.mdl-body').innerHTML = d.html;   // built and escaped on the server
+      })
+      .catch(function () { box.querySelector('.sub').textContent = 'Could not load the passengers.'; });
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box) box.classList.remove('open'); });
 })();

@@ -354,8 +354,7 @@ body.nav-open .pills {
 
 .r-admin .cluster {
     display: flex;
-    flex-direction: column;
-    min-height: 390px
+    flex-direction: column
 }
 
 .r-admin .cluster .cfoot {
@@ -971,4 +970,72 @@ body.nav-open .pills {
     .mdl-box {
         transition: none
     }
+}
+
+/* Trip history: clickable rows + passenger modal */
+.trip-row {
+    cursor: pointer;
+    user-select: none
+}
+
+.mdl-box.wide {
+    max-width: 600px;
+    text-align: left;
+    padding: 22px 0 10px
+}
+
+.mdl-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0 24px 14px
+}
+
+.mdl-head h3 {
+    margin: 0;
+    font-size: 1.1rem
+}
+
+.mdl .mdl-head .sub {
+    margin: 2px 0 0;
+    font-size: .85rem;
+    color: var(--mut)
+}
+
+.mdl-head .x {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--ln);
+    background: #fff;
+    color: var(--tx);
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .15s
+}
+
+.mdl-head .x:hover {
+    background: #fbf7f3
+}
+
+.mdl-body {
+    max-height: 55vh;
+    overflow: auto;
+    border-top: 1px solid #f4ede7;
+    padding: 0 8px
+}
+
+.mdl-body table {
+    width: 100%;
+    border-collapse: collapse
+}
+
+.mdl-body .none {
+    margin: 0;
+    padding: 28px 16px;
+    text-align: center;
+    color: var(--mut)
 }

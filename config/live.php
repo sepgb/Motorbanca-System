@@ -105,7 +105,7 @@ function set_status($mid, $st)
     if ($st === 'Queued') {            // joining the queue = a new trip (unless one is already waiting)
         $x = $pdo->prepare("SELECT 1 FROM trips WHERE motorbanca_id=? AND status='Queued'");
         $x->execute([$mid]);
-        if (!$x->fetch()) $pdo->prepare(sprintf($new, '', 'Queued', ''))->execute([$mid]);
+        if (!$x->fetch()) $pdo->prepare(sprintf($new, ',start_time', 'Queued', ',NOW()'))->execute([$mid]);
     } elseif ($st === 'Departed') {
         $u = $pdo->prepare("UPDATE trips SET status='Departed', departure_time=NOW() WHERE motorbanca_id=? AND status='Queued'");
         $u->execute([$mid]);
