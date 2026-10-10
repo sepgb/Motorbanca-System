@@ -1287,5 +1287,9 @@ body.nav-open .pills {
     height: 44px;
     object-fit: contain;
     display: block;
-    flex: none
+    flex: none;
+    border-radius: 50%;
+    box-shadow: 0 0 12px 1px rgba(255, 79, 0, .4)
 }
+
+/* glow in the logo's own orange (#ff4f00) */
