@@ -53,65 +53,67 @@ page_head('Passengers', 'operator');
 <div class="optag <?= $tcls ?>" style="margin:2px 0 14px"><?= $tg ?></div>
 <?php $tc = $trip ? trip_crew_get($trip) : null;
 $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)->fetchColumn() : null; ?>
-<?php if ($trip): ?>
-  <div class="card" style="margin-bottom:16px">
-    <h3 style="margin:0 0 8px">Manifest details</h3>
-    <dl class="kv">
-      <dt>Pangalan ng bangka</dt>
-      <dd><?= e($m['motorbanca_name']) ?></dd>
-      <dt>Date</dt>
-      <dd><?= $td ? date('F j, Y', strtotime($td)) : '&mdash;' ?></dd>
-      <dt>Pangalan ng tauhan</dt>
-      <dd><?php if ($tc && $tc['crew']) foreach ($tc['crew'] as $c) echo "<div>" . e($c['name']) . " <span class='muted'>&middot; " . ucwords(strtolower(e($c['position']))) . "</span></div>";
-          else echo '&mdash;'; ?></dd>
-    </dl>
-    <div class="dl-act">
-      <button type="button" class="btn sm ghost" data-pdf="print_crew.php"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
-        </svg><span>Crew list</span></button>
-      <button type="button" class="btn sm" data-pdf="print.php"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
-        </svg><span>Manifest</span></button>
+<div class="mpage">
+  <?php if ($trip): ?>
+    <div class="card mp-details">
+      <h3 style="margin:0 0 8px">Manifest details</h3>
+      <dl class="kv">
+        <dt>Pangalan ng bangka</dt>
+        <dd><?= e($m['motorbanca_name']) ?></dd>
+        <dt>Date</dt>
+        <dd><?= $td ? date('F j, Y', strtotime($td)) : '&mdash;' ?></dd>
+        <dt>Pangalan ng tauhan</dt>
+        <dd><?php if ($tc && $tc['crew']) foreach ($tc['crew'] as $c) echo "<div>" . e($c['name']) . " <span class='muted'>&middot; " . ucwords(strtolower(e($c['position']))) . "</span></div>";
+            else echo '&mdash;'; ?></dd>
+      </dl>
+      <div class="dl-act">
+        <button type="button" class="btn sm ghost" data-pdf="print_crew.php"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+          </svg><span>Crew list</span></button>
+        <button type="button" class="btn sm" data-pdf="print.php"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+          </svg><span>Manifest</span></button>
+      </div>
     </div>
-  </div>
-<?php endif; ?>
-<div class="card" style="margin-bottom:16px"><?php echo count_html($m['pax'], $m['capacity']); ?><p class="muted" style="margin:0">passengers on board</p>
-</div>
-<?php if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
-<?php $showForm = false;
-if (!$trip): ?>
-  <div class="alert bad">No active trip. Go Home and tap New trip.</div>
-<?php elseif (!$open): ?>
-  <div class="alert"><?= $m['status'] === 'Inspection'
-                        ? 'Your boat is <b>FOR INSPECTION</b>. You can add passengers once the PCG approves it and it is ON QUEUE.'
-                        : ($m['status'] === 'Queued'
-                          ? '&#9203; Your boat is <b>' . e($tag) . '</b>. You can add passengers once your boat is ON QUEUE.'
-                          : 'This trip has departed. Go Home and tap New trip for the next one.') ?></div>
-<?php elseif ($full): ?>
-  <div class="alert bad"><b>FULL</b> &mdash; no more passengers can be added.</div>
-<?php else: $showForm = true;
-endif; ?>
-<div<?= $showForm ? ' class="reg"' : '' ?>>
-  <div class="tablewrap">
-    <table>
-      <tr>
-        <th>No.</th>
-        <th>Name</th>
-        <th>Age</th>
-        <th>Barangay</th>
-      </tr>
-      <?php foreach ($pax as $i => $p) echo "<tr><td>" . ($i + 1) . "</td><td>" . e($p['name']) . "</td><td>{$p['age']}</td><td>" . e($p['barangay']) . "</td></tr>"; ?>
-      <?php if (!$pax) echo "<tr><td colspan='4' class='muted' style='text-align:center;padding:22px'>No passengers yet.</td></tr>"; ?>
-    </table>
-  </div>
-  <?php if ($showForm): ?>
-    <form method="post" class="card grid">
-      <h3>Add passenger</h3>
-      <label>Passenger name<input name="name" maxlength="80" autocomplete="off" required></label>
-      <label>Age<input name="age" type="number" inputmode="numeric" min="0" max="120" required></label>
-      <label>Barangay<input name="barangay" maxlength="60" autocomplete="off" required></label>
-      <button class="btn">+ Add passenger</button>
-    </form>
   <?php endif; ?>
+  <div class="card mp-count"><?php echo count_html($m['pax'], $m['capacity']); ?><p class="muted" style="margin:0">passengers on board</p>
   </div>
-  <?php page_foot('operator');
+  <?php if ($err) echo "<div class='alert bad mp-alert'>" . e($err) . "</div>"; ?>
+  <?php $showForm = false;
+  if (!$trip): ?>
+    <div class="alert bad mp-alert">No active trip. Go Home and tap New trip.</div>
+  <?php elseif (!$open): ?>
+    <div class="alert mp-alert"><?= $m['status'] === 'Inspection'
+                                  ? 'Your boat is <b>FOR INSPECTION</b>. You can add passengers once the PCG approves it and it is ON QUEUE.'
+                                  : ($m['status'] === 'Queued'
+                                    ? '&#9203; Your boat is <b>' . e($tag) . '</b>. You can add passengers once your boat is ON QUEUE.'
+                                    : 'This trip has departed. Go Home and tap New trip for the next one.') ?></div>
+  <?php elseif ($full): ?>
+    <div class="alert bad mp-alert"><b>FULL</b> &mdash; no more passengers can be added.</div>
+  <?php else: $showForm = true;
+  endif; ?>
+  <div<?= $showForm ? ' class="reg"' : '' ?>>
+    <div class="tablewrap">
+      <table>
+        <tr>
+          <th>No.</th>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Barangay</th>
+        </tr>
+        <?php foreach ($pax as $i => $p) echo "<tr><td>" . ($i + 1) . "</td><td>" . e($p['name']) . "</td><td>{$p['age']}</td><td>" . e($p['barangay']) . "</td></tr>"; ?>
+        <?php if (!$pax) echo "<tr><td colspan='4' class='muted' style='text-align:center;padding:22px'>No passengers yet.</td></tr>"; ?>
+      </table>
+    </div>
+    <?php if ($showForm): ?>
+      <form method="post" class="card grid">
+        <h3>Add passenger</h3>
+        <label>Passenger name<input name="name" maxlength="80" autocomplete="off" required></label>
+        <label>Age<input name="age" type="number" inputmode="numeric" min="0" max="120" required></label>
+        <label>Barangay<input name="barangay" maxlength="60" autocomplete="off" required></label>
+        <button class="btn">+ Add passenger</button>
+      </form>
+    <?php endif; ?>
+</div>
+</div>
+<?php page_foot('operator');

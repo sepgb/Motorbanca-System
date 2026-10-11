@@ -20,7 +20,7 @@ function count_html($p, $c)
     $full = $p >= $c;
     $w = $c ? min(100, round($p / $c * 100)) : 0;
     return "<div class='count" . ($full ? ' full' : '') . "'><b>$p</b><span>/ $c</span>" .
-        ($full ? "<em>🔴 FULL</em>" : '') . "</div><div class='bar'><i style='width:$w%'></i></div>";
+        "</div><div class='bar'><i style='width:$w%'></i></div>";
 }
 // Passengers shown for a boat = those on its latest (non-cancelled) trip.
 const PAX_SQL = "IF(m.status='Not Queued',0,(SELECT COUNT(*) FROM passengers p WHERE p.trip_id=(SELECT MAX(t.id) FROM trips t WHERE t.motorbanca_id=m.id AND t.status<>'Cancelled')))";

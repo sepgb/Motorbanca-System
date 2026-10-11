@@ -1818,3 +1818,64 @@ body.nav-open .pills {
     outline: 3px solid #f26b1d;
     outline-offset: 3px
 }
+
+/* Passengers page: stacked cards; on phones/tablets the order is passengers on board, add passenger, manifest details, list */
+.mpage {
+    display: flex;
+    flex-direction: column;
+    gap: 16px
+}
+
+.mpage .alert {
+    margin: 0
+}
+
+@media(max-width:1199px) {
+    .mpage>.reg {
+        display: contents
+    }
+
+    .mp-count {
+        order: 1
+    }
+
+    .mp-alert {
+        order: 2
+    }
+
+    .mpage .reg>.card,
+    .mpage>form.card {
+        order: 3
+    }
+
+    .mp-details {
+        order: 4
+    }
+
+    .mpage .tablewrap {
+        order: 5
+    }
+}
+
+.r-admin .lead {
+    line-height: 1.6;
+    font-size: .95rem;
+    max-width: 62ch;
+    margin: 4px 0 20px
+}
+
+@media(max-width:699px) {
+    .r-admin .lead {
+        line-height: 1.35;
+        font-size: .9rem;
+        margin: 2px 0 16px
+    }
+}
+
+@media(max-width:699px) {
+    body.r-admin .lead {
+        line-height: 1.2 !important;
+        font-size: .85rem !important;
+        margin: 0 0 14px !important
+    }
+}
