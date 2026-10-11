@@ -1343,7 +1343,17 @@ body.nav-open .pills {
         margin-left: auto
     }
 
+    .atop .tools .ibtn[href*="logout"] {
+        display: none
+    }
+
+    .atop {
+        display: none
+    }
+
+    /* nothing left in it on phones/tablets: the bottom bar has the nav + log out */
     .r-admin .main {
+        padding-top: max(24px, env(safe-area-inset-top));
         padding-bottom: 104px
     }
 
@@ -1409,4 +1419,22 @@ body.nav-open .pills {
         padding-left: 20px;
         padding-right: 20px
     }
+}
+
+.mdl-ic.red {
+    background: #fee2e2;
+    color: #dc2626
+}
+
+.mdl-act .go.red {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: 0 10px 20px -8px #dc262699
+}
+
+.mdl-act .go.red:hover {
+    box-shadow: 0 14px 26px -8px #dc2626cc
+}
+
+.mdl-act .go.red:focus-visible {
+    outline-color: #dc2626
 }

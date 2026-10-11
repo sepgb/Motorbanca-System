@@ -44,7 +44,22 @@ JS;
         ];
         echo "<nav class='btabs' aria-label='Main'>";
         foreach ($links as $f => $l) echo "<a href='$b/admin/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($tabIco[$f]) . "</i><span>$l</span></a>";
-        echo "</nav><main class='main'>";
+        echo "<a href='$b/logout.php' class='lo'><i>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</i><span>Log out</span></a></nav>";
+        // confirm before logging out (top button and bottom tab)
+        echo "<div class='mdl' id='lo-mdl' role='dialog' aria-modal='true' aria-labelledby='lo-t'><div class='mdl-box'><div class='mdl-ic red'>" .
+            ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</div><h3 id='lo-t'>Log out?</h3><p>You will need to log in again to use the admin pages.</p>" .
+            "<div class='mdl-act'><button type='button' class='no'>Stay</button><button type='button' class='go red'>Log out</button></div></div></div>";
+        echo <<<'JS'
+<script>(function(){var m=document.getElementById('lo-mdl'),url=null,from=null;if(!m)return;
+function close(){m.classList.remove('open');if(from)from.focus()}
+document.addEventListener('click',function(e){var a=e.target.closest('a[href$="logout.php"]');if(a){e.preventDefault();url=a.href;from=a;m.classList.add('open');m.querySelector('.no').focus()}});
+m.querySelector('.no').addEventListener('click',close);
+m.querySelector('.go').addEventListener('click',function(){location.href=url});
+m.addEventListener('click',function(e){if(e.target===m)close()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList.contains('open'))close()});
+})();</script>
+JS;
+        echo "<main class='main'>";
     } elseif ($role === 'operator') {
         echo "<header class='topbar'><b>🚤 Operator</b><a href='$b/logout.php'>Logout</a></header><main class='main'>";
     } else {
