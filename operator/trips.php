@@ -36,6 +36,8 @@ foreach ($rows as $r) {
     }
     $tree[$y]['kids'][$mo]['kids'][$wk]['kids'][$d]['rows'][] = $r;
 }
+foreach ([(int)date('Y'), (int)date('Y') + 1] as $yy) if (!isset($tree[$yy])) $tree[$yy] = ['trips' => 0, 'pax' => 0, 'kids' => []];   // this year and next year are always shown
+ksort($tree);   // years side by side, oldest on the left
 function th_sum($n)
 {
     return "<span class='th-sum'>" . $n['trips'] . ' trip' . ($n['trips'] == 1 ? '' : 's') . ' &middot; ' . $n['pax'] . ' passenger' . ($n['pax'] == 1 ? '' : 's') . "</span>";
@@ -45,7 +47,7 @@ $tm = fn($v) => $v ? date('g:i A', strtotime($v)) : '&mdash;';
 page_head('Trip History', 'operator');
 ?>
 <h1>Trip history</h1>
-<?php if (!$tree): ?>
+<?php if (!$rows): ?>
     <div class="card">
         <p class="muted" style="margin:0">No trips yet.</p>
     </div>
@@ -55,6 +57,7 @@ page_head('Trip History', 'operator');
         foreach ($tree as $y => $yn): ?>
             <details class="th th-y">
                 <summary><?= $chev ?><b><?= e($y) ?></b><?= th_sum($yn) ?></summary>
+                <?php if (!$yn['kids']) echo '<p class="muted th-none">No trips yet.</p>'; ?>
                 <?php $fm = true;
                 foreach ($yn['kids'] as $mo => $mn): ?>
                     <details class="th th-m">

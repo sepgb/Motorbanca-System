@@ -2118,8 +2118,8 @@ body.nav-open .pills {
 
 @media(max-width:999px) {
 
-    .th-t th:last-child,
-    .th-act {
+    .r-operator .th-t th:last-child,
+    .r-operator .th-act {
         display: none
     }
 
@@ -2369,4 +2369,50 @@ body.nav-open .pills {
     .pub-h2 {
         font-size: 1.2rem
     }
+}
+
+/* years side by side, same width, centred */
+.thx {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    max-width: 1000px;
+    margin: 0 auto;
+    align-items: start
+}
+
+.thx>.th-y:only-child {
+    grid-column: 1/-1;
+    width: calc(50% - 8px);
+    justify-self: center
+}
+
+@media(max-width:699px) {
+    .thx {
+        grid-template-columns: minmax(0, 1fr)
+    }
+
+    .thx>.th-y:only-child {
+        width: auto
+    }
+}
+
+.th-none {
+    margin: 12px 0 2px 32px !important;
+    font-size: .9rem
+}
+
+/* trip history: full width, years side by side */
+.thx {
+    max-width: none !important;
+    margin: 0 !important
+}
+
+.thx>.th-y:only-child {
+    width: calc(50% - 8px);
+    justify-self: start
+}
+
+.trip-row {
+    touch-action: manipulation
 }
