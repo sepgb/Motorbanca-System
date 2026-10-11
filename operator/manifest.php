@@ -51,7 +51,7 @@ page_head('Passengers', 'operator');
 ?>
 <h1><?= e($m['motorbanca_name']) ?></h1>
 <div class="optag <?= $tcls ?>" style="margin:2px 0 14px"><?= $tg ?></div>
-<div class="card" style="margin-bottom:16px"><?php echo count_html($m['pax'], $m['capacity']); ?><p class="muted" style="margin:0">passengers on board &middot; capacity <?= (int)$m['capacity'] ?></p>
+<div class="card" style="margin-bottom:16px"><?php echo count_html($m['pax'], $m['capacity']); ?><p class="muted" style="margin:0">passengers on board</p>
 </div>
 <?php if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
 <?php $showForm = false;

@@ -112,7 +112,7 @@ function op_card($m)
 {
     [$tag, $cls, $pos] = op_tag($m);
     echo "<div class='optag $cls'>$tag</div>" . count_html($m['pax'], $m['capacity']) .
-        "<p class='muted'>passengers on board &middot; capacity " . (int)$m['capacity'] . "</p>";
+        "<p class='muted'>passengers on board</p>";
     if ($pos !== null && $pos > 0) echo "<p class='muted' style='margin-top:10px'>You can add passengers once you are ON QUEUE.</p>";
 }
 // The ONLY place a status changes: keeps motorbanca + trip in sync.

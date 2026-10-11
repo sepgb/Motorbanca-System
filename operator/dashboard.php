@@ -23,8 +23,10 @@ page_head('Home', 'operator');
       <input type="hidden" name="action" value="new">
       <button class="btn big" style="width:100%"><?= $idle ? 'New trip' : 'Open passenger list' ?></button>
     </form>
-    <?php if ($m['status'] === 'Queued'): ?>
-      <div class="alert ok" style="margin:16px 0 0">&#9203; Your boat is on the queue. The PCG will mark it as departed.</div>
+    <?php if ($m['status'] === 'Queued'):
+      $etd = null;
+      foreach (live_rows() as $r) if ($r['id'] == $m['id']) $etd = $r['etd'] ?? null; ?>
+      <div class="alert ok" style="margin:16px 0 0">Your boat is on the queue<?= $etd ? ' until <b>' . e($etd) . '</b>' : '' ?>.</div>
     <?php endif; ?>
   </section>
 </div>
