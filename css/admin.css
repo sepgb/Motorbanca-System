@@ -2588,3 +2588,182 @@ body.r-public .main>.lead {
         animation: none
     }
 }
+
+/* track my ride */
+.trk {
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px
+}
+
+.trk-card {
+    display: grid;
+    gap: 14px;
+    padding: 22px 20px
+}
+
+.trk-card h3 {
+    margin: 0
+}
+
+.trk-card .muted {
+    margin: -6px 0 2px;
+    font-size: .88rem;
+    line-height: 1.45
+}
+
+.trk-card label {
+    display: grid;
+    gap: 6px;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--tx)
+}
+
+.trk-card input,
+.trk-card select {
+    height: 48px;
+    border-radius: 14px;
+    font-size: 1rem
+}
+
+.trk-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 12px
+}
+
+.trk-card .alert {
+    margin: 0
+}
+
+.trk-found {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: #fff0e5
+}
+
+.trk-found b {
+    display: block
+}
+
+.trk-found span {
+    display: block;
+    color: var(--mut);
+    font-size: .85rem
+}
+
+.trk-link {
+    border: 0;
+    background: none;
+    color: var(--mut);
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+    justify-self: center;
+    padding: 2px
+}
+
+.trk-live {
+    display: grid;
+    gap: 12px
+}
+
+.trk-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px
+}
+
+.trk-info small {
+    display: block;
+    color: var(--mut);
+    font-size: .78rem;
+    margin-bottom: 2px
+}
+
+.trk-info b {
+    font-size: 1.15rem
+}
+
+.trk-info div:last-child {
+    text-align: right
+}
+
+.trk-map {
+    height: min(60vh, 460px);
+    min-height: 320px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--ln);
+    box-shadow: 0 14px 30px -18px #1f1a1726
+}
+
+.trk-act {
+    display: flex;
+    gap: 10px
+}
+
+.trk-act .btn {
+    flex: 1
+}
+
+.trk-note {
+    font-size: .8rem;
+    text-align: center;
+    margin: 2px 0 0
+}
+
+.trk-pin {
+    background: none;
+    border: 0
+}
+
+@media(min-width:1000px) {
+    .trk {
+        max-width: 760px
+    }
+}
+
+/* the hidden attribute must win over the display rules above (one step at a time) */
+.trk [hidden] {
+    display: none !important
+}
+
+.trk-sec a {
+    font-weight: 700;
+    color: inherit;
+    text-decoration: underline
+}
+
+
+/* distance + map in one card */
+.trk-box {
+    padding: 0 !important;
+    overflow: hidden;
+    display: block
+}
+
+.trk-box .trk-info {
+    padding: 16px 20px;
+    border: 0;
+    box-shadow: none;
+    background: none
+}
+
+.trk-box #ts {
+    margin: 0 16px 12px
+}
+
+.trk-box .trk-map {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border-top: 1px solid #f4ede7
+}
