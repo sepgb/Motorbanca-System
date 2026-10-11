@@ -10,12 +10,12 @@ function asset($path)
 function page_head($title, $role = 'public')
 {
     $b = BASE;
-    $extra = in_array($role, ['admin', 'operator'], true)
+    $extra = in_array($role, ['admin', 'operator', 'public'], true)
         ? "<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin><link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap' media='print' onload=\"this.media='all'\"><link rel='stylesheet' href='" . asset('css/admin.css') . "'>" : '';
     echo "<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
 <title>" . e($title) . " | Motorbanca Monitor</title><link rel='stylesheet' href='" . asset('css/style.css') . "'>$extra</head>
-<body class='" . ($role === 'operator' ? 'r-admin r-operator enter' : 'r-' . $role . ($role === 'admin' ? ' enter' : '')) . "'>";
+<body class='" . ($role === 'public' ? 'r-admin r-public enter' : ($role === 'operator' ? 'r-admin r-operator enter' : 'r-' . $role . ($role === 'admin' ? ' enter' : ''))) . "'>";
     if ($role === 'admin' || $role === 'operator') {
         $me = basename($_SERVER['PHP_SELF']);
         $dir = $role === 'operator' ? 'operator' : 'admin';
@@ -65,7 +65,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList
 JS;
         echo "<main class='main'>";
     } else {
-        echo "<header class='topbar'><b>⚓ Binangonan Port — Live Boat Board</b><a href='$b/login.php'>Staff login</a></header><main class='main'>";
+        echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'><img src='$b/admin/logo.webp' alt='Philippine Coast Guard' width='44' height='44'><span>BATIS</span></a>
+<div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header><main class='main'><h1 class='pub-h1'><i class='dot'></i>Live queue</h1>";
     }
 }
 function page_foot($role = 'public')

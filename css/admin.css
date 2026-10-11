@@ -2201,3 +2201,125 @@ body.nav-open .pills {
 .dep-card .btn {
     min-width: 200px
 }
+
+/* public passenger board: same look as the admin queue, with a small header and no nav */
+.stafflink {
+    display: inline-flex;
+    align-items: center;
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 999px;
+    background: var(--o);
+    color: #fff !important;
+    font-weight: 700;
+    font-size: .88rem;
+    text-decoration: none;
+    box-shadow: 0 6px 14px -4px #f26b1d99;
+    white-space: nowrap
+}
+
+.stafflink:hover {
+    filter: brightness(1.05)
+}
+
+.r-public .atop {
+    display: flex !important;
+    justify-content: space-between;
+    grid-template-columns: none
+}
+
+.r-public .atop .logo,
+.r-public .logo span {
+    display: inline-flex
+}
+
+.r-public .atop .logo {
+    display: flex
+}
+
+.r-public .main {
+    padding-bottom: 48px
+}
+
+.pub-lead {
+    margin: 0 0 18px
+}
+
+@media(max-width:699px) {
+    .r-public .atop {
+        padding: 12px 16px
+    }
+
+    .stafflink {
+        height: 38px;
+        padding: 0 16px
+    }
+}
+
+/* phones: exactly like the admin queue (no header); staff login moves to the bottom */
+.pub-staff {
+    display: none
+}
+
+@media(max-width:999px) {
+    .r-public .atop {
+        display: none !important
+    }
+
+    .r-public .main {
+        padding: max(24px, env(safe-area-inset-top)) 16px 40px
+    }
+
+    .pub-staff {
+        display: block;
+        margin: 26px auto 0;
+        width: max-content;
+        color: var(--mut);
+        font-size: .85rem;
+        font-weight: 600;
+        text-decoration: none
+    }
+}
+
+@media(min-width:700px) and (max-width:999px) {
+    .r-public .main {
+        padding-left: 28px;
+        padding-right: 28px
+    }
+}
+
+/* public board: works whatever the page file contains */
+.pub-h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px
+}
+
+.r-public .main>p.muted {
+    display: none
+}
+
+.r-public .main>[data-live] {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: minmax(0, 1fr)
+}
+
+@media(min-width:760px) {
+    .r-public .main>[data-live] {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+}
+
+@media(min-width:1100px) {
+    .r-public .main>[data-live] {
+        grid-template-columns: repeat(3, minmax(0, 1fr))
+    }
+}
+
+.r-public .main>[data-live] .cluster {
+    margin: 0;
+    display: flex;
+    flex-direction: column
+}
