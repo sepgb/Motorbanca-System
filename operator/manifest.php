@@ -51,6 +51,20 @@ page_head('Passengers', 'operator');
 ?>
 <h1><?= e($m['motorbanca_name']) ?></h1>
 <div class="optag <?= $tcls ?>" style="margin:2px 0 14px"><?= $tg ?></div>
+<?php if (!$trip && !$err && ($m['status'] === 'Departed' || next_trip_at($m['id']))): $wait = next_trip_at($m['id']); ?>
+  <div class="card dep-card">
+    <div class="dep-ic"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 17l2 3h14l2-3H3z" />
+        <path d="M12 3v10M12 5l6 8H6" />
+      </svg></div>
+    <h2>Trip departed</h2>
+    <p>Your trip has departed. The manifest are saved in Trip History.</p>
+    <?php if ($wait): ?><div class="dep-wait">New trip available from <b><?= e($wait) ?></b></div><?php endif; ?>
+    <a class="btn" href="trips.php">Open Trip History</a>
+  </div>
+<?php page_foot('operator');
+  exit;
+endif; ?>
 <?php $tc = $trip ? trip_crew_get($trip) : null;
 $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)->fetchColumn() : null; ?>
 <div class="mpage">
@@ -59,7 +73,7 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
   <?php if ($err) echo "<div class='alert bad mp-alert'>" . e($err) . "</div>"; ?>
   <?php $showForm = false;
   if (!$trip): ?>
-    <div class="alert mp-alert"><?= $m['status'] === 'Departed' ? 'Your trip has departed. The manifest and passengers are saved in Trip History.' : 'No active trip. Go Home and tap New trip.' ?></div>
+    <div class="alert mp-alert">No active trip. Go Home and tap New trip.</div>
   <?php elseif (!$open): ?>
     <div class="alert mp-alert"><?= $m['status'] === 'Inspection'
                                   ? 'Your boat is <b>FOR INSPECTION</b>. You can add passengers once the PCG approves it and it is ON QUEUE.'

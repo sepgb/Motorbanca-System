@@ -18,11 +18,11 @@ page_head('Home', 'operator');
     <div data-live="<?= BASE ?>/api/live.php?v=op"><?php op_card($m); ?></div>
   </section>
   <section class="card">
-    <h3><?= $idle ? 'Ready for a trip?' : 'Passenger list' ?></h3>
-    <p class="muted" style="margin:0 0 16px"><?= $idle ? ($wait ? 'Your last trip has departed.' : 'Join the queue to start a new trip.') : 'Add and view the passengers on your trip.' ?></p>
+    <h3><?= $idle ? ($wait ? 'Trip departed' : 'Ready for a trip?') : 'Passenger list' ?></h3>
+    <?php if (!$wait): ?><p class="muted" style="margin:0 0 16px"><?= $idle ? 'Join the queue to start a new trip.' : 'Add and view the passengers on your trip.' ?></p><?php endif; ?>
     <?php if ($wait): ?>
-      <span class="btn big" style="width:100%;opacity:.5;cursor:not-allowed" aria-disabled="true">New trip</span>
-      <div class="alert" style="margin:16px 0 0">Your boat has departed. You can start a new trip at <b><?= e($wait) ?></b>.</div>
+      <div class="dep-wait big"><span>Your boat has departed. You can start a new trip at least</span><b><?= e($wait) ?></b></div>
+      <button type="button" class="btn big" style="width:100%;opacity:.5;cursor:not-allowed;box-shadow:none" disabled>New trip</button>
     <?php else: ?>
       <a class="btn big" style="width:100%" href="<?= $idle ? 'crew.php' : 'manifest.php' ?>"><?= $idle ? 'New trip' : 'Open passenger list' ?></a>
     <?php endif; ?>
