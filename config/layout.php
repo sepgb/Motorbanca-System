@@ -34,7 +34,17 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){set
 })();</script>
 JS;
         echo "</nav>$pillJs<div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span>
-<a class='ibtn' href='$b/logout.php' title='Log out' aria-label='Log out'>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</a></div></header><main class='main'>";
+<a class='ibtn' href='$b/logout.php' title='Log out' aria-label='Log out'>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</a></div></header>";
+        // phone / tablet: sticky bottom tab bar (the top pills are hidden below 1000px)
+        $tabIco = [
+            'dashboard.php' => '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+            'motorbancas.php' => '<path d="M12 5v14M5 12h14"/>',
+            'queue.php' => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+            'trips.php' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+        ];
+        echo "<nav class='btabs' aria-label='Main'>";
+        foreach ($links as $f => $l) echo "<a href='$b/admin/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($tabIco[$f]) . "</i><span>$l</span></a>";
+        echo "</nav><main class='main'>";
     } elseif ($role === 'operator') {
         echo "<header class='topbar'><b>🚤 Operator</b><a href='$b/logout.php'>Logout</a></header><main class='main'>";
     } else {
