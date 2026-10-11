@@ -47,37 +47,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $open) {
 $pax = $trip ? db()->query("SELECT * FROM passengers WHERE trip_id=" . (int)$trip . " ORDER BY id")->fetchAll() : [];
 $full = $m['pax'] >= $m['capacity'];
 page_head('Passengers', 'operator');
+[$tg, $tcls] = op_tag($m);
 ?>
-<div class="card hero">
-  <h1><?= e($m['motorbanca_name']) ?> <?= badge($m['status']) ?></h1><?php echo count_html($m['pax'], $m['capacity']); ?>
+<h1><?= e($m['motorbanca_name']) ?></h1>
+<div class="optag <?= $tcls ?>" style="margin:2px 0 14px"><?= $tg ?></div>
+<div class="card" style="margin-bottom:16px"><?php echo count_html($m['pax'], $m['capacity']); ?><p class="muted" style="margin:0">passengers on board &middot; capacity <?= (int)$m['capacity'] ?></p>
 </div>
 <?php if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
-<?php if (!$trip): ?>
-  <div class="alert bad">No active trip. Go Home and tap NEW TRIP.</div>
+<?php $showForm = false;
+if (!$trip): ?>
+  <div class="alert bad">No active trip. Go Home and tap New trip.</div>
 <?php elseif (!$open): ?>
   <div class="alert"><?= $m['status'] === 'Queued'
-                        ? '⏳ Your boat is <b>' . e($tag) . '</b>. You can add passengers once your boat is ON QUEUE.'
-                        : 'This trip has departed. Go Home and tap NEW TRIP for the next one.' ?></div>
+                        ? '&#9203; Your boat is <b>' . e($tag) . '</b>. You can add passengers once your boat is ON QUEUE.'
+                        : 'This trip has departed. Go Home and tap New trip for the next one.' ?></div>
 <?php elseif ($full): ?>
-  <div class="alert bad"><b>FULL</b> — no more passengers can be added.</div>
-<?php else: ?>
-  <form method="post" class="card grid">
-    <label>Passenger name<input name="name" maxlength="80" autocomplete="off" required></label>
-    <label>Age<input name="age" type="number" inputmode="numeric" min="0" max="120" required></label>
-    <label>Barangay<input name="barangay" maxlength="60" autocomplete="off" required></label>
-    <button class="btn">+ Add passenger</button>
-  </form>
-<?php endif; ?>
-<div class="tablewrap">
-  <table>
-    <tr>
-      <th>No.</th>
-      <th>Name</th>
-      <th>Age</th>
-      <th>Barangay</th>
-    </tr>
-    <?php foreach ($pax as $i => $p) echo "<tr><td>" . ($i + 1) . "</td><td>" . e($p['name']) . "</td><td>{$p['age']}</td><td>" . e($p['barangay']) . "</td></tr>"; ?>
-  </table>
-</div>
-<?php if (!$pax) echo "<p class='muted'>No passengers yet.</p>";
-page_foot('operator');
+  <div class="alert bad"><b>FULL</b> &mdash; no more passengers can be added.</div>
+<?php else: $showForm = true;
+endif; ?>
+<div<?= $showForm ? ' class="reg"' : '' ?>>
+  <div class="tablewrap">
+    <table>
+      <tr>
+        <th>No.</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Barangay</th>
+      </tr>
+      <?php foreach ($pax as $i => $p) echo "<tr><td>" . ($i + 1) . "</td><td>" . e($p['name']) . "</td><td>{$p['age']}</td><td>" . e($p['barangay']) . "</td></tr>"; ?>
+      <?php if (!$pax) echo "<tr><td colspan='4' class='muted' style='text-align:center;padding:22px'>No passengers yet.</td></tr>"; ?>
+    </table>
+  </div>
+  <?php if ($showForm): ?>
+    <form method="post" class="card grid">
+      <h3>Add passenger</h3>
+      <label>Passenger name<input name="name" maxlength="80" autocomplete="off" required></label>
+      <label>Age<input name="age" type="number" inputmode="numeric" min="0" max="120" required></label>
+      <label>Barangay<input name="barangay" maxlength="60" autocomplete="off" required></label>
+      <button class="btn">+ Add passenger</button>
+    </form>
+  <?php endif; ?>
+  </div>
+  <?php page_foot('operator');

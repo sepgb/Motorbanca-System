@@ -7,18 +7,25 @@ if (!$m) {
   exit;
 }
 $idle = in_array($m['status'], ['Not Queued', 'Departed'], true);
-page_head('Operator', 'operator');
+page_head('Home', 'operator');
 ?>
-<div class="card hero">
-  <h1><?= e($m['motorbanca_name']) ?></h1>
-  <p><?= e($m['cluster']) ?> · Owner: <?= e($m['owner_name']) ?></p>
-  <div data-live="<?= BASE ?>/api/live.php?v=op"><?php op_card($m); ?></div>
+<h1><?= e($m['motorbanca_name']) ?></h1>
+<p class="lead"><?= e($m['cluster']) ?> &middot; Owner: <?= e($m['owner_name']) ?></p>
+<div class="opgrid">
+  <section class="card">
+    <h3>Boat status</h3>
+    <div data-live="<?= BASE ?>/api/live.php?v=op"><?php op_card($m); ?></div>
+  </section>
+  <section class="card">
+    <h3><?= $idle ? 'Ready for a trip?' : 'Passenger list' ?></h3>
+    <p class="muted" style="margin:0 0 16px"><?= $idle ? 'Join the queue to start a new trip.' : 'Add and view the passengers on your trip.' ?></p>
+    <form method="post" action="trip.php">
+      <input type="hidden" name="action" value="new">
+      <button class="btn big" style="width:100%"><?= $idle ? 'New trip' : 'Open passenger list' ?></button>
+    </form>
+    <?php if ($m['status'] === 'Queued'): ?>
+      <div class="alert ok" style="margin:16px 0 0">&#9203; Your boat is on the queue. The PCG will mark it as departed.</div>
+    <?php endif; ?>
+  </section>
 </div>
-<form method="post" action="trip.php">
-  <input type="hidden" name="action" value="new">
-  <button class="btn big"><?= $idle ? 'NEW TRIP' : 'OPEN PASSENGER LIST' ?></button>
-</form>
-<?php if ($m['status'] === 'Queued'): ?>
-  <div class="alert">⏳ Your boat is on the queue. The PCG will mark it as departed.</div>
-<?php endif;
-page_foot('operator');
+<?php page_foot('operator');

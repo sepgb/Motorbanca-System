@@ -4,25 +4,22 @@ require_once __DIR__ . '/live.php';
 function page_head($title, $role = 'public')
 {
     $b = BASE;
-    $extra = $role === 'admin'
+    $extra = in_array($role, ['admin', 'operator'], true)
         ? "<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin><link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap' media='print' onload=\"this.media='all'\"><link rel='stylesheet' href='$b/css/admin.css'>" : '';
     echo "<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
 <title>" . e($title) . " | Motorbanca Monitor</title><link rel='stylesheet' href='$b/css/style.css'>$extra</head>
-<body class='r-$role" . ($role === 'admin' ? ' enter' : '') . "'>";
-    if ($role === 'admin') {
+<body class='" . ($role === 'operator' ? 'r-admin r-operator enter' : 'r-' . $role . ($role === 'admin' ? ' enter' : '')) . "'>";
+    if ($role === 'admin' || $role === 'operator') {
         $me = basename($_SERVER['PHP_SELF']);
-        $links = [
-            'dashboard.php' => 'Dashboard',
-            'motorbancas.php' => 'Register',
-            'queue.php' => 'Queue',
-            'trip' . 's.php' => 'Trip History'
-        ];
+        $dir = $role === 'operator' ? 'operator' : 'admin';
+        $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers']
+            : ['dashboard.php' => 'Dashboard', 'motorbancas.php' => 'Register', 'queue.php' => 'Queue', 'trip' . 's.php' => 'Trip History'];
         $logo = "<img src='$b/admin/logo.webp' alt='Philippine Coast Guard' width='44' height='44'>";
-        echo "<header class='atop'><a class='logo' href='$b/admin/dashboard.php'>$logo<span>Port Control</span></a>
+        echo "<header class='atop'><a class='logo' href='$b/$dir/dashboard.php'>$logo<span>Port Control</span></a>
 <button class='ibtn a-burger' aria-label='Menu' onclick=\"document.body.classList.toggle('nav-open')\">" . ico('<path d="M4 7h16M4 12h16M4 17h16"/>') . "</button>
 <nav class='pills'><span class='pill-bg'></span>";
-        foreach ($links as $f => $l) echo "<a href='$b/admin/$f'" . ($f === $me ? " class='on'" : '') . ">$l</a>";
+        foreach ($links as $f => $l) echo "<a href='$b/$dir/$f'" . ($f === $me ? " class='on'" : '') . ">$l</a>";
         $pillJs = <<<'JS'
 <script>(function(){var n=document.querySelector('.pills'),b=n&&n.querySelector('.pill-bg'),c=n&&n.querySelector('a.on');if(!b||!c)return;
 function p(a,t){b.style.transition=t?'':'none';b.style.width=a.offsetWidth+'px';b.style.transform='translateX('+a.offsetLeft+'px)';if(!t){void b.offsetWidth;b.style.transition='';}}
@@ -39,11 +36,12 @@ JS;
         $tabIco = [
             'dashboard.php' => '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
             'motorbancas.php' => '<path d="M12 5v14M5 12h14"/>',
+            'manifest.php' => '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.6a3.5 3.5 0 010 6.8M18 14.3c2.2.7 3.5 2.6 3.5 5.2"/>',
             'queue.php' => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
             'trips.php' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
         ];
         echo "<nav class='btabs' aria-label='Main'>";
-        foreach ($links as $f => $l) echo "<a href='$b/admin/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($tabIco[$f]) . "</i><span>$l</span></a>";
+        foreach ($links as $f => $l) echo "<a href='$b/$dir/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($tabIco[$f]) . "</i><span>$l</span></a>";
         echo "<a href='$b/logout.php' class='lo'><i>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</i><span>Log out</span></a></nav>";
         // confirm before logging out (top button and bottom tab)
         echo "<div class='mdl' id='lo-mdl' role='dialog' aria-modal='true' aria-labelledby='lo-t'><div class='mdl-box'><div class='mdl-ic red'>" .
@@ -60,8 +58,6 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList
 })();</script>
 JS;
         echo "<main class='main'>";
-    } elseif ($role === 'operator') {
-        echo "<header class='topbar'><b>🚤 Operator</b><a href='$b/logout.php'>Logout</a></header><main class='main'>";
     } else {
         echo "<header class='topbar'><b>⚓ Binangonan Port — Live Boat Board</b><a href='$b/login.php'>Staff login</a></header><main class='main'>";
     }
@@ -70,8 +66,5 @@ function page_foot($role = 'public')
 {
     $b = BASE;
     echo "</main>";
-    if ($role === 'operator')
-        echo "<nav class='bottomnav'><a href='$b/operator/dashboard.php'>🏠<br>Home</a>
-              <a href='$b/operator/manifest.php'>📋<br>Passengers</a><a href='$b/logout.php'>🚪<br>Logout</a></nav>";
     echo "<script src='$b/js/script.js'></script></body></html>";
 }

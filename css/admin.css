@@ -1438,3 +1438,60 @@ body.nav-open .pills {
 .mdl-act .go.red:focus-visible {
     outline-color: #dc2626
 }
+
+/* operator pages */
+.opgrid {
+    display: grid;
+    gap: 16px;
+    max-width: 900px
+}
+
+@media(min-width:800px) {
+    .opgrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+}
+
+.opgrid .card h3 {
+    margin-bottom: 10px
+}
+
+.optag {
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    line-height: 1.2
+}
+
+.optag.g {
+    color: var(--tagc)
+}
+
+.optag.o {
+    color: var(--od)
+}
+
+.optag.b {
+    color: var(--depc)
+}
+
+.optag.n {
+    color: var(--mut)
+}
+
+.opgrid .optag {
+    margin-bottom: 2px
+}
+
+.r-operator .count {
+    margin-top: 10px
+}
+
+.r-operator .card h3+form,
+.r-operator .card.grid h3 {
+    margin-bottom: 2px
+}
+
+.r-operator .tablewrap {
+    overflow-x: auto
+}

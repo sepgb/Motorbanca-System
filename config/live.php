@@ -93,16 +93,27 @@ function my_mb()
     $s->execute([$_SESSION['mid'] ?? 0]);
     return $s->fetch();
 }
+// Operator: the boat's own state as a coloured label (same look as the admin cards).
+function op_tag($m)
+{
+    $tag = $m['status'] === 'Departed' ? 'DEPARTED' : 'NOT QUEUED';
+    $pos = null;
+    if ($m['status'] === 'Queued') {
+        [$dep, $q] = split_cluster(live_rows(), $m['cluster_id']);
+        foreach ($q as $i => $r) if ($r['id'] == $m['id']) {
+            $tag = tag_for((bool)$dep, $i);
+            $pos = $i + ($dep ? 1 : 0);
+        }
+    }
+    $cls = $tag === 'ON QUEUE' ? 'g' : ($tag === 'DEPARTED' ? 'b' : (in_array($tag, ['NEXT TRIP', 'WAITING'], true) ? 'o' : 'n'));
+    return [$tag, $cls, $pos];
+}
 function op_card($m)
 {
-    echo "<div class='row'>" . badge($m['status']) . "</div>" . count_html($m['pax'], $m['capacity']) .
-        "<p class='muted'>Capacity " . (int)$m['capacity'] . "</p>";
-    if ($m['status'] === 'Queued') {   // tell the operator where they are in the queue
-        [$dep, $q] = split_cluster(live_rows(), $m['cluster_id']);
-        foreach ($q as $i => $r) if ($r['id'] == $m['id'])
-            echo "<p style='font-weight:800;color:#0b7285'>📍 " . tag_for((bool)$dep, $i) . "</p>" .
-                (($i + ($dep ? 1 : 0)) > 0 ? "<p class='muted'>You can add passengers once you are ON QUEUE.</p>" : '');
-    }
+    [$tag, $cls, $pos] = op_tag($m);
+    echo "<div class='optag $cls'>$tag</div>" . count_html($m['pax'], $m['capacity']) .
+        "<p class='muted'>passengers on board &middot; capacity " . (int)$m['capacity'] . "</p>";
+    if ($pos !== null && $pos > 0) echo "<p class='muted' style='margin-top:10px'>You can add passengers once you are ON QUEUE.</p>";
 }
 // The ONLY place a status changes: keeps motorbanca + trip in sync.
 function set_status($mid, $st)
