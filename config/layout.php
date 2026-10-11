@@ -19,7 +19,7 @@ function page_head($title, $role = 'public')
     if ($role === 'admin' || $role === 'operator') {
         $me = basename($_SERVER['PHP_SELF']);
         $dir = $role === 'operator' ? 'operator' : 'admin';
-        $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers']
+        $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers', 'trips.php' => 'Trip History']
             : ['dashboard.php' => 'Dashboard', 'motorbancas.php' => 'Register', 'queue.php' => 'Queue', 'trip' . 's.php' => 'Trip History'];
         $logo = "<img src='$b/admin/logo.webp' alt='Philippine Coast Guard' width='44' height='44'>";
         echo "<header class='atop'><a class='logo' href='$b/$dir/dashboard.php'>$logo<span>Port Control</span></a>

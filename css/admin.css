@@ -1990,3 +1990,117 @@ body.nav-open .pills {
         grid-template-areas: "alert alert" "count details" "table table"
     }
 }
+
+/* Operator trip history: Year > Month > Week > Day */
+.thx {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 900px
+}
+
+.th>summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent
+}
+
+.th>summary::-webkit-details-marker {
+    display: none
+}
+
+.th-chev {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--mut);
+    transition: transform .2s
+}
+
+.th[open]>summary .th-chev {
+    transform: rotate(90deg)
+}
+
+.th-sum {
+    margin-left: auto;
+    font-size: .78rem;
+    font-weight: 500;
+    color: var(--mut);
+    text-align: right
+}
+
+.th-y {
+    background: #fff;
+    border: 1px solid var(--ln);
+    border-radius: 20px;
+    box-shadow: 0 1px 2px #1f1a1708, 0 14px 30px -18px #1f1a1726;
+    padding: 16px 20px
+}
+
+.th-y>summary b {
+    font-size: 1.15rem;
+    font-weight: 800
+}
+
+.th-m,
+.th-w,
+.th-d {
+    margin-top: 10px;
+    padding-left: 14px;
+    border-left: 2px solid #f4ede7
+}
+
+.th-m>summary b,
+.th-w>summary b {
+    font-size: .98rem;
+    font-weight: 700
+}
+
+.th-d>summary b {
+    font-size: .92rem;
+    font-weight: 600
+}
+
+.th-m>summary,
+.th-w>summary,
+.th-d>summary {
+    padding: 6px 0
+}
+
+.th-t {
+    margin: 6px 0 4px;
+    box-shadow: none;
+    border-radius: 14px
+}
+
+.th-t td,
+.th-t th {
+    padding: 10px 14px
+}
+
+@media(max-width:520px) {
+    .th-y {
+        padding: 14px 14px
+    }
+
+    .th-m,
+    .th-w,
+    .th-d {
+        padding-left: 10px
+    }
+
+    .th>summary {
+        flex-wrap: wrap;
+        gap: 2px 8px
+    }
+
+    .th-sum {
+        margin-left: 28px;
+        text-align: left;
+        flex-basis: 100%
+    }
+}
