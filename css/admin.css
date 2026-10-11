@@ -2115,3 +2115,22 @@ body.nav-open .pills {
 .th-act .btn {
     min-height: 34px
 }
+
+@media(max-width:999px) {
+
+    .th-t th:last-child,
+    .th-act {
+        display: none
+    }
+
+    .th-row {
+        cursor: pointer;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none
+    }
+
+    .th-row:active {
+        background: #fff7f0
+    }
+}

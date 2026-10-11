@@ -253,8 +253,11 @@ $fn = 'Crew List.pdf';
                                 orientation: 'portrait'
                             }
                         })
-                        .from(document.querySelector('.page')).save().then(function() {
-                            done('done');
+                        .from(document.querySelector('.page')).outputPdf('blob').then(function(b) {
+                            parent.postMessage({
+                                pdf: 'done',
+                                blob: b
+                            }, '*');
                         }).catch(function() {
                             done('fail');
                         });

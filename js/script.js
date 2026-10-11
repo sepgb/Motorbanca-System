@@ -189,13 +189,22 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   document.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('[data-pdf]') : null;
     if (!b || b.disabled || !b.getAttribute('data-pdf')) return;
-    var u = b.getAttribute('data-pdf'), sp = b.querySelector('span'), label = sp.textContent, f = document.createElement('iframe'), t;
+    var u = b.getAttribute('data-pdf'), sp = b.querySelector('span'), label = sp.textContent, f = document.createElement('iframe'), t, fname = u.indexOf('print_crew') === 0 ? 'Crew List.pdf' : 'Manifest.pdf';
     var finish = function (ok) {
       clearTimeout(t); window.removeEventListener('message', on); f.remove();
       b.disabled = false; sp.textContent = label;
       if (!ok) window.open(u, '_blank');   // PDF tool could not load (offline?): show the form instead
     };
-    var on = function (ev) { if (ev.source === f.contentWindow && ev.data && ev.data.pdf) finish(ev.data.pdf === 'done'); };
+    var on = function (ev) {
+      if (ev.source !== f.contentWindow || !ev.data || !ev.data.pdf) return;
+      if (ev.data.pdf === 'done' && ev.data.blob) {   // save from this page (a hidden frame can not reliably download on phones)
+        var url = URL.createObjectURL(ev.data.blob), a = document.createElement('a');
+        var d = new Date(), z = function (n) { return (n < 10 ? '0' : '') + n; };   // unique name each time, so the phone does not treat it as already downloaded
+        a.href = url; a.download = fname.replace('.pdf', ' ' + d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()) + ' ' + z(d.getHours()) + z(d.getMinutes()) + z(d.getSeconds()) + '.pdf'); a.style.display = 'none'; document.body.appendChild(a); a.click();
+        setTimeout(function () { a.remove(); URL.revokeObjectURL(url); }, 60000);
+        finish(true);
+      } else finish(false);
+    };
     b.disabled = true; sp.textContent = 'Preparing…';
     window.addEventListener('message', on);
     f.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;height:1200px;border:0';
