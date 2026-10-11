@@ -1925,3 +1925,68 @@ body.nav-open .pills {
 .mpage .mp-details {
     margin: 0 !important
 }
+
+/* Passengers page, desktop: Add passenger on the left (tall); passengers on board + Manifest details stacked on the right with the same total height; list full width below */
+@media(min-width:1000px) {
+    .r-operator .main {
+        padding-top: 22px
+    }
+
+    .mpage {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+        grid-template-areas: "form count" "form details" "table table";
+        gap: 20px !important;
+        align-items: stretch
+    }
+
+    .mpage>.reg,
+    .mpage .reg-side {
+        display: contents !important
+    }
+
+    .mpage form.card {
+        grid-area: form
+    }
+
+    .mp-count {
+        grid-area: count;
+        display: flex;
+        flex-direction: column;
+        justify-content: center
+    }
+
+    .mp-details {
+        grid-area: details;
+        display: flex;
+        flex-direction: column
+    }
+
+    .mp-details .kv {
+        margin-bottom: 18px
+    }
+
+    .mp-details .dl-act {
+        margin-top: auto
+    }
+
+    .mpage .tablewrap {
+        grid-area: table
+    }
+
+    .mp-alert {
+        grid-area: alert
+    }
+
+    .mpage:has(.mp-alert) {
+        grid-template-areas: "alert alert" "form count" "form details" "table table"
+    }
+
+    .mpage:not(:has(form.card)) {
+        grid-template-areas: "count details" "table table"
+    }
+
+    .mpage:not(:has(form.card)):has(.mp-alert) {
+        grid-template-areas: "alert alert" "count details" "table table"
+    }
+}
