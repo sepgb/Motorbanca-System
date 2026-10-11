@@ -2104,3 +2104,14 @@ body.nav-open .pills {
         flex-basis: 100%
     }
 }
+
+.th-t th:last-child,
+.th-act {
+    text-align: right;
+    width: 1%;
+    white-space: nowrap
+}
+
+.th-act .btn {
+    min-height: 34px
+}

@@ -17,8 +17,13 @@ if (($_SESSION['role'] ?? '') === 'admin') {   // PCG: any trip, from Trip histo
         header('Location: ../logout.php');
         exit;
     }
-    $tq = db()->prepare("SELECT id, trip_date FROM trips WHERE motorbanca_id=? AND status<>'Cancelled' ORDER BY id DESC LIMIT 1");
-    $tq->execute([$m['id']]);
+    if (isset($_GET['trip'])) {                // a past trip from Trip History (own boat only)
+        $tq = db()->prepare("SELECT id, trip_date FROM trips WHERE id=? AND motorbanca_id=? AND status NOT IN ('Cancelled','Inspection')");
+        $tq->execute([(int)$_GET['trip'], $m['id']]);
+    } else {
+        $tq = db()->prepare("SELECT id, trip_date FROM trips WHERE motorbanca_id=? AND status<>'Cancelled' ORDER BY id DESC LIMIT 1");
+        $tq->execute([$m['id']]);
+    }
     $trip = $tq->fetch();
     if (!$trip) {
         header('Location: dashboard.php');

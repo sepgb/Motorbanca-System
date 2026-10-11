@@ -73,8 +73,9 @@ page_head('Trip History', 'operator');
                                                     <th>Queued</th>
                                                     <th>Departed</th>
                                                     <th>Passengers</th>
+                                                    <th></th>
                                                 </tr>
-                                                <?php foreach ($dn['rows'] as $r) echo "<tr><td>" . $tm($r['start_time']) . "</td><td>" . ($r['status'] === 'Departed' || $r['departure_time'] ? $tm($r['departure_time']) : '<span class="muted">On queue</span>') . "</td><td>" . (int)$r['pax'] . "</td></tr>"; ?>
+                                                <?php foreach ($dn['rows'] as $r) echo "<tr><td>" . $tm($r['start_time']) . "</td><td>" . ($r['status'] === 'Departed' || $r['departure_time'] ? $tm($r['departure_time']) : '<span class="muted">On queue</span>') . "</td><td>" . (int)$r['pax'] . "</td><td class='th-act'><button type='button' class='btn sm ghost pdfbtn' data-pdf='print.php?trip=" . (int)$r['id'] . "'><svg class=\"ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 9V3h12v6\"/><path d=\"M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2\"/><path d=\"M6 14h12v7H6z\"/></svg><span>Print manifest</span></button></td></tr>"; ?>
                                             </table>
                                         </div>
                                     </details>
