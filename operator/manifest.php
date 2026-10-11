@@ -112,36 +112,4 @@ endif; ?>
     </form>
   <?php endif; ?>
   </div>
-  <script>
-    // Download a PDF: the form is built in a hidden frame (print.php / print_crew.php) and saved as a file.
-    document.querySelectorAll('[data-pdf]').forEach(function(b) {
-      var label = b.querySelector('span').textContent;
-      b.addEventListener('click', function() {
-        if (b.disabled) return;
-        var u = b.getAttribute('data-pdf'),
-          f = document.createElement('iframe'),
-          t;
-        var finish = function(ok) {
-          clearTimeout(t);
-          window.removeEventListener('message', on);
-          f.remove();
-          b.disabled = false;
-          b.querySelector('span').textContent = label;
-          if (!ok) window.open(u, '_blank'); // PDF tool could not load (offline?): show the form instead
-        };
-        var on = function(e) {
-          if (e.source === f.contentWindow && e.data && e.data.pdf) finish(e.data.pdf === 'done');
-        };
-        b.disabled = true;
-        b.querySelector('span').textContent = 'Preparing…';
-        window.addEventListener('message', on);
-        f.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;height:1200px;border:0';
-        f.src = u;
-        document.body.appendChild(f);
-        t = setTimeout(function() {
-          finish(false);
-        }, 30000);
-      });
-    });
-  </script>
   <?php page_foot('operator');

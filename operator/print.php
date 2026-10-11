@@ -1,18 +1,29 @@
 <?php
 // Printable "Manipesto ng Pasahero" for the boat's current trip. Boat name, date, crew and captain fill in automatically.
 require_once '../config/live.php';
-need('operator');
-$m = my_mb();
-if (!$m) {
-    header('Location: ../logout.php');
-    exit;
-}
-$tq = db()->prepare("SELECT id, trip_date FROM trips WHERE motorbanca_id=? AND status<>'Cancelled' ORDER BY id DESC LIMIT 1");
-$tq->execute([$m['id']]);
-$trip = $tq->fetch();
-if (!$trip) {
-    header('Location: dashboard.php');
-    exit;
+if (($_SESSION['role'] ?? '') === 'admin') {   // PCG: any trip, from Trip history (?trip=ID)
+    $tq = db()->prepare("SELECT t.id, t.trip_date, m.motorbanca_name FROM trips t JOIN motorbancas m ON m.id=t.motorbanca_id WHERE t.id=?");
+    $tq->execute([(int)($_GET['trip'] ?? 0)]);
+    $trip = $tq->fetch();
+    if (!$trip) {
+        http_response_code(404);
+        exit('Trip not found.');
+    }
+    $m = ['motorbanca_name' => $trip['motorbanca_name']];
+} else {                                       // operator: the boat's current trip
+    need('operator');
+    $m = my_mb();
+    if (!$m) {
+        header('Location: ../logout.php');
+        exit;
+    }
+    $tq = db()->prepare("SELECT id, trip_date FROM trips WHERE motorbanca_id=? AND status<>'Cancelled' ORDER BY id DESC LIMIT 1");
+    $tq->execute([$m['id']]);
+    $trip = $tq->fetch();
+    if (!$trip) {
+        header('Location: dashboard.php');
+        exit;
+    }
 }
 $tc = trip_crew_get($trip['id']);
 $crew = $tc['crew'] ?? [];
@@ -246,44 +257,46 @@ $fn = 'Manifest.pdf';
             <div class="l">PANGALAN AT PIRMA NG KAPITAN</div>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script>
-        // Opened inside the hidden frame on the Passengers page: build the PDF and download it.
-        if (window.self !== window.top) window.addEventListener('load', function() {
-            var done = function(s) {
-                parent.postMessage({
-                    pdf: s
-                }, '*');
-            };
-            try {
-                html2pdf().set({
-                        margin: 0,
-                        filename: '<?= $fn ?>',
-                        image: {
-                            type: 'jpeg',
-                            quality: 0.98
-                        },
-                        html2canvas: {
-                            scale: 2,
-                            useCORS: true,
-                            backgroundColor: '#ffffff'
-                        },
-                        jsPDF: {
-                            unit: 'mm',
-                            format: 'a4',
-                            orientation: 'portrait'
-                        }
-                    })
-                    .from(document.querySelector('.page')).save().then(function() {
-                        done('done');
-                    }).catch(function() {
-                        done('fail');
-                    });
-            } catch (e) {
-                done('fail');
-            }
-        });
-    </script>
+    <?php if (!isset($_GET['print'])): ?>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <script>
+            // Opened inside the hidden frame on the Passengers page: build the PDF and download it.
+            if (window.self !== window.top) window.addEventListener('load', function() {
+                var done = function(s) {
+                    parent.postMessage({
+                        pdf: s
+                    }, '*');
+                };
+                try {
+                    html2pdf().set({
+                            margin: 0,
+                            filename: '<?= $fn ?>',
+                            image: {
+                                type: 'jpeg',
+                                quality: 0.98
+                            },
+                            html2canvas: {
+                                scale: 2,
+                                useCORS: true,
+                                backgroundColor: '#ffffff'
+                            },
+                            jsPDF: {
+                                unit: 'mm',
+                                format: 'a4',
+                                orientation: 'portrait'
+                            }
+                        })
+                        .from(document.querySelector('.page')).save().then(function() {
+                            done('done');
+                        }).catch(function() {
+                            done('fail');
+                        });
+                } catch (e) {
+                    done('fail');
+                }
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>

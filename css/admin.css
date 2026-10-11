@@ -1635,3 +1635,60 @@ body.nav-open .pills {
     cursor: progress;
     transform: none
 }
+
+.pdfbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap
+}
+
+.pdfbtn .ico {
+    width: 16px;
+    height: 16px
+}
+
+.pdfbtn:disabled {
+    opacity: .7;
+    cursor: progress;
+    transform: none
+}
+
+.mdl-head {
+    flex-wrap: wrap
+}
+
+.mdl-title {
+    flex: 1 1 180px;
+    min-width: 0
+}
+
+.mdl-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+    margin-left: auto
+}
+
+.r-admin .pdfbtn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 5px !important;
+    line-height: 1;
+    padding: 0 18px
+}
+
+.r-admin .pdfbtn svg {
+    flex: none;
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 0
+}
+
+.r-admin .pdfbtn span {
+    display: block;
+    line-height: 1
+}

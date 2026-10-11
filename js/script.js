@@ -80,8 +80,10 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     box = document.createElement('div');
     box.className = 'mdl';
     box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
-    box.innerHTML = '<div class="mdl-box wide"><div class="mdl-head"><div><h3></h3><p class="sub"></p></div>' +
-      '<button type="button" class="x" aria-label="Close">&times;</button></div><div class="mdl-body"></div></div>';
+    box.innerHTML = '<div class="mdl-box wide"><div class="mdl-head"><div class="mdl-title"><h3></h3><p class="sub"></p></div>' +
+      '<div class="mdl-tools"><button type="button" class="btn sm ghost pdfbtn" data-print="" data-kind="print_crew"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg><span>Crew list</span></button>' +
+      '<button type="button" class="btn sm pdfbtn" data-print="" data-kind="print"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg><span>Manifest</span></button>' +
+      '<button type="button" class="x" aria-label="Close">&times;</button></div></div><div class="mdl-body"></div></div>';
     document.body.appendChild(box);
     box.addEventListener('click', function (e) { if (e.target === box || e.target.classList.contains('x')) box.classList.remove('open'); });
   }
@@ -92,6 +94,9 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     if (!box) build();
     box.querySelector('h3').textContent = r.dataset.name || 'Trip';
     box.querySelector('.sub').textContent = 'Loading…';
+    box.querySelectorAll('[data-print]').forEach(function (b) {   // straight print of this trip's form
+      b.setAttribute('data-print', r.dataset.url.replace('admin/passengers.php', 'operator/' + b.getAttribute('data-kind') + '.php') + '&print=1');
+    });
     box.querySelector('.mdl-body').innerHTML = '';
     void box.offsetWidth;
     box.classList.add('open');
@@ -177,4 +182,37 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   document.addEventListener('dblclick', function () { hide(); lr = null; });
   document.addEventListener('mousedown', hide);
   window.addEventListener('scroll', function () { hide(); lr = null; }, true);
+})();
+
+// Download buttons ([data-pdf]): the form is built in a hidden frame and saved as a PDF file.
+(function () {
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-pdf]') : null;
+    if (!b || b.disabled || !b.getAttribute('data-pdf')) return;
+    var u = b.getAttribute('data-pdf'), sp = b.querySelector('span'), label = sp.textContent, f = document.createElement('iframe'), t;
+    var finish = function (ok) {
+      clearTimeout(t); window.removeEventListener('message', on); f.remove();
+      b.disabled = false; sp.textContent = label;
+      if (!ok) window.open(u, '_blank');   // PDF tool could not load (offline?): show the form instead
+    };
+    var on = function (ev) { if (ev.source === f.contentWindow && ev.data && ev.data.pdf) finish(ev.data.pdf === 'done'); };
+    b.disabled = true; sp.textContent = 'Preparing…';
+    window.addEventListener('message', on);
+    f.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;height:1200px;border:0';
+    f.src = u; document.body.appendChild(f);
+    t = setTimeout(function () { finish(false); }, 30000);
+  });
+})();
+
+// Print buttons ([data-print]): load the form in a hidden frame and open the print dialog straight away.
+(function () {
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-print]') : null;
+    if (!b || !b.getAttribute('data-print')) return;
+    var f = document.createElement('iframe');
+    f.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;height:1200px;border:0';
+    f.onload = function () { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (x) { window.open(b.getAttribute('data-print'), '_blank'); } };
+    f.src = b.getAttribute('data-print'); document.body.appendChild(f);
+    setTimeout(function () { f.remove(); }, 120000);
+  });
 })();
