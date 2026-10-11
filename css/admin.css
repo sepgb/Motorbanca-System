@@ -2222,12 +2222,6 @@ body.nav-open .pills {
     filter: brightness(1.05)
 }
 
-.r-public .atop {
-    display: flex !important;
-    justify-content: space-between;
-    grid-template-columns: none
-}
-
 .r-public .atop .logo,
 .r-public .logo span {
     display: inline-flex
@@ -2466,4 +2460,73 @@ body.r-public .main>h1 {
 body.r-public .main>.lead {
     margin-top: 0 !important;
     line-height: 1.3 !important
+}
+
+/* passenger nav: same pills (desktop) and bottom tab bar (phones) as admin / operator */
+@media(max-width:999px) {
+    body.r-public .main {
+        padding-bottom: 104px !important
+    }
+}
+
+@media(min-width:1000px) {
+    .r-public .btabs {
+        display: none
+    }
+}
+
+.r-public .atop .logo img {
+    box-shadow: none
+}
+
+/* fares page */
+.fare-list {
+    padding: 6px 20px 10px
+}
+
+.fare {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 13px 0;
+    border-top: 1px solid #f4ede7
+}
+
+.fare:first-child {
+    border-top: 0
+}
+
+.fare span {
+    color: var(--tx);
+    font-size: .92rem;
+    line-height: 1.35
+}
+
+.fare small {
+    display: block;
+    color: var(--mut);
+    font-size: .78rem;
+    margin-top: 1px
+}
+
+.fare b {
+    flex: none;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #b4470a;
+    letter-spacing: -.01em
+}
+
+.fare.reg b {
+    color: var(--tx)
+}
+
+.fares .cluster .brgy {
+    padding-bottom: 14px
+}
+
+.fares .cluster h2 {
+    border-bottom: 1px solid #f4ede7 !important;
+    padding-bottom: 14px !important
 }

@@ -65,8 +65,16 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList
 JS;
         echo "<main class='main'>";
     } else {
-        echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'><img src='$b/admin/logo.webp' alt='Philippine Coast Guard' width='44' height='44'><span>BATIS</span></a>
-<div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header><main class='main'><h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", passenger</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><i class='dot'></i>Live queue</h2>";
+        $me = basename($_SERVER['PHP_SELF']);
+        $plinks = ['index.php' => 'Live Queue', 'fares.php' => 'Fares'];
+        $ptab = ['index.php' => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', 'fares.php' => '<circle cx="12" cy="12" r="9"/><path d="M9.5 17V7.5h3.2a2.6 2.6 0 010 5.2H9.5M8 14.2h5"/>'];
+        echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'><img src='$b/admin/logo.webp' alt='Philippine Coast Guard' width='44' height='44'><span>BATIS</span></a><nav class='pills'>";
+        foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on'" : '') . ">$l</a>";
+        echo "</nav><div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header>";
+        echo "<nav class='btabs' aria-label='Main'>";
+        foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i><span>$l</span></a>";
+        echo "</nav><main class='main'>";
+        if ($me === 'index.php') echo "<h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", passenger</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><i class='dot'></i>Live queue</h2>";
     }
 }
 function page_foot($role = 'public')
