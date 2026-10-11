@@ -2548,3 +2548,43 @@ body.r-public .main>.lead {
         animation: none
     }
 }
+
+/* nav icon animation */
+@keyframes tabpop {
+    0% {
+        transform: scale(.6) rotate(-12deg)
+    }
+
+    55% {
+        transform: scale(1.25) rotate(6deg)
+    }
+
+    100% {
+        transform: none
+    }
+}
+
+.btabs .ico {
+    transition: transform .15s
+}
+
+.btabs a:active .ico {
+    transform: scale(.8)
+}
+
+.btabs a.on .ico,
+.btabs a.pop .ico {
+    animation: tabpop .5s cubic-bezier(.2, .8, .3, 1.2) both
+}
+
+.btabs a.pop i {
+    background: var(--ot)
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+    .btabs a.on .ico,
+    .btabs a.pop .ico {
+        animation: none
+    }
+}

@@ -225,3 +225,12 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     setTimeout(function () { f.remove(); }, 120000);
   });
 })();
+
+// Bottom tab bar: the tapped icon pops, then the page opens (log out keeps its own confirm).
+document.addEventListener('click', function (e) {
+  var a = e.target.closest ? e.target.closest('.btabs a') : null;
+  if (!a || a.classList.contains('lo') || a.classList.contains('on') || e.defaultPrevented || e.ctrlKey || e.metaKey) return;
+  e.preventDefault();
+  a.classList.add('pop');
+  setTimeout(function () { location.href = a.href; }, 230);
+});
