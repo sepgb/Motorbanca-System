@@ -2416,3 +2416,54 @@ body.nav-open .pills {
 .trip-row {
     touch-action: manipulation
 }
+
+/* header badge (admin and operator) */
+.lg-badge {
+    width: 42px;
+    height: 42px;
+    flex: none;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: linear-gradient(135deg, #ff8a3d, #f26b1d);
+    box-shadow: 0 8px 16px -6px #f26b1daa
+}
+
+.lg-badge .ico,
+.lg-badge svg {
+    width: 22px;
+    height: 22px
+}
+
+.lg-badge {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    background: #fff0e5 !important;
+    box-shadow: none !important;
+    color: inherit
+}
+
+.lg-badge .dot {
+    width: 16px;
+    height: 16px
+}
+
+.logo>svg {
+    width: 40px;
+    height: 40px;
+    flex: none;
+    filter: drop-shadow(0 0 6px rgba(242, 107, 29, .35))
+}
+
+/* passenger board: greeting and its line sit closer together */
+body.r-public .main>h1 {
+    margin: 0 0 2px !important;
+    line-height: 1.15 !important
+}
+
+body.r-public .main>.lead {
+    margin-top: 0 !important;
+    line-height: 1.3 !important
+}
