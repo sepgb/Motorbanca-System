@@ -606,8 +606,14 @@ body.nav-open .pills {
 
 .etd-row {
     display: flex;
-    justify-content: flex-end;
-    padding: 0 20px 14px
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 0 20px 16px
+}
+
+.etd-row form {
+    margin: 0 !important
 }
 
 .etd {
@@ -1691,4 +1697,124 @@ body.nav-open .pills {
 .r-admin .pdfbtn span {
     display: block;
     line-height: 1
+}
+
+/* PCG inspection list + Approve button (same shape as Depart) */
+.insp {
+    grid-column: 1/-1;
+    background: #fff;
+    border: 1px solid var(--ln);
+    border-radius: 20px;
+    box-shadow: 0 1px 2px #1f1a1708, 0 14px 30px -18px #1f1a1726;
+    padding: 6px 20px 8px
+}
+
+.insp h2 {
+    margin: 0;
+    padding: 14px 0 8px;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.insp h2 span {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: var(--ot);
+    color: var(--od);
+    font-size: .78rem;
+    font-weight: 800
+}
+
+.insp-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    border-top: 1px solid #f4ede7
+}
+
+.insp-info b {
+    display: block;
+    font-size: 1rem
+}
+
+.insp-info small {
+    color: var(--mut);
+    font-size: .82rem
+}
+
+.insp-act {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0
+}
+
+.insp-no {
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 1px solid var(--ln);
+    background: #fff;
+    color: var(--tx);
+    font: 600 .88rem "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    cursor: pointer;
+    transition: background .15s
+}
+
+.insp-no:hover {
+    background: #fbf7f3
+}
+
+.approve {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 44px;
+    padding: 0 5px 0 20px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff8a3d, #f26b1d);
+    color: #fff;
+    box-shadow: 0 10px 20px -8px #f26b1d99;
+    font: 600 .88rem "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s
+}
+
+.approve span {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #fff;
+    color: #f26b1d
+}
+
+.approve .ico {
+    width: 17px;
+    height: 17px
+}
+
+.approve:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 26px -8px #f26b1dcc
+}
+
+.approve:active {
+    transform: none
+}
+
+.approve:focus-visible {
+    outline: 3px solid #f26b1d;
+    outline-offset: 3px
 }

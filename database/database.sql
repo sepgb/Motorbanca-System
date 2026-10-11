@@ -14,6 +14,7 @@ CREATE TABLE motorbancas (
   cluster_id INT NOT NULL,
   status ENUM(
     'Not Queued',
+    'Inspection',
     'Queued',
     'Boarding',
     'Departed',
@@ -39,6 +40,7 @@ CREATE TABLE trips (
   motorbanca_id INT NOT NULL,
   cluster_id INT NOT NULL,
   status ENUM(
+    'Inspection',
     'Queued',
     'Boarding',
     'Departed',

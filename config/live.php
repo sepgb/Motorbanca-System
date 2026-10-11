@@ -35,10 +35,33 @@ function live_rows()
         FROM motorbancas m WHERE m.status='Queued' OR (m.status='Departed' AND " . DEP_RECENT . ")
         ORDER BY (m.status='Departed'), m.queued_at, m.id")->fetchAll();
 }
+// Boats that pressed New trip and are waiting for the PCG's physical inspection (admin queue page only).
+function inspection_html()
+{
+    try {
+        $rows = db()->query("SELECT m.id, m.motorbanca_name n, c.name cname, t.id tid FROM motorbancas m
+            JOIN clusters c ON c.id=m.cluster_id JOIN trips t ON t.motorbanca_id=m.id AND t.status='Inspection'
+            WHERE m.status='Inspection' ORDER BY t.id")->fetchAll();
+    } catch (PDOException $x) {
+        return '';
+    }
+    if (!$rows) return '';
+    $h = "<section class='insp'><h2>For inspection <span>" . count($rows) . "</span></h2>";
+    foreach ($rows as $r) {
+        $tc = trip_crew_get($r['tid']);
+        $cap = $tc['crew'][0]['name'] ?? '';
+        $h .= "<div class='insp-row'><div class='insp-info'><b>" . e($r['n']) . "</b><small>" . e($r['cname']) . ($cap ? " &middot; Captain " . e($cap) : '') . "</small></div>" .
+            "<form method='post' action='" . BASE . "/admin/inspect.php' class='insp-act'><input type='hidden' name='mid' value='" . (int)$r['id'] . "'>" .
+            "<button name='do' value='reject' class='insp-no'>Reject</button>" .
+            "<button name='do' value='approve' class='approve'>Approve<span>" . ico('<path d="M5 12.5l4.5 4.5L19 7.5"/>') . "</span></button></form></div>";
+    }
+    return $h . "</section>";
+}
 // Live queue, grouped by cluster (used on passenger page and admin pages).
 function render_live($admin = false)
 {
     process_departures();
+    if ($admin) echo inspection_html();
     $rows = live_rows();
     $bmap = [];
     try {
@@ -55,11 +78,14 @@ function render_live($admin = false)
         foreach ($dep as $r) echo mb_card($r, ++$pos, 'DEPARTED');
         // only the ON QUEUE boat gets a card; the next-trip boat is shown in the footer below
         foreach ($q as $i => $r) if (tag_for((bool)$dep, $i) === 'ON QUEUE') echo mb_card($r, ++$pos, 'ON QUEUE');
-        if (!$dep && $q && !empty($q[0]['etd'])) echo "<div class='etd-row'><div class='etd'>Expected departure <b>" . e($q[0]['etd']) . "</b></div></div>";   // bottom-right, above the footer line
+        if (!$dep && $q && (!empty($q[0]['etd']) || $admin)) {   // bottom-right, above the footer line: expected departure, then the Depart button
+            echo "<div class='etd-row'>" . (!empty($q[0]['etd']) ? "<div class='etd'>Expected departure <b>" . e($q[0]['etd']) . "</b></div>" : '');
+            if ($admin) echo depart_form($q[0]['id'], $q[0]['name']);   // PCG only
+            echo "</div>";
+        }
         echo "<div class='cfoot'>" . ($next
             ? "<div class='next yes'>⏭ Next Trip: <b>" . e($next['name']) . "</b></div>"
             : "<div class='next no'>⛔ No Next Trip Available</div>");
-        if ($admin && !$dep && $q) echo depart_form($q[0]['id'], $q[0]['name']);   // PCG only, bottom-right
         echo "</div></section>";
     }
 }
@@ -131,7 +157,7 @@ function crew_last($mid)
 // Operator: the boat's own state as a coloured label (same look as the admin cards).
 function op_tag($m)
 {
-    $tag = $m['status'] === 'Departed' ? 'DEPARTED' : 'NOT QUEUED';
+    $tag = $m['status'] === 'Departed' ? 'DEPARTED' : ($m['status'] === 'Inspection' ? 'FOR INSPECTION' : 'NOT QUEUED');
     $pos = null;
     if ($m['status'] === 'Queued') {
         [$dep, $q] = split_cluster(live_rows(), $m['cluster_id']);
@@ -140,7 +166,7 @@ function op_tag($m)
             $pos = $i + ($dep ? 1 : 0);
         }
     }
-    $cls = $tag === 'ON QUEUE' ? 'g' : ($tag === 'DEPARTED' ? 'b' : (in_array($tag, ['NEXT TRIP', 'WAITING'], true) ? 'o' : 'n'));
+    $cls = $tag === 'ON QUEUE' ? 'g' : ($tag === 'DEPARTED' ? 'b' : (in_array($tag, ['NEXT TRIP', 'WAITING', 'FOR INSPECTION'], true) ? 'o' : 'n'));
     return [$tag, $cls, $pos];
 }
 function op_card($m)
@@ -148,19 +174,46 @@ function op_card($m)
     [$tag, $cls, $pos] = op_tag($m);
     echo "<div class='optag $cls'>$tag</div>" . count_html($m['pax'], $m['capacity']) .
         "<p class='muted'>passengers on board</p>";
-    if ($pos !== null && $pos > 0) echo "<p class='muted' style='margin-top:10px'>You can add passengers once you are ON QUEUE.</p>";
+    if (($pos !== null && $pos > 0) || $tag === 'FOR INSPECTION') echo "<p class='muted' style='margin-top:10px'>You can add passengers once you are ON QUEUE.</p>";
+}
+// The "Inspection" status is added to the two status columns the first time a boat needs it (no manual SQL).
+function inspection_schema()
+{
+    static $done = false;
+    if ($done) return;
+    $done = true;
+    foreach (['motorbancas', 'trips'] as $t) {
+        $c = db()->query("SHOW COLUMNS FROM $t LIKE 'status'")->fetch();
+        if ($c && stripos($c['Type'], "'Inspection'") === false)
+            db()->exec("ALTER TABLE $t MODIFY status " . substr($c['Type'], 0, -1) . ",'Inspection') NOT NULL DEFAULT '" . $c['Default'] . "'");
+    }
 }
 // The ONLY place a status changes: keeps motorbanca + trip in sync.
 function set_status($mid, $st)
 {
+    if ($st === 'Inspection') inspection_schema();   // ALTER TABLE commits implicitly, so it runs before the transaction
     $pdo = db();
     $pdo->beginTransaction();
     $pdo->prepare("UPDATE motorbancas SET status=?, queued_at=IF(?='Queued',NOW(),queued_at) WHERE id=?")->execute([$st, $st, $mid]);
     $new = "INSERT INTO trips(motorbanca_id,cluster_id,status,trip_date%s) SELECT id,cluster_id,'%s',CURDATE()%s FROM motorbancas WHERE id=?";
-    if ($st === 'Queued') {            // joining the queue = a new trip (unless one is already waiting)
-        $x = $pdo->prepare("SELECT 1 FROM trips WHERE motorbanca_id=? AND status='Queued'");
+    if ($st === 'Inspection') {        // New trip: the boat waits for the PCG inspection (no queued time yet)
+        $x = $pdo->prepare("SELECT 1 FROM trips WHERE motorbanca_id=? AND status IN ('Inspection','Queued')");
         $x->execute([$mid]);
-        if (!$x->fetch()) {
+        if (!$x->fetch()) $pdo->prepare(sprintf($new, '', 'Inspection', ''))->execute([$mid]);
+    } elseif ($st === 'Not Queued') {  // inspection rejected: the waiting trip is cancelled
+        $pdo->prepare("UPDATE trips SET status='Cancelled' WHERE motorbanca_id=? AND status='Inspection'")->execute([$mid]);
+    } elseif ($st === 'Queued') {      // PCG approved the inspection (or joining directly): the boat joins the queue
+        $x = $pdo->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status='Queued'");
+        $x->execute([$mid]);
+        $ins = $pdo->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status='Inspection' ORDER BY id DESC LIMIT 1");
+        $ins->execute([$mid]);
+        $iid = $ins->fetchColumn();
+        if ($iid && !$x->fetch()) {
+            $o = $pdo->prepare("SELECT COUNT(*) FROM motorbancas WHERE cluster_id=(SELECT cluster_id FROM motorbancas WHERE id=?) AND status='Queued' AND id<>?");
+            $o->execute([$mid, $mid]);
+            $first = (int)$o->fetchColumn() === 0;   // the queued time is stamped only for the first boat in line
+            $pdo->prepare("UPDATE trips SET status='Queued', start_time=" . ($first ? 'NOW()' : 'NULL') . " WHERE id=?")->execute([$iid]);
+        } elseif (!$iid && !$x->fetch()) {
             // The queued time is recorded only for the first boat in line. A boat that joins behind another
             // queued boat (NEXT TRIP / WAITING) gets its time when the boat ahead of it departs.
             $o = $pdo->prepare("SELECT COUNT(*) FROM motorbancas WHERE cluster_id=(SELECT cluster_id FROM motorbancas WHERE id=?) AND status='Queued' AND id<>?");

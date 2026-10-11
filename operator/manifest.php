@@ -82,9 +82,11 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
 if (!$trip): ?>
   <div class="alert bad">No active trip. Go Home and tap New trip.</div>
 <?php elseif (!$open): ?>
-  <div class="alert"><?= $m['status'] === 'Queued'
-                        ? '&#9203; Your boat is <b>' . e($tag) . '</b>. You can add passengers once your boat is ON QUEUE.'
-                        : 'This trip has departed. Go Home and tap New trip for the next one.' ?></div>
+  <div class="alert"><?= $m['status'] === 'Inspection'
+                        ? 'Your boat is <b>FOR INSPECTION</b>. You can add passengers once the PCG approves it and it is ON QUEUE.'
+                        : ($m['status'] === 'Queued'
+                          ? '&#9203; Your boat is <b>' . e($tag) . '</b>. You can add passengers once your boat is ON QUEUE.'
+                          : 'This trip has departed. Go Home and tap New trip for the next one.') ?></div>
 <?php elseif ($full): ?>
   <div class="alert bad"><b>FULL</b> &mdash; no more passengers can be added.</div>
 <?php else: $showForm = true;

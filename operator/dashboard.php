@@ -20,6 +20,9 @@ page_head('Home', 'operator');
     <h3><?= $idle ? 'Ready for a trip?' : 'Passenger list' ?></h3>
     <p class="muted" style="margin:0 0 16px"><?= $idle ? 'Join the queue to start a new trip.' : 'Add and view the passengers on your trip.' ?></p>
     <a class="btn big" style="width:100%" href="<?= $idle ? 'crew.php' : 'manifest.php' ?>"><?= $idle ? 'New trip' : 'Open passenger list' ?></a>
+    <?php if ($m['status'] === 'Inspection'): ?>
+      <div class="alert ok" style="margin:16px 0 0">Waiting for the PCG inspection. Your boat goes on the queue once it is approved.</div>
+    <?php endif; ?>
     <?php if ($m['status'] === 'Queued'):
       $etd = null;
       foreach (live_rows() as $r) if ($r['id'] == $m['id']) $etd = $r['etd'] ?? null; ?>

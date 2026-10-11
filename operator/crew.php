@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     elseif ($bad) $err = $bad;
     else {
         crew_table();
-        set_status($m['id'], 'Queued');   // creates the trip (or reuses the one already waiting)
-        $t = db()->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status='Queued' ORDER BY id DESC LIMIT 1");
+        set_status($m['id'], 'Inspection');   // creates the trip; the PCG inspects the boat, then puts it on queue
+        $t = db()->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status IN ('Inspection','Queued') ORDER BY id DESC LIMIT 1");
         $t->execute([$m['id']]);
         $tid = $t->fetchColumn();
         if ($tid) {
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 page_head('Crew list', 'operator');
 ?>
 <h1>Crew list</h1>
-<p class="lead">Fill this in before your boat joins the queue. It is added to the passenger manifest.</p>
+<p class="lead">Fill this in first. The PCG will inspect your boat, then put it on the queue. This is added to the passenger manifest.</p>
 <?php if ($err) echo "<div class='alert bad' role='alert'>" . e($err) . "</div>"; ?>
 <form method="post" class="card crewform" autocomplete="off">
     <div class="crew-top">
@@ -72,7 +72,7 @@ page_head('Crew list', 'operator');
     <?php endforeach; ?>
     <div class="crew-act">
         <a class="btn ghost" href="dashboard.php">Cancel</a>
-        <button class="btn">Save &amp; join queue</button>
+        <button class="btn">Submit for inspection</button>
     </div>
 </form>
 <?php page_foot('operator');
