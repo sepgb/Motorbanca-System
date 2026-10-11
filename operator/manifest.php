@@ -6,7 +6,7 @@ if (!$m) {
   header('Location: ../logout.php');
   exit;
 }
-$tq = db()->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status<>'Cancelled' ORDER BY id DESC LIMIT 1");
+$tq = db()->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status IN ('Inspection','Queued') ORDER BY id DESC LIMIT 1");   // a departed trip lives in Trip History
 $tq->execute([$m['id']]);
 $trip = $tq->fetchColumn();
 $pos = null;
@@ -54,12 +54,12 @@ page_head('Passengers', 'operator');
 <?php $tc = $trip ? trip_crew_get($trip) : null;
 $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)->fetchColumn() : null; ?>
 <div class="mpage">
-  <div class="card mp-count"><?php echo count_html($m['pax'], $m['capacity']); ?><p class="muted" style="margin:0">passengers on board</p>
-  </div>
+  <?php if ($trip): ?><div class="card mp-count"><?php echo count_html($m['pax'], $m['capacity']); ?><p class="muted" style="margin:0">passengers on board</p>
+    </div><?php endif; ?>
   <?php if ($err) echo "<div class='alert bad mp-alert'>" . e($err) . "</div>"; ?>
   <?php $showForm = false;
   if (!$trip): ?>
-    <div class="alert bad mp-alert">No active trip. Go Home and tap New trip.</div>
+    <div class="alert mp-alert"><?= $m['status'] === 'Departed' ? 'Your trip has departed. The manifest and passengers are saved in Trip History.' : 'No active trip. Go Home and tap New trip.' ?></div>
   <?php elseif (!$open): ?>
     <div class="alert mp-alert"><?= $m['status'] === 'Inspection'
                                   ? 'Your boat is <b>FOR INSPECTION</b>. You can add passengers once the PCG approves it and it is ON QUEUE.'
@@ -104,18 +104,20 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
         </div>
       <?php endif; ?>
     </div>
-    <div class="tablewrap">
-      <table>
-        <tr>
-          <th>No.</th>
-          <th>Name</th>
-          <th>Age</th>
-          <th>Barangay</th>
-        </tr>
-        <?php foreach ($pax as $i => $p) echo "<tr><td>" . ($i + 1) . "</td><td>" . e($p['name']) . "</td><td>{$p['age']}</td><td>" . e($p['barangay']) . "</td></tr>"; ?>
-        <?php if (!$pax) echo "<tr><td colspan='4' class='muted' style='text-align:center;padding:22px'>No passengers yet.</td></tr>"; ?>
-      </table>
-    </div>
+    <?php if ($trip): ?>
+      <div class="tablewrap">
+        <table>
+          <tr>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Barangay</th>
+          </tr>
+          <?php foreach ($pax as $i => $p) echo "<tr><td>" . ($i + 1) . "</td><td>" . e($p['name']) . "</td><td>{$p['age']}</td><td>" . e($p['barangay']) . "</td></tr>"; ?>
+          <?php if (!$pax) echo "<tr><td colspan='4' class='muted' style='text-align:center;padding:22px'>No passengers yet.</td></tr>"; ?>
+        </table>
+      </div>
+    <?php endif; ?>
   </div>
 </div>
 <?php page_foot('operator');

@@ -11,6 +11,10 @@ if (!in_array($m['status'], ['Not Queued', 'Departed'], true)) {
     header('Location: manifest.php');
     exit;
 }
+if ($wait = next_trip_at($m['id'])) {
+    header('Location: dashboard.php');
+    exit;
+}   // 1 hour after departing
 $roles = ['BOAT CAPTAIN', 'MOTORMAN', 'CREW', 'CREW'];
 $last = crew_last($m['id']);
 $addr = $last['address'] ?? '';

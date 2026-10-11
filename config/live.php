@@ -112,6 +112,17 @@ function stats_html()
     foreach ($cards as $i => [$label, $v, $foot])
         echo "<div class='stat'>" . ico($icons[$i]) . "<span>" . e($label) . "</span><b>$v</b><p>$foot</p></div>";
 }
+// A boat that has departed can start a new trip only after 1 hour. Returns the time it may start again, or null if it can now.
+const TRIP_GAP = '1 HOUR';
+function next_trip_at($mid)
+{
+    $q = db()->prepare("SELECT DATE_ADD(MAX(departure_time), INTERVAL " . TRIP_GAP . ") FROM trips WHERE motorbanca_id=? AND status='Departed'");
+    $q->execute([$mid]);
+    $at = $q->fetchColumn();
+    if (!$at) return null;
+    $n = db()->query("SELECT NOW()")->fetchColumn();
+    return strtotime($at) > strtotime($n) ? date('g:i A', strtotime($at)) : null;
+}
 function my_mb()
 {
     $s = db()->prepare("SELECT m.*, c.name cluster, " . PAX_SQL . " pax FROM motorbancas m
