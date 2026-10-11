@@ -1,14 +1,20 @@
 <?php
 require_once __DIR__ . '/live.php';
+// URL of a css/js file with its last-modified time, so phones and browsers never keep an old copy after an update.
+function asset($path)
+{
+    $f = dirname(__DIR__) . '/' . $path;
+    return BASE . '/' . $path . '?v=' . (is_file($f) ? filemtime($f) : 0);
+}
 
 function page_head($title, $role = 'public')
 {
     $b = BASE;
     $extra = in_array($role, ['admin', 'operator'], true)
-        ? "<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin><link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap' media='print' onload=\"this.media='all'\"><link rel='stylesheet' href='$b/css/admin.css'>" : '';
+        ? "<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin><link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap' media='print' onload=\"this.media='all'\"><link rel='stylesheet' href='" . asset('css/admin.css') . "'>" : '';
     echo "<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>" . e($title) . " | Motorbanca Monitor</title><link rel='stylesheet' href='$b/css/style.css'>$extra</head>
+<title>" . e($title) . " | Motorbanca Monitor</title><link rel='stylesheet' href='" . asset('css/style.css') . "'>$extra</head>
 <body class='" . ($role === 'operator' ? 'r-admin r-operator enter' : 'r-' . $role . ($role === 'admin' ? ' enter' : '')) . "'>";
     if ($role === 'admin' || $role === 'operator') {
         $me = basename($_SERVER['PHP_SELF']);
@@ -66,5 +72,5 @@ function page_foot($role = 'public')
 {
     $b = BASE;
     echo "</main>";
-    echo "<script src='$b/js/script.js'></script></body></html>";
+    echo "<script src='" . asset('js/script.js') . "'></script></body></html>";
 }

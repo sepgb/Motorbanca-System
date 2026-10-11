@@ -1819,7 +1819,7 @@ body.nav-open .pills {
     outline-offset: 3px
 }
 
-/* Passengers page: stacked cards; on phones/tablets the order is passengers on board, add passenger, manifest details, list */
+/* Passengers page, top to bottom: passengers on board, notice, Add passenger + Manifest details, then the passenger list */
 .mpage {
     display: flex;
     flex-direction: column;
@@ -1830,30 +1830,28 @@ body.nav-open .pills {
     margin: 0
 }
 
-@media(max-width:1199px) {
-    .mpage>.reg {
-        display: contents
-    }
+.mpage>.reg {
+    display: flex;
+    flex-direction: column;
+    gap: 16px
+}
 
-    .mp-count {
-        order: 1
-    }
+.reg-side {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0
+}
 
-    .mp-alert {
-        order: 2
-    }
+.reg-side>.card {
+    margin: 0
+}
 
-    .mpage .reg>.card,
-    .mpage>form.card {
-        order: 3
-    }
-
-    .mp-details {
-        order: 4
-    }
-
-    .mpage .tablewrap {
-        order: 5
+@media(min-width:1000px) {
+    .reg-side {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start
     }
 }
 
@@ -1878,4 +1876,52 @@ body.nav-open .pills {
         font-size: .85rem !important;
         margin: 0 0 14px !important
     }
+}
+
+.reg-side {
+    gap: 24px !important
+}
+
+.reg-side>.card+.card {
+    margin-top: 0
+}
+
+.mpage .mp-details {
+    margin-top: 8px
+}
+
+@media(min-width:1000px) {
+    .mpage .mp-details {
+        margin-top: 0
+    }
+}
+
+.mpage>.reg,
+.mpage .reg-side {
+    align-items: stretch
+}
+
+@media(min-width:1000px) {
+    .mpage .reg-side {
+        align-items: start
+    }
+}
+
+.mpage {
+    gap: 10px !important
+}
+
+.mpage>.card,
+.mpage .reg-side>.card,
+.mpage>.alert {
+    margin: 0 !important
+}
+
+.reg-side,
+.mpage>.reg {
+    gap: 10px !important
+}
+
+.mpage .mp-details {
+    margin: 0 !important
 }

@@ -34,9 +34,9 @@ $b = BASE;
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:wght@600;700&display=swap" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="<?= $b ?>/css/style.css">
-    <link rel="stylesheet" href="<?= $b ?>/css/admin.css">
-    <link rel="stylesheet" href="<?= $b ?>/css/login.css">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/admin.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/login.css') ?>">
 </head>
 
 <body class="r-admin login">
