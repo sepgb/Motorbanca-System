@@ -2300,6 +2300,10 @@ body.nav-open .pills {
     display: none
 }
 
+.r-public .main>.lead {
+    margin-bottom: 20px
+}
+
 .r-public .main>[data-live] {
     display: grid;
     gap: 16px;
@@ -2322,4 +2326,47 @@ body.nav-open .pills {
     margin: 0;
     display: flex;
     flex-direction: column
+}
+
+/* public board: breathing room around the page on phones */
+@media(max-width:999px) {
+    body.r-public .main {
+        padding: max(28px, env(safe-area-inset-top)) 20px 44px !important
+    }
+
+    body.r-public .pub-h1 {
+        margin: 0 0 18px
+    }
+}
+
+@media(min-width:700px) and (max-width:999px) {
+    body.r-public .main {
+        padding-left: 32px !important;
+        padding-right: 32px !important
+    }
+}
+
+.r-public .main>.lead {
+    margin: 6px 0 30px !important
+}
+
+.pub-h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 16px;
+    font-size: 1.3rem;
+    line-height: 1.2
+}
+
+@media(max-width:699px) {
+    body.r-public .main>.lead {
+        margin: 6px 0 26px !important;
+        line-height: 1.45 !important;
+        font-size: .9rem !important
+    }
+
+    .pub-h2 {
+        font-size: 1.2rem
+    }
 }

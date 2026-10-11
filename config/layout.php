@@ -66,7 +66,7 @@ JS;
         echo "<main class='main'>";
     } else {
         echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'><img src='$b/admin/logo.webp' alt='Philippine Coast Guard' width='44' height='44'><span>BATIS</span></a>
-<div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header><main class='main'><h1 class='pub-h1'><i class='dot'></i>Live queue</h1>";
+<div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header><main class='main'><h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", passenger</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><i class='dot'></i>Live queue</h2>";
     }
 }
 function page_foot($role = 'public')
