@@ -1495,3 +1495,143 @@ body.nav-open .pills {
 .r-operator .tablewrap {
     overflow-x: auto
 }
+
+/* crew list form + manifest details */
+.crewform {
+    max-width: 680px
+}
+
+.crew-top {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr)
+}
+
+@media(min-width:640px) {
+    .crew-top {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+}
+
+.crew-top label {
+    display: block
+}
+
+.crew-top input {
+    width: 100%;
+    margin-top: 5px;
+    padding: 0 14px
+}
+
+.crew-top input[readonly] {
+    background: #fbf7f3;
+    color: var(--mut)
+}
+
+.crew-h {
+    margin: 22px 0 4px !important
+}
+
+.crewrow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 92px;
+    gap: 8px;
+    margin-top: 12px
+}
+
+.crew-pos {
+    grid-column: 1/-1;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--od)
+}
+
+.crewrow input {
+    width: 100%;
+    padding: 0 14px
+}
+
+.crew-act {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px
+}
+
+.crew-act .btn {
+    min-width: 140px;
+    padding: 0 22px
+}
+
+.r-admin a.btn.ghost {
+    color: var(--tx)
+}
+
+.kv {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 18px;
+    margin: 0
+}
+
+.kv dt {
+    color: var(--mut);
+    font-size: .82rem;
+    padding-top: 1px
+}
+
+.kv dd {
+    margin: 0;
+    font-weight: 600
+}
+
+@media(max-width:520px) {
+    .kv {
+        grid-template-columns: 1fr;
+        gap: 0
+    }
+
+    .kv dt {
+        margin-top: 10px
+    }
+}
+
+.btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap
+}
+
+.r-admin .card .row .btn.sm {
+    white-space: nowrap
+}
+
+.dl-act {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #f4ede7
+}
+
+.dl-act .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap
+}
+
+.dl-act .btn .ico {
+    width: 16px;
+    height: 16px
+}
+
+.dl-act .btn:disabled {
+    opacity: .7;
+    cursor: progress;
+    transform: none
+}

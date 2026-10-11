@@ -71,7 +71,17 @@ CREATE TABLE barangays (
 -- Clusters, barangays and motorbancas are loaded by database/load_list.sql
 INSERT INTO clusters (name)
 VALUES ('Cluster 1'),
-  ('Cluster 2'),
-  ('Cluster 3'),
-  ('Cluster 4'),
-  ('Cluster 5');
+('Cluster 2'),
+('Cluster 3'),
+('Cluster 4'),
+('Cluster 5');
+-- The first admin (pcg_admin / admin123) is created automatically on first visit to login.php
+-- Crew list filled in by the operator before a boat can join the queue (also auto-created by the app).
+CREATE TABLE IF NOT EXISTS trip_crew (
+  trip_id INT PRIMARY KEY,
+  address VARCHAR(160) NOT NULL,
+  contact VARCHAR(30) NOT NULL,
+  crew TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE
+) ENGINE = InnoDB;

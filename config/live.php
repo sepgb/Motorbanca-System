@@ -93,6 +93,41 @@ function my_mb()
     $s->execute([$_SESSION['mid'] ?? 0]);
     return $s->fetch();
 }
+// Crew list (filled in by the operator before the boat can join the queue). One row per trip.
+// The table is created on first use, so no manual SQL import is needed.
+function crew_table()
+{
+    static $done = false;
+    if ($done) return;
+    $done = true;
+    try {
+        db()->exec("CREATE TABLE IF NOT EXISTS trip_crew (
+        trip_id INT PRIMARY KEY, address VARCHAR(160) NOT NULL, contact VARCHAR(30) NOT NULL, crew TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE) ENGINE=InnoDB");
+    } catch (PDOException $x) {
+    }
+}
+function trip_crew_get($tid)
+{
+    crew_table();
+    $s = db()->prepare("SELECT * FROM trip_crew WHERE trip_id=?");
+    $s->execute([(int)$tid]);
+    $r = $s->fetch();
+    if (!$r) return null;
+    $r['crew'] = json_decode($r['crew'], true) ?: [];
+    return $r;
+}
+// The boat's most recent crew list, used to pre-fill the form so the operator does not retype it every trip.
+function crew_last($mid)
+{
+    crew_table();
+    $s = db()->prepare("SELECT c.* FROM trip_crew c JOIN trips t ON t.id=c.trip_id WHERE t.motorbanca_id=? ORDER BY c.trip_id DESC LIMIT 1");
+    $s->execute([(int)$mid]);
+    $r = $s->fetch();
+    if (!$r) return null;
+    $r['crew'] = json_decode($r['crew'], true) ?: [];
+    return $r;
+}
 // Operator: the boat's own state as a coloured label (same look as the admin cards).
 function op_tag($m)
 {

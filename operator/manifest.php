@@ -51,6 +51,30 @@ page_head('Passengers', 'operator');
 ?>
 <h1><?= e($m['motorbanca_name']) ?></h1>
 <div class="optag <?= $tcls ?>" style="margin:2px 0 14px"><?= $tg ?></div>
+<?php $tc = $trip ? trip_crew_get($trip) : null;
+$td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)->fetchColumn() : null; ?>
+<?php if ($trip): ?>
+  <div class="card" style="margin-bottom:16px">
+    <h3 style="margin:0 0 8px">Manifest details</h3>
+    <dl class="kv">
+      <dt>Pangalan ng bangka</dt>
+      <dd><?= e($m['motorbanca_name']) ?></dd>
+      <dt>Date</dt>
+      <dd><?= $td ? date('F j, Y', strtotime($td)) : '&mdash;' ?></dd>
+      <dt>Pangalan ng tauhan</dt>
+      <dd><?php if ($tc && $tc['crew']) foreach ($tc['crew'] as $c) echo "<div>" . e($c['name']) . " <span class='muted'>&middot; " . ucwords(strtolower(e($c['position']))) . "</span></div>";
+          else echo '&mdash;'; ?></dd>
+    </dl>
+    <div class="dl-act">
+      <button type="button" class="btn sm ghost" data-pdf="print_crew.php"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+        </svg><span>Crew list</span></button>
+      <button type="button" class="btn sm" data-pdf="print.php"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+        </svg><span>Manifest</span></button>
+    </div>
+  </div>
+<?php endif; ?>
 <div class="card" style="margin-bottom:16px"><?php echo count_html($m['pax'], $m['capacity']); ?><p class="muted" style="margin:0">passengers on board</p>
 </div>
 <?php if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
@@ -88,4 +112,36 @@ endif; ?>
     </form>
   <?php endif; ?>
   </div>
+  <script>
+    // Download a PDF: the form is built in a hidden frame (print.php / print_crew.php) and saved as a file.
+    document.querySelectorAll('[data-pdf]').forEach(function(b) {
+      var label = b.querySelector('span').textContent;
+      b.addEventListener('click', function() {
+        if (b.disabled) return;
+        var u = b.getAttribute('data-pdf'),
+          f = document.createElement('iframe'),
+          t;
+        var finish = function(ok) {
+          clearTimeout(t);
+          window.removeEventListener('message', on);
+          f.remove();
+          b.disabled = false;
+          b.querySelector('span').textContent = label;
+          if (!ok) window.open(u, '_blank'); // PDF tool could not load (offline?): show the form instead
+        };
+        var on = function(e) {
+          if (e.source === f.contentWindow && e.data && e.data.pdf) finish(e.data.pdf === 'done');
+        };
+        b.disabled = true;
+        b.querySelector('span').textContent = 'Preparing…';
+        window.addEventListener('message', on);
+        f.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;height:1200px;border:0';
+        f.src = u;
+        document.body.appendChild(f);
+        t = setTimeout(function() {
+          finish(false);
+        }, 30000);
+      });
+    });
+  </script>
   <?php page_foot('operator');
