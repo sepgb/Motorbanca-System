@@ -2530,3 +2530,21 @@ body.r-public .main>.lead {
     border-bottom: 1px solid #f4ede7 !important;
     padding-bottom: 14px !important
 }
+
+/* header logo ring spins forever */
+@keyframes ringspin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+.logo>svg {
+    animation: ringspin 4s linear infinite;
+    transform-origin: 50% 50%
+}
+
+@media(prefers-reduced-motion:reduce) {
+    .logo>svg {
+        animation: none
+    }
+}
