@@ -33,7 +33,7 @@ $b = BASE;
     <title>Log in | Motorbanca Monitor</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:wght@600;700&display=swap" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="<?= $b ?>/css/style.css">
     <link rel="stylesheet" href="<?= $b ?>/css/admin.css">
     <link rel="stylesheet" href="<?= $b ?>/css/login.css">
@@ -42,13 +42,13 @@ $b = BASE;
 <body class="r-admin login">
     <main class="lg">
         <section class="lg-brand">
-            <h2>Port Control</h2>
-            <p>Live boat queue and trip monitoring for the port.</p>
+            <h2>BATIS</h2>
+            <p><b>Banca Tracking and Information System</b><br>Live boat queue and trip monitoring at Binangonan port</p>
             <img src="<?= $b ?>/admin/logo.webp" alt="Philippine Coast Guard" width="96" height="96">
             <img class="lg-photo" src="<?= $b ?>/admin/pcg.jpg" alt="Coast Guard personnel helping a passenger board a motorbanca">
         </section>
         <section class="lg-form">
-            <div class="lg-mark"><img src="<?= $b ?>/admin/logo.webp" alt="" width="44" height="44"><span>Port Control</span></div>
+            <div class="lg-mark"><img src="<?= $b ?>/admin/logo.webp" alt="" width="44" height="44"><span>BATIS</span><small><b>Banca Tracking and Information System</b><br>Live boat queue and trip monitoring at Binangonan port</small></div>
             <h1>Welcome back</h1>
             <p class="muted lg-sub">Log in to continue</p>
             <?php if ($err) echo "<div class='alert bad' role='alert'>" . e($err) . "</div>"; ?>
@@ -71,7 +71,6 @@ $b = BASE;
                 </label>
                 <button class="btn">Log in</button>
             </form>
-            <p class="lg-note">Log in with the username and password given to you.</p>
         </section>
     </main>
     <script>

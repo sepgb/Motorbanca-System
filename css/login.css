@@ -17,7 +17,7 @@ body.login {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: linear-gradient(rgba(0, 0, 0, .62), rgba(0, 0, 0, .86)), url("../admin/pcg.jpg") center/cover no-repeat, #1f1a17
+    background: linear-gradient(rgba(0, 0, 0, .82), rgba(0, 0, 0, .96)), url("../admin/pcg.jpg") center/cover no-repeat, #1f1a17
 }
 
 /* header */
@@ -34,9 +34,13 @@ body.login {
 .lg-brand h2 {
     margin: 0;
     color: #fff;
-    font-size: 1.9rem;
-    font-weight: 800;
-    letter-spacing: -.02em
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-size: 2.7rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    padding-left: .2em;
+    line-height: 1;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, .25)
 }
 
 .lg-brand h2::after {
@@ -52,9 +56,16 @@ body.login {
 .lg-brand p {
     margin: 0 auto;
     color: #fff;
-    font-size: .95rem;
-    line-height: 1.55;
-    max-width: 26ch
+    font-size: .7rem;
+    line-height: 1.6;
+    max-width: none
+}
+
+.lg-brand p b {
+    display: inline-block;
+    font-size: .78rem;
+    font-weight: 800;
+    margin-bottom: 2px
 }
 
 .lg-brand img {
@@ -91,7 +102,7 @@ body.login {
 }
 
 .lg-form .grid {
-    gap: 14px;
+    gap: 16px;
     text-align: left
 }
 
@@ -107,15 +118,15 @@ body.login {
 }
 
 .lbl {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap
+    display: block;
+    margin: 0 0 7px 6px;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #f1e8e0
 }
 
-/* labels stay for screen readers */
 .pw {
     position: relative;
     display: block;
@@ -177,12 +188,6 @@ body.login {
     height: 20px
 }
 
-.lg-form .lg-note {
-    margin: 22px 0 4px;
-    font-size: .85rem;
-    color: #d8cdc3
-}
-
 .lg-back {
     display: inline-block;
     font-size: .88rem;
@@ -215,67 +220,88 @@ body.login {
     display: none
 }
 
-/* desktop: white form card on the left, the photo (admin/pcg.jpg) as the right half of the card, like the reference */
+/* desktop: full-screen dark photo, centred glass card (like the reference) */
 @media(min-width:760px) {
     body.login {
         align-items: center;
-        padding: 28px
+        padding: 32px;
+        background: linear-gradient(rgba(0, 0, 0, .9), rgba(0, 0, 0, .97)), url("../admin/pcg.jpg") center/cover fixed no-repeat, #0a0908
     }
 
     .lg {
-        position: relative;
-        max-width: 1000px;
-        min-height: min(600px, calc(100vh - 56px));
-        display: grid;
-        grid-template-columns: 5fr 6fr;
-        background: #fff;
-        border: 2px solid var(--o);
-        border-radius: 30px;
-        box-shadow: 0 46px 80px -32px rgba(0, 0, 0, .6), 0 24px 46px -26px rgba(0, 0, 0, .5)
+        flex: 0 1 auto;
+        max-width: 440px;
+        min-height: 0;
+        display: block;
+        overflow: visible;
+        background: rgba(10, 10, 14, .78);
+        -webkit-backdrop-filter: blur(18px);
+        backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, .13);
+        border-radius: 22px;
+        box-shadow: 0 40px 90px -20px rgba(0, 0, 0, .85)
+    }
+
+    .lg-brand,
+    .lg-form h1,
+    .lg-form .lg-sub {
+        display: none
     }
 
     .lg-form {
-        order: -1;
-        background: #fff;
-        padding: 36px 48px 30px;
-        display: flex;
-        flex-direction: column;
-        text-align: left
+        padding: 64px 44px 66px;
+        text-align: center
     }
 
     .lg-mark {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 10px;
-        margin-bottom: auto;
-        font-weight: 800;
-        font-size: 1.05rem;
-        letter-spacing: -.01em;
-        color: var(--tx)
+        gap: 4px;
+        margin-bottom: 44px;
+        color: #fff
     }
 
     .lg-mark img {
-        width: 44px;
-        height: 44px;
+        width: 72px;
+        height: 72px;
+        margin-bottom: 8px;
         object-fit: contain;
         border-radius: 50%;
-        box-shadow: 0 0 8px rgba(255, 79, 0, .4)
+        box-shadow: 0 0 12px 1px rgba(255, 79, 0, .4)
     }
 
-    .lg-form h1 {
-        margin-top: 28px;
-        font-size: 1.7rem;
-        color: var(--tx)
+    .lg-mark span {
+        font-family: "Newsreader", Georgia, "Times New Roman", serif;
+        font-weight: 700;
+        font-size: 2.5rem;
+        letter-spacing: .2em;
+        padding-left: .2em;
+        line-height: 1.1
     }
 
-    .lg-form .lg-sub {
-        margin-bottom: 22px;
-        font-size: .95rem;
-        color: var(--mut)
+    .lg-mark small br {
+        display: none
     }
 
-    .lg-form .btn {
-        min-height: 50px
+    .lg-mark small b {
+        display: block;
+        margin-bottom: 4px;
+        font-size: .88rem;
+        font-weight: 700;
+        color: #fff
+    }
+
+    .lg-mark small {
+        max-width: none;
+        line-height: 1.5;
+        font-size: .8rem;
+        color: rgba(255, 255, 255, .62);
+        letter-spacing: .02em
+    }
+
+    .lg-form .grid {
+        gap: 28px
     }
 
     .lbl {
@@ -285,83 +311,81 @@ body.login {
         overflow: visible;
         clip: auto;
         display: block;
-        margin-bottom: 4px;
-        font-size: .82rem;
+        margin-bottom: 2px;
+        font-size: .72rem;
         font-weight: 600;
-        color: #5b5049
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, .7)
     }
 
     .pw input {
-        min-height: 48px
-    }
-
-    .lg-form .lg-note {
-        margin: auto 0 0;
-        padding-top: 28px;
-        font-size: .78rem;
-        color: var(--mut)
-    }
-
-    .lg-brand {
-        order: 1;
-        position: relative;
-        padding: 0;
+        min-height: 46px;
+        padding: 0 44px 0 0;
+        border: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, .3);
         border-radius: 0;
-        background: #2a2420
-    }
-
-    .lg-brand h2,
-    .lg-brand p,
-    .lg-brand>img:not(.lg-photo) {
-        display: none
-    }
-
-    /* orange gradient over the photo */
-    .lg-brand::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(to left, rgba(217, 82, 10, .85), rgba(242, 107, 29, .35) 45%, rgba(242, 107, 29, 0) 80%)
-    }
-
-    .lg-brand .lg-photo {
-        display: block;
-        position: absolute;
-        inset: 0;
-        left: 0;
-        bottom: 0;
-        transform: none;
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
+        background: transparent;
+        color: #fff;
+        font-size: 1rem;
         box-shadow: none;
-        background: none;
-        object-fit: cover
+        transition: border-color .2s
+    }
+
+    .pw input::placeholder {
+        color: transparent
+    }
+
+    .pw input:focus {
+        outline: 0;
+        border-bottom-color: var(--o);
+        box-shadow: 0 1px 0 0 var(--o)
+    }
+
+    .pw input:-webkit-autofill {
+        -webkit-text-fill-color: #fff;
+        transition: background-color 9999s 0s
+    }
+
+    .pw-i,
+    .pw-t {
+        right: 0;
+        color: rgba(255, 255, 255, .6)
+    }
+
+    .pw-t:hover {
+        background: rgba(255, 255, 255, .1);
+        color: #fff
+    }
+
+    .pw-t.on {
+        color: var(--o)
+    }
+
+    .lg-form .btn {
+        margin-top: 8px;
+        min-height: 52px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1f1a17;
+        background: linear-gradient(135deg, #ff8a3d, #f26b1d);
+        border: 0
+    }
+
+    .lg-form .btn:hover {
+        filter: brightness(1.06)
+    }
+
+    .lg-form .alert {
+        background: rgba(220, 38, 38, .16);
+        border: 1px solid rgba(248, 113, 113, .4);
+        color: #fecaca
     }
 }
 
 @media(prefers-reduced-motion:no-preference) {
     .lg {
         animation: rise .4s cubic-bezier(.2, .7, .2, 1) both
-    }
-}
-
-/* the card floats gently on desktop */
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0)
-    }
-
-    50% {
-        transform: translateY(-10px)
-    }
-}
-
-@media(min-width:760px) and (prefers-reduced-motion:no-preference) {
-    .lg {
-        animation: rise .4s cubic-bezier(.2, .7, .2, 1) both, float 6s ease-in-out .5s infinite
     }
 }
