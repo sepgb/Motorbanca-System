@@ -30,7 +30,8 @@ const DEP_RECENT = "EXISTS(SELECT 1 FROM trips t WHERE t.motorbanca_id=m.id AND 
 function live_rows()
 {
     return db()->query("SELECT m.id, m.motorbanca_name name, m.capacity, m.status, m.cluster_id, " . PAX_SQL . " pax,
-        (SELECT 120 - TIMESTAMPDIFF(SECOND, MAX(t.departure_time), NOW()) FROM trips t WHERE t.motorbanca_id=m.id AND t.status='Departed') left_s
+        (SELECT 120 - TIMESTAMPDIFF(SECOND, MAX(t.departure_time), NOW()) FROM trips t WHERE t.motorbanca_id=m.id AND t.status='Departed') left_s,
+        (SELECT DATE_FORMAT(DATE_ADD(t.start_time, INTERVAL 70 MINUTE), '%l:%i %p') FROM trips t WHERE t.motorbanca_id=m.id AND t.status='Queued' AND t.start_time IS NOT NULL ORDER BY t.id DESC LIMIT 1) etd
         FROM motorbancas m WHERE m.status='Queued' OR (m.status='Departed' AND " . DEP_RECENT . ")
         ORDER BY (m.status='Departed'), m.queued_at, m.id")->fetchAll();
 }
@@ -54,6 +55,7 @@ function render_live($admin = false)
         foreach ($dep as $r) echo mb_card($r, ++$pos, 'DEPARTED');
         // only the ON QUEUE boat gets a card; the next-trip boat is shown in the footer below
         foreach ($q as $i => $r) if (tag_for((bool)$dep, $i) === 'ON QUEUE') echo mb_card($r, ++$pos, 'ON QUEUE');
+        if (!$dep && $q && !empty($q[0]['etd'])) echo "<div class='etd-row'><div class='etd'>Expected departure <b>" . e($q[0]['etd']) . "</b></div></div>";   // bottom-right, above the footer line
         echo "<div class='cfoot'>" . ($next
             ? "<div class='next yes'>⏭ Next Trip: <b>" . e($next['name']) . "</b></div>"
             : "<div class='next no'>⛔ No Next Trip Available</div>");
