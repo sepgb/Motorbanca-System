@@ -3,6 +3,7 @@ require_once '../config/layout.php';
 require_once '../config/announcements.php';
 need('admin');
 ann_ensure();
+susp_ensure();
 $msg = $_SESSION['ann_msg'] ?? '';
 unset($_SESSION['ann_msg']);
 $err = '';
@@ -16,20 +17,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $t = trim($_POST['title'] ?? '');
         $b = trim($_POST['body'] ?? '');
         $k = $_POST['kind'] ?? 'info';
+        $act = in_array($_POST['act'] ?? '', ['suspend', 'resume'], true) ? $_POST['act'] : null;
         if (!isset(ANN_KINDS[$k])) $k = 'info';
         if ($t === '' || $b === '' || mb_strlen($t) > 120 || mb_strlen($b) > 2000) $err = 'Please enter a title and a message (message up to 2000 characters).';
         else {
-            db()->prepare("INSERT INTO announcements(kind,title,body) VALUES(?,?,?)")->execute([$k, $t, $b]);
-            $_SESSION['ann_msg'] = 'Announcement posted to operators and passengers.';
+            db()->prepare("INSERT INTO announcements(kind,title,body,act) VALUES(?,?,?,?)")->execute([$k, $t, $b, $act]);
+            if ($act === 'suspend') suspend_all_boats();
+            $_SESSION['ann_msg'] = $act === 'suspend' ? 'Travel suspended. All boats on queue have departed and new trips are blocked.' : ($act === 'resume' ? 'Travel resumed. Operators can start new trips again.' : 'Announcement posted to operators and passengers.');
             header('Location: announcements.php');
             exit;
         }
     }
 }
 $tpl = [
-    ['Suspension of travel', 'danger', 'Suspension of Travel', "Public Storm Warning Signal No. 1 is now raised over Binangonan. Under Coast Guard rules, Wind Signal No. 1 means travel is automatically suspended. All motorbanca trips from Binangonan port are suspended until the signal is lifted. Operators must not depart. Passengers are advised to stay safe and wait for the next announcement."],
+    ['Suspension of travel', 'danger', 'Suspension of Travel', "Public Storm Warning Signal No. 1 is now raised over Binangonan. Under Coast Guard rules, Wind Signal No. 1 means travel is automatically suspended. All motorbanca trips from Binangonan port are suspended until the signal is lifted. Operators must not depart. Passengers are advised to stay safe and wait for the next announcement.", 'suspend'],
     ['Gale warning', 'danger', 'Gale Warning', "A gale warning is in effect over Laguna de Bay. Small sea craft are advised not to venture out. Trips may be suspended at the discretion of the Coast Guard."],
-    ['Resumption of travel', 'ok', 'Travel Resumes', "Weather conditions have improved and the wind signal has been lifted. Motorbanca trips from Binangonan port are now allowed to resume. Operators may start the inspection and queue process again."],
+    ['Resumption of travel', 'ok', 'Travel Resumes', "Weather conditions have improved and the wind signal has been lifted. Motorbanca trips from Binangonan port are now allowed to resume. Operators may start the inspection and queue process again.", 'resume'],
     ['Limited trips', 'warn', 'Limited Trips', "Due to bad weather, only a few motorbancas are queuing at the port. Expect fewer trips and longer waiting times. Passengers are advised to wait for the Coast Guard's go signal and wear life jackets at all times."],
     ['Fare update', 'info', 'Fare Update', "The fare rates have been updated. Please check the Fares page for the new amounts."],
 ];
@@ -47,6 +50,8 @@ page_head('Announcements', 'admin');
             <?php foreach ($tpl as $i => $t): ?><button type="button" class="ann-chip k-<?= $t[1] ?>" data-i="<?= $i ?>"><b><?= e($t[0]) ?></b><span class="ann-d"><?= e($t[3]) ?></span></button><?php endforeach; ?>
         </div>
         <form method="post" id="annf">
+            <input type="hidden" name="act" id="a-act" value="">
+            <div class="alert bad" id="a-actn" hidden style="margin:0 0 6px"></div>
             <label>Type</label>
             <select name="kind" id="a-kind"><?php foreach (ANN_KINDS as $k => $l): ?><option value="<?= $k ?>" <?= ($_POST['kind'] ?? 'info') === $k ? ' selected' : '' ?>><?= $l ?></option><?php endforeach; ?></select>
             <div class="ann-seg" id="a-seg"><?php foreach (ANN_KINDS as $k => $l): ?><button type="button" class="k-<?= $k ?>" data-k="<?= $k ?>"><i></i><?= $l ?></button><?php endforeach; ?></div>
@@ -68,6 +73,11 @@ page_head('Announcements', 'admin');
             b.addEventListener('click', function() {
                 var t = T[b.dataset.i];
                 document.getElementById('a-kind').value = t[1];
+                var a = t[4] || '';
+                document.getElementById('a-act').value = a;
+                var n = document.getElementById('a-actn');
+                n.hidden = !a;
+                n.textContent = a === 'suspend' ? 'Posting this will make every boat on queue depart and block all new trips until a Resumption of travel notice is posted.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
                 document.getElementById('a-title').value = t[2];
                 document.getElementById('a-body').value = t[3];
                 document.getElementById('a-title').focus()

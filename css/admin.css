@@ -3190,3 +3190,29 @@ body.r-public .main>.lead {
         padding-bottom: 54px
     }
 }
+
+.r-admin .mb.empty.susp {
+    background: #fff5f4;
+    color: #b42318;
+    align-content: center
+}
+
+.mb.empty.susp b {
+    letter-spacing: .06em;
+    font-size: .95rem
+}
+
+.mb.empty.susp p {
+    margin: 4px 0 0;
+    color: #b42318;
+    font-size: .88rem
+}
+
+.dep-wait.big.susp {
+    background: #fee4e2;
+    color: #b42318
+}
+
+#a-actn[hidden] {
+    display: none !important
+}

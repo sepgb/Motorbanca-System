@@ -53,3 +53,37 @@ if (!function_exists('ann_ensure')) {
         }
     }
 }
+
+// ---- Travel suspension: the newest "Suspension of travel" / "Resumption of travel" notice decides the state ----
+if (!function_exists('susp_ensure')) {
+    function susp_ensure()
+    {
+        static $d;
+        if ($d) return;
+        $d = true;
+        try {
+            db()->exec("CREATE TABLE IF NOT EXISTS announcements (id INT AUTO_INCREMENT PRIMARY KEY, kind VARCHAR(10) NOT NULL DEFAULT 'info', title VARCHAR(120) NOT NULL, body TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB");
+            if (!db()->query("SHOW COLUMNS FROM announcements LIKE 'act'")->fetch()) db()->exec("ALTER TABLE announcements ADD COLUMN act VARCHAR(10) NULL");
+        } catch (PDOException $x) {
+        }
+    }
+    function travel_suspended()
+    {
+        static $v;
+        if ($v === null) {
+            susp_ensure();
+            try {
+                $v = db()->query("SELECT act FROM announcements WHERE act IS NOT NULL ORDER BY id DESC LIMIT 1")->fetchColumn() === 'suspend';
+            } catch (PDOException $x) {
+                $v = false;
+            }
+        }
+        return $v;
+    }
+    // Admin posted a suspension: every boat on queue departs, boats waiting for inspection are cancelled.
+    function suspend_all_boats()
+    {
+        foreach (db()->query("SELECT id, status FROM motorbancas WHERE status IN ('Queued','Inspection') ORDER BY queued_at, id")->fetchAll() as $b)
+            set_status((int)$b['id'], $b['status'] === 'Queued' ? 'Departed' : 'Not Queued');
+    }
+}

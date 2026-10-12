@@ -11,6 +11,10 @@ if (!in_array($m['status'], ['Not Queued', 'Departed'], true)) {
     header('Location: manifest.php');
     exit;
 }
+if (travel_suspended()) {
+    header('Location: dashboard.php');
+    exit;
+}   // travel suspended
 if ($wait = next_trip_at($m['id'])) {
     header('Location: dashboard.php');
     exit;

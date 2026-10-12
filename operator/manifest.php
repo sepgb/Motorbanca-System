@@ -73,7 +73,7 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
   <?php if ($err) echo "<div class='alert bad mp-alert'>" . e($err) . "</div>"; ?>
   <?php $showForm = false;
   if (!$trip): ?>
-    <div class="alert mp-alert">No active trip. Go Home and tap New trip.</div>
+    <div class="alert mp-alert"><?= travel_suspended() ? 'Travel is suspended by the PCG. You cannot start a new trip until travel resumes.' : 'No active trip. Go Home and tap New trip.' ?></div>
   <?php elseif (!$open): ?>
     <div class="alert mp-alert"><?= $m['status'] === 'Inspection'
                                   ? 'Your boat is <b>FOR INSPECTION</b>. You can add passengers once the PCG approves it and it is ON QUEUE.'

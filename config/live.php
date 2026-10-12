@@ -1,6 +1,7 @@
 <?php
 // Shared "one source of truth" helpers used by admin, operator and passenger pages.
 require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/announcements.php';
 
 function badge($s)
 {
@@ -73,7 +74,9 @@ function render_live($admin = false)
         echo "<section class='cluster'><h2>" . e($c['name']) . "</h2>";
         if (!empty($bmap[$c['id']])) echo "<div class='brgy'><small>Barangays</small>" .
             implode('', array_map(fn($b) => "<span>" . e($b) . "</span>", $bmap[$c['id']])) . "</div>";
-        if (!$dep && !$q) echo "<div class='mb empty'><p class='muted'>No motorbanca on queue right now.</p></div>";
+        if (!$dep && !$q) echo travel_suspended()
+            ? "<div class='mb empty susp'><b>TRAVEL SUSPENDED</b><p>No trips until the Coast Guard lifts the suspension.</p></div>"
+            : "<div class='mb empty'><p class='muted'>No motorbanca on queue right now.</p></div>";
         $pos = 0;
         foreach ($dep as $r) echo mb_card($r, ++$pos, 'DEPARTED');
         // only the ON QUEUE boat gets a card; the next-trip boat is shown in the footer below
@@ -83,6 +86,10 @@ function render_live($admin = false)
             if ($admin) echo depart_form($q[0]['id'], $q[0]['name']);   // PCG only
             echo "</div>";
         }
+        if (!$dep && !$q && travel_suspended()) {
+            echo "<div class='cfoot' style='visibility:hidden'><div class='next no'>&nbsp;</div></div></section>";
+            continue;
+        }   // suspended: no next trip, footer kept blank so the card height stays the same
         echo "<div class='cfoot'>" . ($next
             ? "<div class='next yes'>⏭ Next Trip: <b>" . e($next['name']) . "</b></div>"
             : "<div class='next no'>⛔ No Next Trip Available</div>");
@@ -202,6 +209,7 @@ function inspection_schema()
 // The ONLY place a status changes: keeps motorbanca + trip in sync.
 function set_status($mid, $st)
 {
+    if (($st === 'Inspection' || $st === 'Queued') && travel_suspended()) return;   // no new trips while travel is suspended
     if ($st === 'Inspection') inspection_schema();   // ALTER TABLE commits implicitly, so it runs before the transaction
     $pdo = db();
     $pdo->beginTransaction();
@@ -321,55 +329,4 @@ function depart_form($id, $name = '')
         "<input type='hidden' name='mid' value='" . (int)$id . "'>" .
         "<button class='depart'>Depart<span>" .
         ico('<path d="M7 17L17 7M8 7h9v9"/>') . "</span></button></form>";
-}
-
-// ---------- Announcements (posted by the PCG admin, shown to operators and passengers) ----------
-const ANN_KINDS = ['danger' => 'Warning', 'warn' => 'Advisory', 'ok' => 'Good news', 'info' => 'Notice'];
-function ann_ensure()
-{
-    static $done;
-    if ($done) return;
-    $done = true;
-    try {
-        db()->exec("CREATE TABLE IF NOT EXISTS announcements (
-        id INT AUTO_INCREMENT PRIMARY KEY, kind VARCHAR(10) NOT NULL DEFAULT 'info',
-        title VARCHAR(120) NOT NULL, body TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB");
-    } catch (PDOException $x) {
-    }
-}
-function ann_all()
-{
-    ann_ensure();
-    try {
-        return db()->query("SELECT * FROM announcements ORDER BY id DESC LIMIT 100")->fetchAll();
-    } catch (PDOException $x) {
-        return [];
-    }
-}
-// Strip shown on other pages while a recent announcement (last 24 hours) is out.
-function ann_banner($url)
-{
-    ann_ensure();
-    try {
-        $a = db()->query("SELECT * FROM announcements WHERE created_at >= (NOW() - INTERVAL 24 HOUR) ORDER BY id DESC LIMIT 1")->fetch();
-    } catch (PDOException $x) {
-        return '';
-    }
-    if (!$a) return '';
-    return "<a class='ann-strip k-" . e($a['kind']) . "' href='" . e($url) . "'><b>" . e($a['title']) . "</b><span>View announcement &rsaquo;</span></a>";
-}
-function ann_list($admin = false)
-{
-    $rows = ann_all();
-    if (!$rows) {
-        echo "<div class='card'><p class='muted' style='margin:0'>No announcements yet.</p></div>";
-        return;
-    }
-    foreach ($rows as $a) {
-        $k = isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info';
-        echo "<article class='ann k-$k'><div class='ann-h'><span class='ann-tag'>" . ANN_KINDS[$k] . "</span><time>" . date('M j, Y \a\t g:i A', strtotime($a['created_at'])) . "</time></div><h3>" . e($a['title']) . "</h3><p>" . nl2br(e($a['body'])) . "</p>";
-        if ($admin) echo "<form method='post' onsubmit=\"return confirm('Delete this announcement?')\"><input type='hidden' name='del' value='" . (int)$a['id'] . "'><button class='btn sm ghost'>Delete</button></form>";
-        echo "</article>";
-    }
 }
