@@ -1,6 +1,9 @@
 <?php
 // Public: a passenger checks that they are on a queued boat, picks their destination barangay and follows their live location.
 require_once '../config/layout.php';
+require_once '../config/profile.php';
+pax_device();
+$pf = pax_profile();   // details saved on this device's Profile page
 $all = [];
 try {
     $all = db()->query("SELECT DISTINCT name FROM barangays ORDER BY name")->fetchAll(PDO::FETCH_COLUMN);
@@ -15,13 +18,13 @@ page_head('Track my ride', 'public');
 <div class="trk" id="trk" data-api="<?= BASE ?>/api/track.php">
     <div class="alert trk-sec" id="sec" hidden><b>Location needs a secure page.</b> This page was opened with plain http, so the browser will block your location. <a id="secgo" href="#">Open the secure (https) page</a>. If your browser warns about the certificate, tap Advanced, then Proceed.</div>
     <!-- step 1 -->
-    <form class="card trk-card" id="s1" autocomplete="off">
+    <form class="card trk-card<?= $pf ? ' trk-lock' : '' ?>" id="s1" autocomplete="off">
         <h3>1. Find my boat</h3>
-        <p class="muted">Enter your details exactly as they were given to the boat operator.</p>
-        <label>Full name<input name="name" maxlength="80" required></label>
+        <p class="muted"><?= $pf ? 'Your details come from your <a href="profile.php">Profile</a>.' : 'Enter your details exactly as they were given to the boat operator, or <a href="profile.php">set up your Profile</a> to fill this in automatically.' ?></p>
+        <label>Full name<input name="name" maxlength="80" required<?= $pf ? ' readonly tabindex="-1"' : '' ?> value="<?= e($pf['full_name'] ?? '') ?>"></label>
         <div class="trk-row">
-            <label>Age<input name="age" type="number" inputmode="numeric" min="0" max="120" required></label>
-            <label>Barangay<input name="barangay" list="brgys" maxlength="60" required></label>
+            <label>Age<input name="age" type="number" inputmode="numeric" min="0" max="120" required<?= $pf ? ' readonly tabindex="-1"' : '' ?> value="<?= e($pf['age'] ?? '') ?>"></label>
+            <label>Barangay<input name="barangay" list="brgys" maxlength="60" required<?= $pf ? ' readonly tabindex="-1"' : '' ?> value="<?= e($pf['barangay'] ?? '') ?>"></label>
         </div>
         <datalist id="brgys"><?php foreach ($all as $n) echo '<option value="' . e($n) . '">'; ?></datalist>
         <div class="alert bad" id="e1" hidden></div>

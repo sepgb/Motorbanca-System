@@ -3576,3 +3576,12 @@ body.r-public .main>.lead {
     width: 14px;
     height: 14px
 }
+
+.trk-lock input {
+    background: #f3eee9 !important;
+    color: #8a7f77 !important;
+    border-color: #eadfd5 !important;
+    cursor: not-allowed;
+    pointer-events: none;
+    -webkit-text-fill-color: #8a7f77
+}
