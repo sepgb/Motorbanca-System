@@ -72,7 +72,7 @@ JS;
         $me = basename($_SERVER['PHP_SELF']);
         $plinks = ['index.php' => 'Live Queue', 'fares.php' => 'Fares', 'track.php' => 'Track Ride', 'announcements.php' => 'Announcements'];
         $ptab = ['index.php' => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', 'fares.php' => '<circle cx="12" cy="12" r="9"/><path d="M9.5 17V7.5h3.2a2.6 2.6 0 010 5.2H9.5M8 14.2h5"/>', 'track.php' => '<path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', 'announcements.php' => '<path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/>'];
-        echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'><img src='$b/admin/logo.webp' alt='Philippine Coast Guard' width='44' height='44'><span>BATIS</span></a><nav class='pills'>";
+        echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'>" . "<svg viewBox='0 0 40 40' width='40' height='40' fill='none' stroke='#f26b1d' stroke-width='5' stroke-linecap='round'><circle cx='20' cy='20' r='15' stroke-dasharray='19 12.42' transform='rotate(-80 20 20)'/></svg>" . "<span>Port Control</span></a><nav class='pills'>";
         foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on'" : '') . ">$l</a>";
         echo "</nav><div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header>";
         echo "<nav class='btabs' aria-label='Main'>";
