@@ -95,7 +95,7 @@ function stats_html()
     $rows = live_rows();
     $nextCount = 0;
     foreach (db()->query("SELECT id FROM clusters")->fetchAll() as $c) if (split_cluster($rows, $c['id'])[2]) $nextCount++;
-    $paxSql = "SELECT COUNT(*) FROM passengers p JOIN trips t ON t.id=p.trip_id WHERE t.status<>'Cancelled' AND t.trip_date=";
+    $paxSql = "SELECT COUNT(*) FROM passengers p JOIN trips t ON t.id=p.trip_id WHERE t.status<>'Cancelled' AND DATE(COALESCE(t.departure_time, t.trip_date))=";   // a departed trip counts on the day it left
     $today = $q($paxSql . "CURDATE()");
     $yday = $q($paxSql . "CURDATE() - INTERVAL 1 DAY");
     if ($yday > 0) {
@@ -321,4 +321,55 @@ function depart_form($id, $name = '')
         "<input type='hidden' name='mid' value='" . (int)$id . "'>" .
         "<button class='depart'>Depart<span>" .
         ico('<path d="M7 17L17 7M8 7h9v9"/>') . "</span></button></form>";
+}
+
+// ---------- Announcements (posted by the PCG admin, shown to operators and passengers) ----------
+const ANN_KINDS = ['danger' => 'Warning', 'warn' => 'Advisory', 'ok' => 'Good news', 'info' => 'Notice'];
+function ann_ensure()
+{
+    static $done;
+    if ($done) return;
+    $done = true;
+    try {
+        db()->exec("CREATE TABLE IF NOT EXISTS announcements (
+        id INT AUTO_INCREMENT PRIMARY KEY, kind VARCHAR(10) NOT NULL DEFAULT 'info',
+        title VARCHAR(120) NOT NULL, body TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB");
+    } catch (PDOException $x) {
+    }
+}
+function ann_all()
+{
+    ann_ensure();
+    try {
+        return db()->query("SELECT * FROM announcements ORDER BY id DESC LIMIT 100")->fetchAll();
+    } catch (PDOException $x) {
+        return [];
+    }
+}
+// Strip shown on other pages while a recent announcement (last 24 hours) is out.
+function ann_banner($url)
+{
+    ann_ensure();
+    try {
+        $a = db()->query("SELECT * FROM announcements WHERE created_at >= (NOW() - INTERVAL 24 HOUR) ORDER BY id DESC LIMIT 1")->fetch();
+    } catch (PDOException $x) {
+        return '';
+    }
+    if (!$a) return '';
+    return "<a class='ann-strip k-" . e($a['kind']) . "' href='" . e($url) . "'><b>" . e($a['title']) . "</b><span>View announcement &rsaquo;</span></a>";
+}
+function ann_list($admin = false)
+{
+    $rows = ann_all();
+    if (!$rows) {
+        echo "<div class='card'><p class='muted' style='margin:0'>No announcements yet.</p></div>";
+        return;
+    }
+    foreach ($rows as $a) {
+        $k = isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info';
+        echo "<article class='ann k-$k'><div class='ann-h'><span class='ann-tag'>" . ANN_KINDS[$k] . "</span><time>" . date('M j, Y \a\t g:i A', strtotime($a['created_at'])) . "</time></div><h3>" . e($a['title']) . "</h3><p>" . nl2br(e($a['body'])) . "</p>";
+        if ($admin) echo "<form method='post' onsubmit=\"return confirm('Delete this announcement?')\"><input type='hidden' name='del' value='" . (int)$a['id'] . "'><button class='btn sm ghost'>Delete</button></form>";
+        echo "</article>";
+    }
 }

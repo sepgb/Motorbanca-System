@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/live.php';
+require_once __DIR__ . '/announcements.php';
 // URL of a css/js file with its last-modified time, so phones and browsers never keep an old copy after an update.
 function asset($path)
 {
@@ -19,8 +20,8 @@ function page_head($title, $role = 'public')
     if ($role === 'admin' || $role === 'operator') {
         $me = basename($_SERVER['PHP_SELF']);
         $dir = $role === 'operator' ? 'operator' : 'admin';
-        $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers', 'trips.php' => 'Trip History']
-            : ['dashboard.php' => 'Dashboard', 'motorbancas.php' => 'Register', 'queue.php' => 'Queue', 'trip' . 's.php' => 'Trip History'];
+        $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers', 'trips.php' => 'Trip History', 'announcements.php' => 'Announcements']
+            : ['dashboard.php' => 'Dashboard', 'motorbancas.php' => 'Register', 'queue.php' => 'Queue', 'trip' . 's.php' => 'Trip History', 'announcements.php' => 'Announcements'];
         $logo = "<svg viewBox='0 0 40 40' width='40' height='40' fill='none' stroke='#f26b1d' stroke-width='5' stroke-linecap='round'><circle cx='20' cy='20' r='15' stroke-dasharray='19 12.42' transform='rotate(-80 20 20)'/></svg>";
         echo "<header class='atop'><a class='logo' href='$b/$dir/dashboard.php'>$logo<span>Port Control</span></a>
 <button class='ibtn a-burger' aria-label='Menu' onclick=\"document.body.classList.toggle('nav-open')\">" . ico('<path d="M4 7h16M4 12h16M4 17h16"/>') . "</button>
@@ -44,10 +45,12 @@ JS;
             'motorbancas.php' => '<path d="M12 5v14M5 12h14"/>',
             'manifest.php' => '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.6a3.5 3.5 0 010 6.8M18 14.3c2.2.7 3.5 2.6 3.5 5.2"/>',
             'queue.php' => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
-            'trips.php' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+            'trips.php' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+            'announcements.php' => '<path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/>'
         ];
+        $short = ['announcements.php' => 'Alerts', 'trips.php' => 'History'];
         echo "<nav class='btabs' aria-label='Main'>";
-        foreach ($links as $f => $l) echo "<a href='$b/$dir/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($tabIco[$f]) . "</i><span>$l</span></a>";
+        foreach ($links as $f => $l) echo "<a href='$b/$dir/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($tabIco[$f]) . "</i><span>" . ($short[$f] ?? $l) . "</span></a>";
         echo "<a href='$b/logout.php' class='lo'><i>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</i><span>Log out</span></a></nav>";
         // confirm before logging out (top button and bottom tab)
         echo "<div class='mdl' id='lo-mdl' role='dialog' aria-modal='true' aria-labelledby='lo-t'><div class='mdl-box'><div class='mdl-ic red'>" .
@@ -64,16 +67,18 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList
 })();</script>
 JS;
         echo "<main class='main'>";
+        if ($role === 'operator' && $me !== 'announcements.php') echo ann_banner($b . '/operator/announcements.php');
     } else {
         $me = basename($_SERVER['PHP_SELF']);
-        $plinks = ['index.php' => 'Live Queue', 'fares.php' => 'Fares', 'track.php' => 'Track Ride'];
-        $ptab = ['index.php' => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', 'fares.php' => '<circle cx="12" cy="12" r="9"/><path d="M9.5 17V7.5h3.2a2.6 2.6 0 010 5.2H9.5M8 14.2h5"/>', 'track.php' => '<path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'];
+        $plinks = ['index.php' => 'Live Queue', 'fares.php' => 'Fares', 'track.php' => 'Track Ride', 'announcements.php' => 'Announcements'];
+        $ptab = ['index.php' => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', 'fares.php' => '<circle cx="12" cy="12" r="9"/><path d="M9.5 17V7.5h3.2a2.6 2.6 0 010 5.2H9.5M8 14.2h5"/>', 'track.php' => '<path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', 'announcements.php' => '<path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/>'];
         echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'><img src='$b/admin/logo.webp' alt='Philippine Coast Guard' width='44' height='44'><span>BATIS</span></a><nav class='pills'>";
         foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on'" : '') . ">$l</a>";
         echo "</nav><div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header>";
         echo "<nav class='btabs' aria-label='Main'>";
-        foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i><span>$l</span></a>";
+        foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i><span>" . ($f === 'announcements.php' ? 'Alerts' : $l) . "</span></a>";
         echo "</nav><main class='main'>";
+        if ($me !== 'announcements.php') echo ann_banner($b . '/passenger/announcements.php');
         if ($me === 'index.php') echo "<h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", passenger</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><i class='dot'></i>Live queue</h2>";
     }
 }
