@@ -67,7 +67,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList
 })();</script>
 JS;
         echo "<main class='main'>";
-        if ($role === 'operator' && $me !== 'announcements.php') echo ann_banner($b . '/operator/announcements.php');
+        if ($role === 'operator' && $me === 'dashboard.php') echo ann_strip($b . '/operator/announcements.php');
     } else {
         $me = basename($_SERVER['PHP_SELF']);
         $plinks = ['index.php' => 'Live Queue', 'fares.php' => 'Fares', 'track.php' => 'Track Ride', 'announcements.php' => 'Announcements'];
@@ -78,7 +78,7 @@ JS;
         echo "<nav class='btabs' aria-label='Main'>";
         foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i><span>" . ($f === 'announcements.php' ? 'Alerts' : $l) . "</span></a>";
         echo "</nav><main class='main'>";
-        if ($me !== 'announcements.php') echo ann_banner($b . '/passenger/announcements.php');
+        if ($me === 'index.php') echo ann_strip($b . '/passenger/announcements.php');
         if ($me === 'index.php') echo "<h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", passenger</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><i class='dot'></i>Live queue</h2>";
     }
 }

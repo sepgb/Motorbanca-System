@@ -1,6 +1,7 @@
 <?php
 require_once '../config/layout.php';
 require_once '../config/announcements.php';
+ann_seen_mark();
 page_head('Announcements', 'public');
 ?>
 <h1>Announcements</h1>

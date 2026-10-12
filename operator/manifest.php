@@ -59,7 +59,7 @@ page_head('Passengers', 'operator');
       </svg></div>
     <h2>Trip departed</h2>
     <p>Your trip has departed. The manifest are saved in Trip History.</p>
-    <?php if ($wait): ?><div class="dep-wait">New trip available from <b><?= e($wait) ?></b></div><?php endif; ?>
+    <?php if (travel_suspended()): ?><div class="dep-wait susp">Travel is suspended. You cannot start a new trip yet.</div><?php elseif ($wait): ?><div class="dep-wait">New trip available from <b><?= e($wait) ?></b></div><?php endif; ?>
     <a class="btn" href="trips.php">Open Trip History</a>
   </div>
 <?php page_foot('operator');

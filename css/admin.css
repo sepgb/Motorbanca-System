@@ -3216,3 +3216,8 @@ body.r-public .main>.lead {
 #a-actn[hidden] {
     display: none !important
 }
+
+.dep-wait.susp {
+    background: #fee4e2;
+    color: #b42318
+}

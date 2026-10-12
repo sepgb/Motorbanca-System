@@ -87,3 +87,29 @@ if (!function_exists('susp_ensure')) {
             set_status((int)$b['id'], $b['status'] === 'Queued' ? 'Departed' : 'Not Queued');
     }
 }
+
+// ---- Home-page strip: shows once for the newest announcement; opening the Announcements page dismisses it ----
+if (!function_exists('ann_seen_mark')) {
+    function ann_seen_mark()
+    {
+        susp_ensure();
+        try {
+            $id = (int)db()->query("SELECT MAX(id) FROM announcements")->fetchColumn();
+        } catch (PDOException $x) {
+            return;
+        }
+        if ($id && !headers_sent()) setcookie('ann_seen', (string)$id, time() + 86400 * 60, '/');
+        $_COOKIE['ann_seen'] = (string)$id;
+    }
+    function ann_strip($url)
+    {
+        susp_ensure();
+        try {
+            $a = db()->query("SELECT * FROM announcements WHERE created_at >= (NOW() - INTERVAL 24 HOUR) ORDER BY id DESC LIMIT 1")->fetch();
+        } catch (PDOException $x) {
+            return '';
+        }
+        if (!$a || (int)($_COOKIE['ann_seen'] ?? 0) >= (int)$a['id']) return '';
+        return "<a class='ann-strip k-" . e($a['kind']) . "' href='" . e($url) . "'><b>" . e($a['title']) . "</b><span>View announcement &rsaquo;</span></a>";
+    }
+}
