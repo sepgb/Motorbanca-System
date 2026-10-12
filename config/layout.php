@@ -79,12 +79,54 @@ JS;
         foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i><span>" . ($f === 'announcements.php' ? 'Alerts' : $l) . "</span></a>";
         echo "</nav><main class='main'>";
         if ($me === 'index.php') echo ann_strip($b . '/passenger/announcements.php');
-        if ($me === 'index.php') echo "<h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", passenger</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><i class='dot'></i>Live queue</h2>";
+        if ($me === 'index.php') echo "<h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", passenger</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><button type='button' class='scan-btn' id='scan-open' aria-label='Scan QR code' title='Scan QR code'>" . ico('<path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2M7 12h10"/>') . "</button><i class='dot'></i>Live queue</h2>";
     }
 }
 function page_foot($role = 'public')
 {
     $b = BASE;
     echo "</main>";
+    if ($role === 'public' && basename($_SERVER['PHP_SELF']) === 'index.php') {
+        require_once __DIR__ . '/profile.php';
+        $hasP = pax_profile() !== null;
+        echo "<div class='mdl' id='scan-mdl' role='dialog' aria-modal='true' aria-labelledby='scan-t'><div class='mdl-box scn-box'><h3 id='scan-t'>Scan trip QR</h3>" .
+            "<p>Point your camera at the QR code shown by the boat operator to add your profile details to the manifest.</p>" .
+            ($hasP ? '' : "<div class='alert'><b>No profile yet.</b> <a href='$b/passenger/profile.php'>Set up your profile</a> first.</div>") .
+            "<div class='scn-cam' id='cam' hidden><video id='vid' playsinline muted></video><i class='scn-frame'></i></div>" .
+            "<div class='alert bad' id='serr' hidden></div>" .
+            "<div class='alert trk-sec' id='sec' hidden>The camera needs a secure page. <a id='secgo' href='#'>Open the secure (https) page</a>. If your browser warns about the certificate, tap Advanced, then Proceed.</div>" .
+            "<button type='button' class='btn' id='start' hidden>Start camera</button>" .
+            "<div class='mdl-act'><button type='button' class='no' id='scan-close'>Close</button></div></div></div>" .
+            "<script src='https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js'></script><script>" . <<<'JS'
+(function(){
+var $=function(i){return document.getElementById(i)},m=$('scan-mdl'),vid=$('vid'),cam=$('cam'),err=$('serr'),btn=$('start'),stream=null,done=false,det=null,busy=false,run=false;
+if(!m)return;
+try{if('BarcodeDetector' in window)det=new BarcodeDetector({formats:['qr_code']})}catch(e){}
+if(!window.isSecureContext){$('secgo').href='https://'+location.hostname+location.pathname;$('sec').hidden=false}
+function show(t){err.textContent=t;err.hidden=!t}
+function stop(){run=false;if(stream)stream.getTracks().forEach(function(t){t.stop()});stream=null;cam.hidden=true}
+function found(txt){var x=String(txt).match(/[?&]t=([a-f0-9]{16})/i)||String(txt).trim().match(/^([a-f0-9]{16})$/i);if(!x||done)return false;done=true;stop();location.href=location.pathname.replace(/[^\/]*$/,'')+'join.php?t='+x[1].toLowerCase();return true}
+function decode(c){var g=c.getContext('2d'),w=c.width,h=c.height;
+  var js=function(){if(!window.jsQR)return null;var r=jsQR(g.getImageData(0,0,w,h).data,w,h,{inversionAttempts:'attemptBoth'});return r&&r.data};
+  if(det)return det.detect(c).then(function(r){return (r&&r[0]&&r[0].rawValue)||js()},function(){return js()});
+  return Promise.resolve(js())}
+function tick(){if(!run||done)return;
+  if(!busy&&vid.readyState===vid.HAVE_ENOUGH_DATA){busy=true;var c=document.createElement('canvas');c.width=vid.videoWidth;c.height=vid.videoHeight;c.getContext('2d').drawImage(vid,0,0,c.width,c.height);
+    decode(c).then(function(t){busy=false;if(t)found(t)},function(){busy=false})}
+  requestAnimationFrame(tick)}
+function start(){show('');btn.hidden=true;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){show('The camera is blocked on this page. Open the secure (https) page to scan.');btn.hidden=false;return}
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false}).then(function(s){stream=s;vid.srcObject=s;vid.play();cam.hidden=false;run=true;requestAnimationFrame(tick)},
+    function(e){show(e&&e.name==='NotAllowedError'?'Camera permission was denied. Allow the camera for this site, then try again.':'Could not start the camera.');btn.hidden=false;btn.textContent='Try again'})}
+function open(auto){m.classList.add('open');done=false;auto?start():(btn.hidden=false)}
+function close(){m.classList.remove('open');stop();show('')}
+$('scan-open').addEventListener('click',function(){open(true)});
+btn.addEventListener('click',start);$('scan-close').addEventListener('click',close);
+m.addEventListener('click',function(e){if(e.target===m)close()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList.contains('open'))close()});
+if(/[?&]scan=1/.test(location.search))open(false);
+})();
+JS . "</script>";
+    }
     echo "<script src='" . asset('js/script.js') . "'></script></body></html>";
 }

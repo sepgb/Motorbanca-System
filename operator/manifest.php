@@ -1,5 +1,6 @@
 <?php
 require_once '../config/layout.php';
+require_once '../config/qr.php';
 need('operator');
 $m = my_mb();
 if (!$m) {
@@ -94,6 +95,42 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
           <label>Barangay<input name="barangay" maxlength="60" autocomplete="off" required></label>
           <button class="btn">+ Add passenger</button>
         </form>
+      <?php endif; ?>
+      <?php if ($open): $qt = trip_qr_token($trip); ?>
+        <div class="card qrc">
+          <h3 style="margin:0">Trip QR code</h3>
+          <div class="qrc-box">
+            <div id="qr" data-url="<?= e(trip_join_url($qt)) ?>"></div>
+          </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <script>
+          (function() {
+            var e = document.getElementById('qr');
+            if (e && window.QRCode) new QRCode(e, {
+              text: e.dataset.url,
+              width: 200,
+              height: 200,
+              correctLevel: QRCode.CorrectLevel.M
+            })
+          })();
+          // passengers who scan appear here without refreshing
+          setInterval(function() {
+            if (document.hidden) return;
+            fetch(location.href, {
+              credentials: 'same-origin'
+            }).then(function(r) {
+              return r.text()
+            }).then(function(h) {
+              var d = new DOMParser().parseFromString(h, 'text/html');
+              ['.tablewrap', '.mp-count'].forEach(function(q) {
+                var a = document.querySelector(q),
+                  b = d.querySelector(q);
+                if (a && b && a.innerHTML !== b.innerHTML) a.innerHTML = b.innerHTML
+              })
+            }).catch(function() {})
+          }, 5000);
+        </script>
       <?php endif; ?>
       <?php if ($trip): ?>
         <div class="card mp-details">

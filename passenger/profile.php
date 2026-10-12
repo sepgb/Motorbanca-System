@@ -8,6 +8,7 @@ try {
     $brgys = db()->query("SELECT DISTINCT name FROM barangays ORDER BY name")->fetchAll(PDO::FETCH_COLUMN);
 } catch (PDOException $x) {
 }
+$next = preg_match('/^join\.php\?t=[a-f0-9]{16}$/', $_REQUEST['next'] ?? '') ? $_REQUEST['next'] : '';   // back to the QR join after setting up
 $p = pax_profile();
 $err = '';
 $editing = !$p || isset($_GET['edit']);
@@ -21,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     else {
         pax_save($name, $age, $b);
         $_SESSION['pax_saved'] = 1;
-        header('Location: profile.php');
+        header('Location: ' . ($next ?: 'profile.php'));
         exit;
     }
     $editing = true;
@@ -62,6 +63,7 @@ $ini = $p ? strtoupper(mb_substr(trim($p['full_name']), 0, 1)) : '';
         <h3 style="margin:0 0 4px"><?= pax_profile() ? 'Edit profile' : 'Set up your profile' ?></h3>
         <p class="muted" style="margin:0 0 14px"><?= pax_profile() ? 'Change your details, then save.' : 'Enter your details once. This device will remember you.' ?></p>
         <form method="post" class="pf-form" autocomplete="off">
+            <input type="hidden" name="next" value="<?= e($next) ?>">
             <label>Full name</label>
             <input name="full_name" maxlength="80" required value="<?= e($p['full_name'] ?? '') ?>" placeholder="Juan Dela Cruz">
             <div class="pf-row">

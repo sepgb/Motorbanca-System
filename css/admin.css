@@ -3585,3 +3585,343 @@ body.r-public .main>.lead {
     pointer-events: none;
     -webkit-text-fill-color: #8a7f77
 }
+
+/* QR join / scan */
+.pub-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px
+}
+
+.pub-top>div {
+    min-width: 0
+}
+
+.scan-btn {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 15px;
+    background: #f26b1d;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 8px 18px rgba(242, 107, 29, .3);
+    transition: transform .15s
+}
+
+.scan-btn:active {
+    transform: scale(.92)
+}
+
+.scan-btn .ico,
+.scan-btn svg {
+    width: 24px;
+    height: 24px;
+    display: block
+}
+
+.qrc {
+    text-align: center
+}
+
+.qrc h3 {
+    margin: 0 0 4px
+}
+
+.qrc-box {
+    display: flex;
+    justify-content: center;
+    margin: 14px 0 8px
+}
+
+.qrc-box>div {
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #eadfd5;
+    border-radius: 16px;
+    line-height: 0
+}
+
+.qrc-box img,
+.qrc-box canvas {
+    max-width: 100%;
+    height: auto
+}
+
+.qrc-code {
+    font-size: .85rem;
+    color: #8a7f77
+}
+
+.qrc-code b {
+    color: #3b3430;
+    letter-spacing: .08em;
+    font-family: ui-monospace, Menlo, Consolas, monospace
+}
+
+.jn {
+    max-width: 480px;
+    margin: 6px auto 0;
+    text-align: center;
+    padding: 30px 26px
+}
+
+.jn-ic {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 14px
+}
+
+.jn-ic .ico {
+    width: 36px;
+    height: 36px
+}
+
+.jn-ic.ok {
+    background: #dcfae6;
+    color: #18794e
+}
+
+.jn-ic.bad {
+    background: #fee4e2;
+    color: #b42318
+}
+
+.jn h2 {
+    margin: 0 0 6px
+}
+
+.jn p {
+    margin: 0 0 16px;
+    color: #5b514a;
+    line-height: 1.5
+}
+
+.jn-det {
+    margin: 0 0 18px;
+    text-align: left
+}
+
+.jn-act {
+    display: flex;
+    flex-direction: column;
+    gap: 10px
+}
+
+.scn {
+    max-width: 520px
+}
+
+.scn-cam {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #000;
+    margin-bottom: 14px;
+    aspect-ratio: 1/1
+}
+
+.scn-cam video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block
+}
+
+.scn-frame {
+    position: absolute;
+    inset: 18%;
+    border: 3px solid #fff;
+    border-radius: 18px;
+    box-shadow: 0 0 0 999px rgba(0, 0, 0, .35)
+}
+
+.scn-or {
+    text-align: center;
+    margin: 18px 0 12px;
+    color: #8a7f77;
+    font-size: .82rem;
+    position: relative
+}
+
+.scn-or span {
+    background: #fff;
+    padding: 0 10px;
+    position: relative
+}
+
+.scn-or::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 1px solid #eadfd5
+}
+
+.scn-code {
+    display: flex;
+    gap: 10px
+}
+
+.scn-code input {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+    font: inherit;
+    letter-spacing: .06em
+}
+
+.scn [hidden] {
+    display: none !important
+}
+
+.scn-photo {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    cursor: pointer;
+    text-align: center
+}
+
+.scn .btn {
+    width: 100%;
+    box-sizing: border-box
+}
+
+/* Live Queue row: scan icon at the right end of the row (phones/tablets only) */
+.scan-btn {
+    flex: none;
+    order: 3;
+    margin-left: auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    background: transparent;
+    color: #1f1a17;
+    border: 1px solid #1f1a17;
+    box-shadow: none;
+    display: grid;
+    place-items: center;
+    transition: transform .12s, background .12s
+}
+
+.scan-btn:active {
+    transform: scale(.92);
+    background: rgba(31, 26, 23, .08)
+}
+
+.scan-btn .ico,
+.scan-btn svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+    stroke-width: 2
+}
+
+@media (min-width:1000px) {
+    .scan-btn {
+        display: none !important
+    }
+}
+
+/* passenger phones/tablets: a little space above the page */
+@media (max-width:999px) {
+    body.r-public .main {
+        padding-top: max(28px, env(safe-area-inset-top)) !important
+    }
+}
+
+.scn-box {
+    max-width: 420px;
+    width: calc(100% - 32px)
+}
+
+.scn-box .scn-cam {
+    margin: 12px 0
+}
+
+.scn-box .btn {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 6px
+}
+
+.scn-box [hidden] {
+    display: none !important
+}
+
+.scn-box .mdl-act {
+    margin-top: 12px
+}
+
+/* Operator Passengers (desktop): Add passenger | passengers count + QR code, then Manifest details beside the passenger list */
+@media (min-width:1000px) {
+    .mpage {
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        grid-template-areas: "form form form count count count" "form form form qr qr qr" "details details table table table table" !important
+    }
+
+    .mpage:has(.mp-alert) {
+        grid-template-areas: "alert alert alert alert alert alert" "form form form count count count" "form form form qr qr qr" "details details table table table table" !important
+    }
+
+    .mpage:not(:has(form.card)) {
+        grid-template-areas: "count count count qr qr qr" "details details table table table table" !important
+    }
+
+    .mpage:not(:has(form.card)):has(.mp-alert) {
+        grid-template-areas: "alert alert alert alert alert alert" "count count count qr qr qr" "details details table table table table" !important
+    }
+
+    .mpage:not(:has(form.card)):not(:has(.qrc)) {
+        grid-template-areas: "count count count count count count" "details details table table table table" !important
+    }
+
+    .mpage:not(:has(form.card)):not(:has(.qrc)):has(.mp-alert) {
+        grid-template-areas: "alert alert alert alert alert alert" "count count count count count count" "details details table table table table" !important
+    }
+
+    .mpage .qrc {
+        grid-area: qr;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 !important
+    }
+
+    .mpage .qrc-box {
+        margin: 12px 0 0
+    }
+
+    .mpage .mp-details {
+        grid-area: details
+    }
+
+    .mpage .tablewrap {
+        grid-area: table;
+        align-self: stretch
+    }
+}
+
+/* Track Ride map stays under the nav */
+.trk-map,
+.leaflet-container {
+    position: relative;
+    z-index: 0;
+    isolation: isolate
+}
+
+.atop {
+    z-index: 1100
+}
+
+.btabs {
+    z-index: 1100
+}
