@@ -20,8 +20,14 @@ if ($m['status'] === 'Queued') {   // 0 = ON QUEUE, 1 = NEXT TRIP, 2+ = WAITING
   }
 }
 $open = $trip && $m['status'] === 'Queued' && $pos === 0;
+$canRm = $trip && $m['status'] === 'Queued';   // while the boat is on the queue, a passenger who decides not to board can be taken off
 $err = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $open) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_id']) && $canRm) {
+  db()->prepare("DELETE FROM passengers WHERE id=? AND trip_id=?")->execute([(int)$_POST['remove_id'], $trip]);   // only from this boat's own trip
+  header('Location: manifest.php');
+  exit;
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $open && !isset($_POST['remove_id'])) {
   $name = trim($_POST['name'] ?? '');
   $age = $_POST['age'] ?? '';
   $brgy = trim($_POST['barangay'] ?? '');
@@ -163,12 +169,56 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
             <th>Name</th>
             <th>Age</th>
             <th>Barangay</th>
+            <?php if ($canRm): ?><th class="rm-col"><span>Action</span></th><?php endif; ?>
           </tr>
-          <?php foreach ($pax as $i => $p) echo "<tr><td>" . ($i + 1) . "</td><td>" . e($p['name']) . "</td><td>{$p['age']}</td><td>" . e($p['barangay']) . "</td></tr>"; ?>
-          <?php if (!$pax) echo "<tr><td colspan='4' class='muted' style='text-align:center;padding:22px'>No passengers yet.</td></tr>"; ?>
+          <?php foreach ($pax as $i => $p) echo "<tr><td>" . ($i + 1) . "</td><td>" . e($p['name']) . "</td><td>{$p['age']}</td><td>" . e($p['barangay']) . "</td>"
+            . ($canRm ? "<td class='rm-cell'><button type='button' class='rm-btn' data-id='" . (int)$p['id'] . "' data-name='" . e($p['name']) . "'>Remove</button></td>" : '') . "</tr>"; ?>
+          <?php if (!$pax) echo "<tr><td colspan='" . ($canRm ? 5 : 4) . "' class='muted' style='text-align:center;padding:22px'>No passengers yet.</td></tr>"; ?>
         </table>
       </div>
     <?php endif; ?>
   </div>
 </div>
+<?php if ($canRm): ?>
+  <div class="mdl" id="rm-mdl" role="dialog" aria-modal="true" aria-labelledby="rm-t">
+    <div class="mdl-box">
+      <div class="mdl-ic red"><?= ico('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M17 8h5"/>') ?></div>
+      <h3 id="rm-t">Remove passenger?</h3>
+      <p id="rm-p"></p>
+      <form method="post">
+        <input type="hidden" name="remove_id" id="rm-id">
+        <div class="mdl-act"><button type="button" class="no">Keep</button><button class="go red">Remove</button></div>
+      </form>
+    </div>
+  </div>
+  <script>
+    (function() {
+      var m = document.getElementById('rm-mdl'),
+        from = null;
+      if (!m) return;
+
+      function close() {
+        m.classList.remove('open');
+        if (from) from.focus()
+      }
+      // the passenger table refreshes by itself, so listen on the page, not on the buttons
+      document.addEventListener('click', function(e) {
+        var b = e.target.closest('.rm-btn');
+        if (!b) return;
+        from = b;
+        document.getElementById('rm-id').value = b.dataset.id;
+        document.getElementById('rm-p').textContent = b.dataset.name + ' will be taken off the manifest and the boat will have one more seat free.';
+        m.classList.add('open');
+        m.querySelector('.no').focus()
+      });
+      m.querySelector('.no').addEventListener('click', close);
+      m.addEventListener('click', function(e) {
+        if (e.target === m) close()
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && m.classList.contains('open')) close()
+      });
+    })();
+  </script>
+<?php endif; ?>
 <?php page_foot('operator');

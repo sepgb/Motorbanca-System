@@ -4107,3 +4107,98 @@ body.r-public .main>.lead {
     background-position: right 16px center;
     background-size: 18px
 }
+
+/* Remove passenger (operator manifest) + Cancel trip (passenger Track Ride) */
+.rm-col {
+    width: 1%
+}
+
+.rm-col span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap
+}
+
+.rm-cell {
+    text-align: right;
+    white-space: nowrap
+}
+
+.rm-btn {
+    min-height: 34px;
+    padding: 0 14px;
+    border: 1px solid #fecdca;
+    border-radius: 999px;
+    background: #fff;
+    color: #b42318;
+    font-family: inherit;
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s, transform .15s
+}
+
+.rm-btn:hover {
+    background: #fee4e2;
+    transform: translateY(-1px)
+}
+
+.rm-btn:focus-visible {
+    outline: 2px solid #dc2626;
+    outline-offset: 2px
+}
+
+.r-admin .btn.ghost.trk-cancel {
+    color: #b42318;
+    border-color: #fecdca
+}
+
+.r-admin .btn.ghost.trk-cancel:hover {
+    background: #fee4e2
+}
+
+@media (max-width:699px) {
+
+    /* phone: tighter table so the Remove button always fits on screen */
+    .mpage .tablewrap td,
+    .mpage .tablewrap th {
+        padding: 12px 8px
+    }
+
+    .mpage .tablewrap td:first-child,
+    .mpage .tablewrap th:first-child {
+        padding-left: 12px
+    }
+
+    .mpage .tablewrap .rm-cell,
+    .mpage .tablewrap .rm-col {
+        padding-right: 10px
+    }
+
+    .mpage .tablewrap td:nth-child(2),
+    .mpage .tablewrap td:nth-child(4) {
+        white-space: normal
+    }
+
+    .rm-btn {
+        min-height: 32px;
+        padding: 0 11px;
+        font-size: .76rem
+    }
+}
+
+@media (max-width:379px) {
+
+    .mpage .tablewrap td,
+    .mpage .tablewrap th {
+        padding-left: 5px;
+        padding-right: 5px
+    }
+
+    .mpage .tablewrap .rm-btn {
+        padding: 0 9px
+    }
+}

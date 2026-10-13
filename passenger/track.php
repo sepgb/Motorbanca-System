@@ -15,7 +15,7 @@ page_head('Track my ride', 'public');
 <h1>Track my ride</h1>
 <p class="lead">Check that you are on a boat, then follow your trip to your barangay.</p>
 
-<div class="trk" id="trk" data-api="<?= BASE ?>/api/track.php">
+<div class="trk" id="trk" data-api="<?= BASE ?>/api/track.php" data-cancel="<?= BASE ?>/api/cancel_trip.php">
     <div class="alert trk-sec" id="sec" hidden><b>Location needs a secure page.</b> This page was opened with plain http, so the browser will block your location. <a id="secgo" href="#">Open the secure (https) page</a>. If your browser warns about the certificate, tap Advanced, then Proceed.</div>
     <!-- step 1 -->
     <form class="card trk-card<?= $pf ? ' trk-lock' : '' ?>" id="s1" autocomplete="off">
@@ -27,6 +27,7 @@ page_head('Track my ride', 'public');
             <label>Barangay<input name="barangay" list="brgys" maxlength="60" required<?= $pf ? ' readonly tabindex="-1"' : '' ?> value="<?= e($pf['barangay'] ?? '') ?>"></label>
         </div>
         <datalist id="brgys"><?php foreach ($all as $n) echo '<option value="' . e($n) . '">'; ?></datalist>
+        <div class="alert" id="ok1" hidden></div>
         <div class="alert bad" id="e1" hidden></div>
         <button class="btn" id="b1">Check</button>
     </form>
@@ -40,6 +41,7 @@ page_head('Track my ride', 'public');
         <label>Destination barangay<select id="dest"></select></label>
         <div class="alert bad" id="e2" hidden></div>
         <button class="btn" id="go">Share my location</button>
+        <button class="btn ghost trk-cancel" id="cancel" type="button" hidden>Cancel trip</button>
         <button class="trk-link" id="back1" type="button">Not me? Go back</button>
     </section>
 
@@ -61,6 +63,17 @@ page_head('Track my ride', 'public');
         </div>
         <p class="muted trk-note">Your location is shown only on your own screen. It is not saved or sent to anyone.</p>
     </section>
+</div>
+<div class="mdl" id="cx-mdl" role="dialog" aria-modal="true" aria-labelledby="cx-t">
+    <div class="mdl-box">
+        <div class="mdl-ic red"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="8" r="3.5" />
+                <path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M17 8h5" />
+            </svg></div>
+        <h3 id="cx-t">Cancel your trip?</h3>
+        <p>You will be taken off this boat's passenger list. To ride again, scan the trip QR code again.</p>
+        <div class="mdl-act"><button type="button" class="no">Keep my seat</button><button type="button" class="go red">Cancel trip</button></div>
+    </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script src="<?= asset('js/track.js') ?>"></script>

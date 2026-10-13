@@ -18,7 +18,7 @@
         return fetch(root.dataset.api, { method: 'POST', body: f }).then(function (r) { return r.json(); });
     }
     function fillStep2(j, pick) {
-        data = j; $('fb').textContent = 'You are on ' + j.boat; $('fc').textContent = j.cluster;
+        data = j; $('fb').textContent = 'You are on ' + j.boat; $('fc').textContent = j.cluster; $('cancel').hidden = !j.scanned;   // Cancel trip only for people who joined by scanning
         var sel = $('dest'); sel.innerHTML = '';
         j.barangays.forEach(function (x, i) { var o = document.createElement('option'); o.value = i; o.textContent = x.name; if (pick && x.name === pick) o.selected = true; sel.appendChild(o); });
         show($('e2'), '');
@@ -26,7 +26,7 @@
 
     // ---- 1: check the manifest
     s1.addEventListener('submit', function (ev) {
-        ev.preventDefault(); show($('e1'), '');
+        ev.preventDefault(); show($('e1'), ''); show($('ok1'), '');
         var b = $('b1'); b.disabled = true; b.textContent = 'Checking…';
         var fd = new FormData(s1); var w = { name: fd.get('name'), age: fd.get('age'), barangay: fd.get('barangay') };
         check(w).then(function (j) {
@@ -147,6 +147,24 @@
         if (me) { map.removeLayer(me); map.removeLayer(meAcc); me = meAcc = null; }
         if (dst) { map.removeLayer(dst); dst = null; } if (line) { map.removeLayer(line); line = null; }
         here = dest = null; route = []; token++; if (stops) stops.clearLayers(); destName = ''; save(2); step(2);
+    });
+
+    // ---- cancel trip: takes this passenger off the boat's list (only offered to passengers who joined by scanning the QR code)
+    var cm = $('cx-mdl');
+    function cxClose() { cm.classList.remove('open'); }
+    $('cancel').addEventListener('click', function () { cm.classList.add('open'); cm.querySelector('.no').focus(); });
+    cm.querySelector('.no').addEventListener('click', cxClose);
+    cm.addEventListener('click', function (e) { if (e.target === cm) cxClose(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cxClose(); });
+    cm.querySelector('.go').addEventListener('click', function () {
+        var b = this; b.disabled = true; b.textContent = 'Cancelling…';
+        function done() { b.disabled = false; b.textContent = 'Cancel trip'; cxClose(); }
+        fetch(root.dataset.cancel, { method: 'POST', credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (r) {
+            done();
+            if (!r.ok) return show($('e2'), r.error || 'Could not cancel your trip. Try again.');
+            clear(); who = null; destName = '';
+            show($('ok1'), 'Your trip was cancelled. You are no longer on the boat\u2019s passenger list.'); step(1);
+        }).catch(function () { done(); show($('e2'), 'Could not reach the server. Check your connection and try again.'); });
     });
 
     // ---- after a refresh: go back to where the passenger was
