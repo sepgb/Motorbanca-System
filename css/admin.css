@@ -4207,10 +4207,29 @@ body.r-public .main>.lead {
 @media (max-width:999px) {
     .btabs-pub {
         align-items: flex-end;
+        justify-content: center;
+        gap: 2px;
         padding-top: 6px
     }
 
+    /* no icon animation or press effect */
+    .btabs-pub a,
+    .btabs-pub i,
+    .btabs-pub .ico {
+        transition: none !important
+    }
+
+    .btabs-pub a.on .ico,
+    .btabs-pub a.pop .ico {
+        animation: none !important
+    }
+
+    .btabs-pub a:active .ico {
+        transform: none !important
+    }
+
     .btabs-pub a {
+        flex: 0 0 58px;
         justify-content: center;
         min-height: 48px;
         padding: 4px 2px
@@ -4231,7 +4250,7 @@ body.r-public .main>.lead {
     }
 
     .btabs-pub a[data-q] {
-        flex: 0 0 72px;
+        flex: 0 0 68px;
         margin-top: -22px;
         min-height: 0
     }
