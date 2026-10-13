@@ -13,7 +13,6 @@ page_head('Track my ride', 'public');
 ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 <h1>Track my ride</h1>
-<p class="lead">Check that you are on a boat, then follow your trip to your barangay.</p>
 
 <div class="trk" id="trk" data-api="<?= BASE ?>/api/track.php" data-cancel="<?= BASE ?>/api/cancel_trip.php">
     <div class="alert trk-sec" id="sec" hidden><b>Location needs a secure page.</b> This page was opened with plain http, so the browser will block your location. <a id="secgo" href="#">Open the secure (https) page</a>. If your browser warns about the certificate, tap Advanced, then Proceed.</div>

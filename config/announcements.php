@@ -36,13 +36,13 @@ if (!function_exists('ann_ensure')) {
             return '';
         }
         if (!$a) return '';
-        return "<a class='ann-strip k-" . e($a['kind']) . "' href='" . e($url) . "'><b>" . e($a['title']) . "</b><span>View announcement &rsaquo;</span></a>";
+        return "<a class='ann-strip k-" . e($a['kind']) . "' href='" . e($url) . "'><b>" . e($a['title']) . "</b><span>View " . (strpos($_SERVER['PHP_SELF'] ?? '', '/passenger/') !== false ? 'notification' : 'announcement') . " &rsaquo;</span></a>";
     }
     function ann_list($admin = false)
     {
         $rows = ann_all();
         if (!$rows) {
-            echo "<div class='card'><p class='muted' style='margin:0'>No announcements yet.</p></div>";
+            echo "<div class='card'><p class='muted' style='margin:0'>No " . (strpos($_SERVER['PHP_SELF'] ?? '', '/passenger/') !== false ? 'notifications' : 'announcements') . " yet.</p></div>";
             return;
         }
         foreach ($rows as $a) {
@@ -110,6 +110,6 @@ if (!function_exists('ann_seen_mark')) {
             return '';
         }
         if (!$a || (int)($_COOKIE['ann_seen'] ?? 0) >= (int)$a['id']) return '';
-        return "<a class='ann-strip k-" . e($a['kind']) . "' href='" . e($url) . "'><b>" . e($a['title']) . "</b><span>View announcement &rsaquo;</span></a>";
+        return "<a class='ann-strip k-" . e($a['kind']) . "' href='" . e($url) . "'><b>" . e($a['title']) . "</b><span>View " . (strpos($_SERVER['PHP_SELF'] ?? '', '/passenger/') !== false ? 'notification' : 'announcement') . " &rsaquo;</span></a>";
     }
 }

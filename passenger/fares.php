@@ -11,7 +11,6 @@ $fares = [   // cluster number => [regular, PWD/senior/student (20% off), childr
 page_head('Fares', 'public');
 ?>
 <h1>Boat fares</h1>
-<p class="lead">Fare per ride for each cluster.</p>
 <div class="fx">
     <div class="fx-head">
         <span>Cluster</span>

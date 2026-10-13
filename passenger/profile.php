@@ -34,7 +34,6 @@ page_head('Profile', 'public');
 $ini = $p ? strtoupper(mb_substr(trim($p['full_name']), 0, 1)) : '';
 ?>
 <h1>Profile</h1>
-<p class="lead">Your details are saved on this device.</p>
 <?php if ($err): ?><div class="alert bad"><?= e($err) ?></div><?php endif; ?>
 <?php if (!$editing): ?>
     <section class="card pf">

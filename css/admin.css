@@ -4202,3 +4202,80 @@ body.r-public .main>.lead {
         padding: 0 9px
     }
 }
+
+/* Passenger phone bar: icons only, Live Queue in the middle and bigger */
+@media (max-width:999px) {
+    .btabs-pub {
+        align-items: flex-end;
+        padding-top: 6px
+    }
+
+    .btabs-pub a {
+        justify-content: center;
+        min-height: 48px;
+        padding: 4px 2px
+    }
+
+    .btabs-pub i {
+        width: 52px;
+        height: 40px
+    }
+
+    .btabs-pub .ico {
+        width: 24px;
+        height: 24px
+    }
+
+    .btabs-pub a[data-q] {
+        flex: 0 0 84px;
+        margin-top: -30px;
+        min-height: 0
+    }
+
+    .btabs-pub a[data-q] i {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff8a3d, #f26b1d);
+        color: #fff;
+        box-shadow: 0 14px 26px -8px #f26b1daa, 0 0 0 6px #fff
+    }
+
+    .btabs-pub a[data-q] .ico {
+        width: 32px;
+        height: 32px
+    }
+
+    .btabs-pub a[data-q].on i,
+    .btabs-pub a[data-q]:active i {
+        background: linear-gradient(135deg, #f26b1d, #b4470a)
+    }
+
+    .btabs-pub a[data-q].on {
+        color: #fff
+    }
+}
+
+/* space under every page title (a title that has a subtitle right under it keeps them close) */
+.r-admin .main>h1,
+body.r-public .main>h1 {
+    margin-bottom: 20px !important
+}
+
+.r-admin .main>h1:has(+ .lead),
+body.r-public .main>h1:has(+ .lead) {
+    margin-bottom: 2px !important
+}
+
+@media (max-width:699px) {
+
+    .r-admin .main>h1,
+    body.r-public .main>h1 {
+        margin-bottom: 16px !important
+    }
+
+    .r-admin .main>h1:has(+ .lead),
+    body.r-public .main>h1:has(+ .lead) {
+        margin-bottom: 2px !important
+    }
+}

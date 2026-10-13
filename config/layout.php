@@ -70,13 +70,14 @@ JS;
         if ($role === 'operator' && $me === 'dashboard.php') echo ann_strip($b . '/operator/announcements.php');
     } else {
         $me = basename($_SERVER['PHP_SELF']);
-        $plinks = ['index.php' => 'Live Queue', 'fares.php' => 'Fares', 'track.php' => 'Track Ride', 'announcements.php' => 'Announcements', 'profile.php' => 'Profile'];
+        $plinks = ['index.php' => 'Live Queue', 'fares.php' => 'Fares', 'track.php' => 'Track Ride', 'announcements.php' => 'Notifications', 'profile.php' => 'Profile'];
         $ptab = ['index.php' => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', 'fares.php' => '<circle cx="12" cy="12" r="9"/><path d="M9.5 17V7.5h3.2a2.6 2.6 0 010 5.2H9.5M8 14.2h5"/>', 'track.php' => '<path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', 'announcements.php' => '<path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/>', 'profile.php' => '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>'];
         echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'>" . "<svg viewBox='0 0 40 40' width='40' height='40' fill='none' stroke='#f26b1d' stroke-width='5' stroke-linecap='round'><circle cx='20' cy='20' r='15' stroke-dasharray='19 12.42' transform='rotate(-80 20 20)'/></svg>" . "<span>Port Control</span></a><nav class='pills'>";
         foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on'" : '') . ">$l</a>";
         echo "</nav><div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header>";
-        echo "<nav class='btabs' aria-label='Main'>";
-        foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i><span>" . ($f === 'announcements.php' ? 'Alerts' : $l) . "</span></a>";
+        // phone bar: icons only (the name stays as aria-label), Live Queue in the middle and bigger
+        echo "<nav class='btabs btabs-pub' aria-label='Main'>";
+        foreach (['fares.php', 'track.php', 'index.php', 'announcements.php', 'profile.php'] as $f) echo "<a href='$b/passenger/$f' aria-label='" . e($plinks[$f]) . "'" . ($f === 'index.php' ? " data-q='1'" : '') . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i></a>";
         echo "</nav><main class='main'>";
         if ($me === 'index.php') echo ann_strip($b . '/passenger/announcements.php');
         if ($me === 'index.php') echo "<h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", passenger</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><button type='button' class='scan-btn' id='scan-open' aria-label='Scan QR code' title='Scan QR code'>" . ico('<path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2M7 12h10"/>') . "</button><i class='dot'></i>Live queue</h2>";
