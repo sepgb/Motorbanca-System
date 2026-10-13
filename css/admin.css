@@ -4305,3 +4305,9 @@ body.r-public .main>h1:has(+ .lead) {
         margin-bottom: 2px !important
     }
 }
+
+/* page titles a little bigger */
+.r-admin .main>h1,
+body.r-public .main>h1 {
+    font-size: 1.75rem
+}
