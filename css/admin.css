@@ -4203,7 +4203,7 @@ body.r-public .main>.lead {
     }
 }
 
-/* Passenger phone bar: icons only, Live Queue in the middle and bigger */
+/* Passenger phone bar: icons only, no pill behind the active tab (the icon just turns orange), Live Queue in the middle and a bit bigger */
 @media (max-width:999px) {
     .btabs-pub {
         align-items: flex-end;
@@ -4216,9 +4216,13 @@ body.r-public .main>.lead {
         padding: 4px 2px
     }
 
-    .btabs-pub i {
+    .btabs-pub i,
+    .btabs-pub a.on i,
+    .btabs-pub a:active i,
+    .btabs-pub a.pop i {
         width: 52px;
-        height: 40px
+        height: 40px;
+        background: none
     }
 
     .btabs-pub .ico {
@@ -4227,23 +4231,26 @@ body.r-public .main>.lead {
     }
 
     .btabs-pub a[data-q] {
-        flex: 0 0 84px;
-        margin-top: -30px;
+        flex: 0 0 72px;
+        margin-top: -22px;
         min-height: 0
     }
 
-    .btabs-pub a[data-q] i {
-        width: 68px;
-        height: 68px;
+    .btabs-pub a[data-q] i,
+    .btabs-pub a[data-q].on i,
+    .btabs-pub a[data-q]:active i,
+    .btabs-pub a[data-q].pop i {
+        width: 56px;
+        height: 56px;
         border-radius: 50%;
         background: linear-gradient(135deg, #ff8a3d, #f26b1d);
         color: #fff;
-        box-shadow: 0 14px 26px -8px #f26b1daa, 0 0 0 6px #fff
+        box-shadow: 0 12px 22px -8px #f26b1daa, 0 0 0 5px #fff
     }
 
     .btabs-pub a[data-q] .ico {
-        width: 32px;
-        height: 32px
+        width: 26px;
+        height: 26px
     }
 
     .btabs-pub a[data-q].on i,
