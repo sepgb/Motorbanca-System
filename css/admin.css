@@ -4311,3 +4311,8 @@ body.r-public .main>h1:has(+ .lead) {
 body.r-public .main>h1 {
     font-size: 1.75rem
 }
+
+/* notification cards: thinner colored left border */
+.ann {
+    border-left-width: 3px
+}
