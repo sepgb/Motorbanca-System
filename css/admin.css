@@ -4018,13 +4018,13 @@ body.r-public .main>.lead {
 
     .fx-row {
         display: block;
-        padding: 26px 2px 14px;
+        padding: 20px 2px 10px;
         border-bottom: 1px solid #eadfd5
     }
 
     .fx-c {
         gap: 12px;
-        margin-bottom: 8px
+        margin-bottom: 0
     }
 
     .fx-c i {
@@ -4039,7 +4039,7 @@ body.r-public .main>.lead {
 
     .fx-c em {
         display: block;
-        font-size: 1.45rem;
+        font-size: 1.05rem;
         font-weight: 800;
         letter-spacing: .08em;
         text-transform: uppercase;
@@ -4067,7 +4067,8 @@ body.r-public .main>.lead {
     }
 
     .fx-c+b {
-        border-top: 0
+        border-top: 0;
+        padding-top: 8px
     }
 
     .fx-row b::before {
@@ -4311,4 +4312,10 @@ body.r-public .main>h1 {
 /* notification cards: thinner colored left border */
 .ann {
     border-left-width: 3px
+}
+
+/* fares page: title sits close to the fares */
+.r-admin .main>h1:has(+ .fx),
+body.r-public .main>h1:has(+ .fx) {
+    margin-bottom: 6px !important
 }
