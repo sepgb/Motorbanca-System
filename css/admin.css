@@ -4012,10 +4012,6 @@ body.r-public .main>.lead {
 @media (max-width:699px) {
 
     /* phone: open board, no cards. Each cluster is a heading, then one easy-to-read line per fare (label left, price right) */
-    .fx {
-        border-top: 2px solid #1f1a17
-    }
-
     .fx-head {
         display: none
     }
