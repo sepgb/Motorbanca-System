@@ -30,10 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $saved = !empty($_SESSION['pax_saved']);
 unset($_SESSION['pax_saved']);
-page_head('Profile', 'public');
+$editTitle = $editing && pax_profile();   // changing an existing profile
+page_head($editTitle ? 'Edit Profile' : 'Profile', 'public');
 $ini = $p ? strtoupper(mb_substr(trim($p['full_name']), 0, 1)) : '';
 ?>
-<h1>Profile</h1>
+<h1><?= $editTitle ? 'Edit Profile' : 'Profile' ?></h1>
 <?php if ($err): ?><div class="alert bad"><?= e($err) ?></div><?php endif; ?>
 <?php if (!$editing): ?>
     <section class="card pf">
@@ -42,9 +43,6 @@ $ini = $p ? strtoupper(mb_substr(trim($p['full_name']), 0, 1)) : '';
             <div>
                 <h2><?= e($p['full_name']) ?></h2><span class="pf-sub">Passenger &middot; this device</span>
             </div>
-            <a class="pf-edit" href="profile.php?edit=1"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" />
-                </svg><span>Edit</span></a>
         </div>
         <dl class="pf-list">
             <div>
@@ -56,11 +54,18 @@ $ini = $p ? strtoupper(mb_substr(trim($p['full_name']), 0, 1)) : '';
                 <dd><?= e($p['barangay']) ?></dd>
             </div>
         </dl>
+        <div class="pf-view-act">
+            <a class="btn" href="profile.php?edit=1"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" />
+                </svg><span>Edit</span></a>
+        </div>
     </section>
 <?php else: ?>
     <section class="card pf">
-        <h3 style="margin:0 0 4px"><?= pax_profile() ? 'Edit profile' : 'Set up your profile' ?></h3>
-        <p class="muted" style="margin:0 0 14px"><?= pax_profile() ? 'Change your details, then save.' : 'Enter your details once. This device will remember you.' ?></p>
+        <?php if (!$editTitle): ?>
+            <h3 style="margin:0 0 4px">Set up your profile</h3>
+            <p class="muted" style="margin:0 0 14px">Enter your details once. This device will remember you.</p>
+        <?php endif; ?>
         <form method="post" class="pf-form" autocomplete="off">
             <input type="hidden" name="next" value="<?= e($next) ?>">
             <label>Full name</label>

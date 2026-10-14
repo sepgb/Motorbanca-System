@@ -4329,3 +4329,61 @@ body.r-public .main>h1:has(+ .fx) {
         margin-bottom: 16px !important
     }
 }
+
+/* passenger profile: open layout, no card box */
+.r-admin .card.pf,
+.card.pf {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0
+}
+
+.card.pf .pf-edit {
+    top: 4px;
+    right: 0
+}
+
+.card.pf .pf-list {
+    gap: 0;
+    border-top: 1px solid #eadfd5
+}
+
+.card.pf .pf-list>div {
+    background: none;
+    border-radius: 0;
+    border-bottom: 1px solid #eadfd5;
+    align-items: center;
+    padding: 16px 2px
+}
+
+/* passenger profile: Edit is a button at the bottom right, after the barangay */
+.card.pf .pf-head h2 {
+    padding-right: 0
+}
+
+.pf-view-act {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px
+}
+
+.r-admin .pf-view-act .btn {
+    width: auto;
+    min-width: 0;
+    min-height: 0;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 18px;
+    font-size: .85rem
+}
+
+.pf-view-act .btn .ico {
+    width: 14px;
+    height: 14px;
+    margin: 0
+}
