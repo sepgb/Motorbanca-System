@@ -4273,11 +4273,6 @@ body.r-public .main>.lead {
         height: 26px
     }
 
-    .btabs-pub a[data-q].on i,
-    .btabs-pub a[data-q]:active i {
-        background: linear-gradient(135deg, #f26b1d, #b4470a)
-    }
-
     .btabs-pub a[data-q].on {
         color: #fff
     }

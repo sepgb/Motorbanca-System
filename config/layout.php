@@ -53,7 +53,7 @@ JS;
             // operator phone bar: icons only (the name stays as aria-label), Home in the middle and bigger, same spacing as the passenger bar
             $tabIco['dashboard.php'] = '<path d="M15 21v-8a1 1 0 00-1-1h-4a1 1 0 00-1 1v8"/><path d="M3 10a2 2 0 01.709-1.528l7-5.999a2 2 0 012.582 0l7 5.999A2 2 0 0121 10v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>';
             echo "<nav class='btabs btabs-pub' aria-label='Main'>";
-            foreach (['manifest.php', 'trips.php', 'dashboard.php', 'announcements.php'] as $f) echo "<a href='$b/$dir/$f' aria-label='" . e($links[$f]) . "'" . ($f === 'dashboard.php' ? " data-q='1'" : '') . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($tabIco[$f]) . "</i></a>";
+            foreach (['announcements.php', 'manifest.php', 'dashboard.php', 'trips.php'] as $f) echo "<a href='$b/$dir/$f' aria-label='" . e($links[$f]) . "'" . ($f === 'dashboard.php' ? " data-q='1'" : '') . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($tabIco[$f]) . "</i></a>";
             echo "<a href='$b/logout.php' class='lo' aria-label='Log out'><i>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</i></a></nav>";
         } else {
             echo "<nav class='btabs' aria-label='Main'>";
