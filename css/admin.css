@@ -4410,3 +4410,38 @@ body.r-public .main>h1:has(+ .fx) {
         bottom: -9px
     }
 }
+
+/* notifications (passenger and operator): open list, no card boxes. The admin timeline keeps its own look. */
+.main>.ann {
+    background: none;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 2px 0 2px 14px;
+    margin: 0 0 26px
+}
+
+.ann-empty {
+    margin: 0 0 14px
+}
+
+/* thin line between notifications (none after the last one) */
+.main>.ann {
+    position: relative
+}
+
+.main>.ann::after {
+    content: "";
+    position: absolute;
+    left: -3px;
+    right: 0;
+    bottom: -14px;
+    height: 1px;
+    background: #eadfd5
+}
+
+.main>.ann:not(:has(~ .ann))::after {
+    display: none
+}

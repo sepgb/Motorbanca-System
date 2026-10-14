@@ -42,7 +42,7 @@ if (!function_exists('ann_ensure')) {
     {
         $rows = ann_all();
         if (!$rows) {
-            echo "<div class='card'><p class='muted' style='margin:0'>No " . (strpos($_SERVER['PHP_SELF'] ?? '', '/passenger/') !== false ? 'notifications' : 'announcements') . " yet.</p></div>";
+            echo "<div class='ann-empty'><p class='muted' style='margin:0'>No " . (strpos($_SERVER['PHP_SELF'] ?? '', '/passenger/') !== false ? 'notifications' : 'announcements') . " yet.</p></div>";
             return;
         }
         foreach ($rows as $a) {
