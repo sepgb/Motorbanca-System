@@ -4323,3 +4323,14 @@ body.r-public .main>h1 {
 body.r-public .main>h1:has(+ .fx) {
     margin-bottom: 6px !important
 }
+
+/* operator phone: no page subtitle */
+@media (max-width:999px) {
+    body.r-operator .main>.lead {
+        display: none
+    }
+
+    body.r-operator .main>h1:has(+ .lead) {
+        margin-bottom: 16px !important
+    }
+}
