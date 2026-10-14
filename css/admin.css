@@ -4387,3 +4387,26 @@ body.r-public .main>h1:has(+ .fx) {
     height: 14px;
     margin: 0
 }
+
+/* active tab: small orange dot under the icon (passenger and operator phone bars) */
+@media (max-width:999px) {
+    .btabs-pub a {
+        position: relative
+    }
+
+    .btabs-pub a.on::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 1px;
+        width: 3px;
+        height: 3px;
+        margin-left: -1.5px;
+        border-radius: 50%;
+        background: #f26b1d
+    }
+
+    .btabs-pub a[data-q].on::after {
+        bottom: -9px
+    }
+}
