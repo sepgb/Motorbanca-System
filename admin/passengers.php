@@ -1,6 +1,6 @@
 <?php
 // PCG only: the passenger list of one trip (shown in the Trip history modal).
-require_once '../config/live.php';
+require_once '../config/mdsd_helpers.php';
 need('admin');
 $id = (int)($_GET['trip'] ?? 0);
 $t = db()->prepare("SELECT t.trip_date, m.motorbanca_name n, m.capacity cap, c.name cname FROM trips t
@@ -23,5 +23,6 @@ header('Content-Type: application/json');
 echo json_encode([
     'title' => $trip['n'] . ' · ' . $trip['cname'],
     'sub' => $trip['trip_date'] . ' · ' . count($rows) . ' / ' . (int)$trip['cap'] . ' passengers',
+    'mdsd' => (bool)mdsd_get($id),   // an MDSD was made when this trip departed
     'html' => $html
 ]);

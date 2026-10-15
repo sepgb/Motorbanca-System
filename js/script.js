@@ -35,14 +35,71 @@ setInterval(function () {
 // Cards fade in only on first load (not on every live refresh)
 setTimeout(function () { document.body.classList.remove('enter'); }, 900);
 
-// Depart button: go to the MDSD form first. The boat departs when the PCG submits it, so the form is the confirmation.
+// Depart button: the MDSD checklist opens in a modal. The boat departs when the PCG submits it, so the checklist is the confirmation.
 (function () {
+  var box, body, err, count, sub, go, url, mid, busy;
+  function build() {
+    box = document.createElement('div');
+    box.className = 'mdl';
+    box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+    box.innerHTML = '<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Master\u2019s Declaration of Safe Departure</h3><p class="sub"></p></div>' +
+      '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
+      '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
+      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-all">Mark all Yes</button><button type="button" class="btn sm ghost md-cancel">Cancel</button><button type="submit" class="btn sm md-go">Depart</button></div></form></div>';
+    document.body.appendChild(box);
+    body = box.querySelector('.md-body'); err = box.querySelector('.md-err'); count = box.querySelector('.md-count'); sub = box.querySelector('.sub'); go = box.querySelector('.md-go');
+    box.addEventListener('click', function (e) { if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) close(); });   // no backdrop close: a half-filled checklist is not lost by a stray tap
+    box.addEventListener('change', function (e) { if (e.target.type === 'radio') { e.target.closest('.md-q').classList.remove('miss'); tally(); } });
+    box.querySelector('.md-all').addEventListener('click', function () {
+      body.querySelectorAll('.md-yes input').forEach(function (i) { i.checked = true; });
+      body.querySelectorAll('.md-q.miss').forEach(function (q) { q.classList.remove('miss'); });
+      tally();
+    });
+    box.querySelector('form').addEventListener('submit', submit);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('open')) close(); });
+  }
+  function close() { box.classList.remove('open'); }
+  function show(t) { err.textContent = t || ''; err.hidden = !t; }
+  function tally() {
+    var all = body.querySelectorAll('.md-q'), done = body.querySelectorAll('.md-q input:checked').length;
+    count.textContent = done + ' of ' + all.length + ' answered';
+  }
+  function submit(e) {
+    e.preventDefault(); if (busy) return;
+    var first = null;
+    body.querySelectorAll('.md-q').forEach(function (q) {   // every item needs an answer
+      var miss = !q.querySelector('input:checked');
+      q.classList.toggle('miss', miss);
+      if (miss && !first) first = q;
+    });
+    if (first) { show('Please answer every item with Yes, No or N/A.'); first.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+    show(''); busy = true; go.disabled = true; go.textContent = 'Departing\u2026';
+    var d = new FormData(box.querySelector('form')); d.append('mid', mid); d.append('ajax', '1');
+    fetch(url, { method: 'POST', body: d, credentials: 'same-origin' })
+      .then(function (x) { return x.json(); })
+      .then(function (j) { if (j.ok) location.reload(); else { show(j.error || 'Could not depart the boat.'); busy = false; go.disabled = false; go.textContent = 'Depart'; } })
+      .catch(function () { show('Could not reach the server. Check your connection and try again.'); busy = false; go.disabled = false; go.textContent = 'Depart'; });
+  }
   document.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('.depart') : null;
     if (!b) return;
     e.preventDefault();
     var f = b.closest('form');
-    location.href = f.action.replace(/depart\.php.*$/, 'mdsd.php') + '?mid=' + encodeURIComponent(f.querySelector('[name=mid]').value) + '&back=' + encodeURIComponent(location.pathname);
+    mid = f.querySelector('[name=mid]').value;
+    url = f.action.replace(/depart\.php.*$/, 'mdsd.php');
+    if (!box) build();
+    busy = false; go.disabled = false; go.textContent = 'Depart'; show('');
+    sub.textContent = 'Loading\u2026'; body.innerHTML = ''; count.textContent = '';
+    void box.offsetWidth; box.classList.add('open');
+    fetch(url + '?ajax=1&mid=' + encodeURIComponent(mid), { credentials: 'same-origin' })
+      .then(function (x) { return x.json(); })
+      .then(function (d) {
+        if (d.ok === false) { sub.textContent = ''; show(d.error); return; }
+        sub.textContent = d.sub;
+        body.innerHTML = d.html;   // built and escaped on the server
+        tally();
+      })
+      .catch(function () { sub.textContent = ''; show('Could not load the checklist.'); });
   });
 })();
 
@@ -56,6 +113,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     box.innerHTML = '<div class="mdl-box wide"><div class="mdl-head"><div class="mdl-title"><h3></h3><p class="sub"></p></div>' +
       '<div class="mdl-tools"><button type="button" class="btn sm ghost pdfbtn" data-print="" data-kind="print_crew"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg><span>Crew list</span></button>' +
       '<button type="button" class="btn sm pdfbtn" data-print="" data-kind="print"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg><span>Manifest</span></button>' +
+      '<button type=\"button\" class=\"btn sm ghost pdfbtn\" data-print=\"\" data-kind=\"admin/mdsd_print\" disabled><svg class=\"ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z\"/></svg><span>MDSD</span></button>' +
       '<button type="button" class="x" aria-label="Close">&times;</button></div></div><div class="mdl-body"></div></div>';
     document.body.appendChild(box);
     box.addEventListener('click', function (e) { if (e.target === box || e.target.classList.contains('x')) box.classList.remove('open'); });
@@ -67,9 +125,11 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     if (!box) build();
     box.querySelector('h3').textContent = r.dataset.name || 'Trip';
     box.querySelector('.sub').textContent = 'Loading…';
-    box.querySelectorAll('[data-print]').forEach(function (b) {   // straight print of this trip's form
-      b.setAttribute('data-print', r.dataset.url.replace('admin/passengers.php', 'operator/' + b.getAttribute('data-kind') + '.php') + '&print=1');
+    box.querySelectorAll('[data-print]').forEach(function (b) {   // straight print of this trip's form (a kind with a folder, like admin/mdsd_print, is used as it is)
+      var k = b.getAttribute('data-kind');
+      b.setAttribute('data-print', r.dataset.url.replace('admin/passengers.php', (k.indexOf('/') < 0 ? 'operator/' : '') + k + '.php') + '&print=1');
     });
+    var mb = box.querySelector('[data-kind="admin/mdsd_print"]'); mb.disabled = true; mb.title = '';   // on only if this trip has an MDSD
     box.querySelector('.mdl-body').innerHTML = '';
     void box.offsetWidth;
     box.classList.add('open');
@@ -79,6 +139,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
         box.querySelector('h3').textContent = d.title;
         box.querySelector('.sub').textContent = d.sub;
         box.querySelector('.mdl-body').innerHTML = d.html;   // built and escaped on the server
+        mb.disabled = !d.mdsd; mb.title = d.mdsd ? '' : 'No MDSD was made for this trip';
       })
       .catch(function () { box.querySelector('.sub').textContent = 'Could not load the passengers.'; });
   });
