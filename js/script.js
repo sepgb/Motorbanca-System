@@ -45,16 +45,11 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     box.innerHTML = '<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Master\u2019s Declaration of Safe Departure</h3><p class="sub"></p></div>' +
       '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
       '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
-      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-all">Mark all Yes</button><button type="button" class="btn sm ghost md-cancel">Cancel</button><button type="submit" class="btn sm md-go">Depart</button></div></form></div>';
+      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel">Cancel</button><button type="submit" class="btn sm md-go">Depart</button></div></form></div>';
     document.body.appendChild(box);
     body = box.querySelector('.md-body'); err = box.querySelector('.md-err'); count = box.querySelector('.md-count'); sub = box.querySelector('.sub'); go = box.querySelector('.md-go');
     box.addEventListener('click', function (e) { if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) close(); });   // no backdrop close: a half-filled checklist is not lost by a stray tap
     box.addEventListener('change', function (e) { if (e.target.type === 'radio') { e.target.closest('.md-q').classList.remove('miss'); tally(); } });
-    box.querySelector('.md-all').addEventListener('click', function () {
-      body.querySelectorAll('.md-yes input').forEach(function (i) { i.checked = true; });
-      body.querySelectorAll('.md-q.miss').forEach(function (q) { q.classList.remove('miss'); });
-      tally();
-    });
     box.querySelector('form').addEventListener('submit', submit);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('open')) close(); });
   }

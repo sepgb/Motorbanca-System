@@ -4580,6 +4580,11 @@ body.r-public .main>h1:has(+ .fx) {
     border-top: 1px solid #f4ede7
 }
 
+.r-admin .md-foot .md-go {
+    border: 1px solid transparent
+        /* same outline as Cancel so both buttons are exactly the same size */
+}
+
 .md-count {
     flex: 1;
     color: #8c8279;
@@ -4587,10 +4592,11 @@ body.r-public .main>h1:has(+ .fx) {
 }
 
 .r-admin .md-foot .btn {
-    width: auto;
+    flex: 0 0 112px;
+    width: 112px;
     min-height: 0;
     height: 40px;
-    padding: 0 18px;
+    padding: 0;
     font-size: .85rem
 }
 
@@ -4665,10 +4671,7 @@ body.r-public .main>h1:has(+ .fx) {
     }
 
     .r-admin .md-foot .btn {
-        flex: 1
-    }
-
-    .r-admin .md-foot .md-go {
-        flex: 1 0 100%
+        flex: 1 1 0;
+        width: auto
     }
 }
