@@ -902,7 +902,7 @@ body.nav-open .pills {
 .mdl {
     position: fixed;
     inset: 0;
-    z-index: 100;
+    z-index: 1200;
     display: grid;
     place-items: center;
     padding: 20px;
@@ -1222,7 +1222,7 @@ body.nav-open .pills {
 /* styled hint for double-clickable rows (replaces the plain browser tooltip) */
 .rtip {
     position: fixed;
-    z-index: 200;
+    z-index: 1300;
     left: 0;
     top: 0;
     max-width: 300px;

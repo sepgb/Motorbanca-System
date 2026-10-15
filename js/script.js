@@ -80,11 +80,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       .then(function (j) { if (j.ok) location.reload(); else { show(j.error || 'Could not depart the boat.'); busy = false; go.disabled = false; go.textContent = 'Depart'; } })
       .catch(function () { show('Could not reach the server. Check your connection and try again.'); busy = false; go.disabled = false; go.textContent = 'Depart'; });
   }
-  document.addEventListener('click', function (e) {
-    var b = e.target.closest ? e.target.closest('.depart') : null;
-    if (!b) return;
-    e.preventDefault();
-    var f = b.closest('form');
+  function open(f) {
     mid = f.querySelector('[name=mid]').value;
     url = f.action.replace(/depart\.php.*$/, 'mdsd.php');
     if (!box) build();
@@ -100,7 +96,20 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
         tally();
       })
       .catch(function () { sub.textContent = ''; show('Could not load the checklist.'); });
+  }
+  // The Depart button never sends the boat straight away: both a click and a form submit (Enter key) open the checklist.
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.depart') : null;
+    if (!b) return;
+    e.preventDefault();
+    open(b.closest('form'));
   });
+  document.addEventListener('submit', function (e) {
+    var f = e.target;
+    if (!f.matches || !f.matches('form[action$="depart.php"]')) return;
+    e.preventDefault();
+    open(f);
+  }, true);
 })();
 
 // Trip history: double-click a row to see that trip's passengers
