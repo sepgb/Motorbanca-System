@@ -1,8 +1,8 @@
 <?php
-// PCG: the MDSD checklist. When Depart is pressed it opens as a modal (js/script.js loads it from here with ?ajax=1);
-// this page also works on its own. The boat departs when the checklist is submitted.
+// PCG: the MDSD checklist and the PDIC (Pre-Departure Inspection Checklist). When Depart is pressed they open as two modals, one after the other
+// (js/script.js loads both from here with ?ajax=1). This page also works on its own. The boat departs when both are submitted.
 require_once '../config/layout.php';
-require_once '../config/mdsd_helpers.php';
+require_once '../config/pdic_helpers.php';
 need('admin');
 $ajax = isset($_REQUEST['ajax']);
 $mid = (int)($_REQUEST['mid'] ?? 0);
@@ -31,7 +31,7 @@ function md_row($k, $label, $cur, $sub = false)
     return "<div class='md-q" . ($sub ? ' md-sub' : '') . "' role='radiogroup' aria-labelledby='md-$k'><div class='md-t' id='md-$k'>$label</div>" . md_opts($k, $cur) . "</div>";
 }
 
-// Every question of the checklist
+// Every question of the MDSD checklist
 function md_rows($cur)
 {
     $h = "<h2 class='md-h'>Inspection findings</h2>";
@@ -54,7 +54,7 @@ $tq = db()->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status='Queu
 $tq->execute([$mid]);
 $qt = (int)$tq->fetchColumn();
 $np = 0;
-$pre = [];   // answers that are already known from the system
+$pre = [];   // MDSD answers that are already known from the system
 if ($qt) {
     $pc = db()->prepare("SELECT COUNT(*) FROM passengers WHERE trip_id=?");
     $pc->execute([$qt]);
@@ -64,41 +64,68 @@ if ($qt) {
 }
 $err = '';
 $q = (array)($_POST['q'] ?? []);
+$p = (array)($_POST['p'] ?? []);
+$ins = trim((string)($_POST['inspector'] ?? ''));
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ans = [];
     foreach (mdsd_keys() as $k) {
         $a = $q[$k] ?? '';
         if (in_array($a, ['yes', 'no', 'na'], true)) $ans[$k] = $a;
     }
-    if (count($ans) < count(mdsd_keys())) {
-        $err = 'Please answer every item with Yes, No or N/A.';
+    $pa = [];
+    foreach (pdic_numbers() as $n) {
+        $a = $p[$n] ?? '';
+        if (in_array($a, ['yes', 'no'], true)) $pa[$n] = $a;
+    }
+    if (count($ans) < count(mdsd_keys()) || count($pa) < count(pdic_numbers())) {
+        $err = 'Please answer every item.';
+    } elseif ($ins === '' || mb_strlen($ins) > 100) {
+        $err = 'Please enter the name of the inspector.';
     } else {
+        // When the inspection started: the moment the checklist was opened (sent back by the page), never in the future
+        $st = strtotime((string)($_POST['started'] ?? ''));
+        $started = ($st && $st <= time()) ? date('Y-m-d H:i:s', $st) : date('Y-m-d H:i:s');
         set_status($mid, 'Departed');
         $t = db()->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status='Departed' ORDER BY id DESC LIMIT 1");
         $t->execute([$mid]);
         $tid = (int)$t->fetchColumn();
-        if ($tid) mdsd_save($tid, $ans);   // the MDSD is downloaded later from Trip History
-        if ($ajax) md_json(['ok' => true]);
+        if ($tid) {   // the MDSD and PDIC are printed later from the "Departed" window or from Trip History
+            mdsd_save($tid, $ans);
+            pdic_save($tid, $pa, $ins, $started);
+        }
+        if ($ajax) md_json(['ok' => true, 'trip' => $tid]);
         header('Location: ' . $back);
         exit;
     }
     if ($ajax) md_json(['ok' => false, 'error' => $err]);
 }
 $cur = $_SERVER['REQUEST_METHOD'] === 'POST' ? $q : $pre;   // keep what was ticked if something was missed
+$pcur = $_SERVER['REQUEST_METHOD'] === 'POST' ? $p : [];
 $sub = $m['motorbanca_name'] . ' · ' . $np . ' of ' . (int)$m['capacity'] . ' passengers';
-if ($ajax) md_json(['title' => "Master's Declaration of Safe Departure", 'sub' => $sub, 'html' => md_rows($cur)]);
+if ($ajax) md_json([
+    'title' => "Master's Declaration of Safe Departure",
+    'sub' => $sub,
+    'html' => md_rows($cur),
+    'pdic' => pdic_rows($pcur),
+    'started' => date('Y-m-d H:i:s'),
+]);
 
-page_head('MDSD', 'admin'); ?>
-<h1>Master's Declaration of Safe Departure</h1>
+page_head('MDSD and PDIC', 'admin'); ?>
+<h1>Safe departure</h1>
 <p class="md-sum"><?= e($sub) ?></p>
 <?php if ($err): ?><div class="alert bad"><?= e($err) ?></div><?php endif; ?>
 <form method="post" class="md-form md-page">
     <input type="hidden" name="mid" value="<?= $mid ?>">
     <input type="hidden" name="back" value="<?= e($back) ?>">
+    <input type="hidden" name="started" value="<?= e(date('Y-m-d H:i:s')) ?>">
     <?= md_rows($cur) ?>
+    <?= pdic_rows($pcur) ?>
+    <div class="md-ins">
+        <label for="pd-ins">Name of inspector</label>
+        <input id="pd-ins" name="inspector" type="text" maxlength="100" autocomplete="off" value="<?= e($ins) ?>">
+    </div>
     <div class="md-act">
-        <a class="btn ghost" href="<?= e($back) ?>">Cancel</a>
-        <button class="btn" type="submit">Depart</button>
+        <button class="btn" type="submit">Depart motorbanca</button>
     </div>
 </form>
 <?php page_foot('admin');

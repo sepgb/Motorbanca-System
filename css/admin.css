@@ -4580,7 +4580,8 @@ body.r-public .main>h1:has(+ .fx) {
     border-top: 1px solid #f4ede7
 }
 
-.r-admin .md-foot .md-go {
+.r-admin .md-foot .md-go,
+.r-admin .md-foot .md-next {
     border: 1px solid transparent
         /* same outline as Cancel so both buttons are exactly the same size */
 }
@@ -4673,5 +4674,116 @@ body.r-public .main>h1:has(+ .fx) {
     .r-admin .md-foot .btn {
         flex: 1 1 0;
         width: auto
+    }
+}
+
+/* PDIC rows, inspector name, "departed" window */
+.md-t .md-nt {
+    display: block;
+    margin-top: 2px;
+    color: #8c8279;
+    font-size: .8rem;
+    font-style: italic
+}
+
+.md-bl {
+    margin: 5px 0 0;
+    padding-left: 18px;
+    color: #6f655d;
+    font-size: .84rem;
+    line-height: 1.4
+}
+
+.md-ins {
+    padding: 18px 0 10px
+}
+
+.md-ins label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: .9rem;
+    font-weight: 700
+}
+
+.md-ins input {
+    width: 100%;
+    height: 46px;
+    padding: 0 16px;
+    border: 1px solid #e6dcd3;
+    border-radius: 14px;
+    background: #fff;
+    color: #1f1a17;
+    font: inherit
+}
+
+.md-ins input:focus {
+    outline: 2px solid #f26b1d;
+    outline-offset: 1px;
+    border-color: #f26b1d
+}
+
+.md-ins.miss label {
+    color: #b42318
+}
+
+.md-ins.miss input {
+    border-color: #b42318;
+    background: #fff4f2
+}
+
+.md-back {
+    font-size: 1.5rem;
+    line-height: 1
+}
+
+.r-admin .md-foot .btn.md-go-wide {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 0 24px
+}
+
+.mdl-box.wide.md-done {
+    max-width: 480px
+}
+
+.md-docs {
+    padding: 4px 24px 0 !important
+}
+
+.md-doc {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f4ede7
+}
+
+.md-doc b {
+    display: block;
+    font-size: .95rem
+}
+
+.md-doc span {
+    color: #8c8279;
+    font-size: .82rem
+}
+
+.md-done .md-foot {
+    justify-content: flex-end;
+    border-top: 0
+}
+
+@media (max-width:699px) {
+    .r-admin .md-foot .btn.md-go-wide {
+        flex: 1 1 100%
+    }
+
+    .md-doc {
+        flex-wrap: wrap
+    }
+
+    .md-doc .btn {
+        flex: 0 0 auto
     }
 }

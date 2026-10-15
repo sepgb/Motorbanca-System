@@ -35,62 +35,129 @@ setInterval(function () {
 // Cards fade in only on first load (not on every live refresh)
 setTimeout(function () { document.body.classList.remove('enter'); }, 900);
 
-// Depart button: the MDSD checklist opens in a modal. The boat departs when the PCG submits it, so the checklist is the confirmation.
+// Depart button: the MDSD checklist opens in a modal, then the PDIC (inspection checklist) in a second one.
+// The boat departs when the PCG submits the PDIC; a last window then offers to print the MDSD and the PDIC.
 (function () {
-  var box, body, err, count, sub, go, url, mid, busy;
-  function build() {
-    box = document.createElement('div');
-    box.className = 'mdl';
-    box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
-    box.innerHTML = '<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Master\u2019s Declaration of Safe Departure</h3><p class="sub"></p></div>' +
-      '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
-      '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
-      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel">Cancel</button><button type="submit" class="btn sm md-go">Depart</button></div></form></div>';
-    document.body.appendChild(box);
-    body = box.querySelector('.md-body'); err = box.querySelector('.md-err'); count = box.querySelector('.md-count'); sub = box.querySelector('.sub'); go = box.querySelector('.md-go');
-    box.addEventListener('click', function (e) { if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) close(); });   // no backdrop close: a half-filled checklist is not lost by a stray tap
-    box.addEventListener('change', function (e) { if (e.target.type === 'radio') { e.target.closest('.md-q').classList.remove('miss'); tally(); } });
-    box.querySelector('form').addEventListener('submit', submit);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('open')) close(); });
+  var mbox, pbox, dbox, mbody, pbody, merr, perr, mcount, pcount, msub, psub, pgo, url, mid, started, busy;
+  var PRINT = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg>';
+
+  function make(html) {
+    var m = document.createElement('div');
+    m.className = 'mdl';
+    m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
+    m.innerHTML = html;
+    document.body.appendChild(m);
+    return m;
   }
-  function close() { box.classList.remove('open'); }
-  function show(t) { err.textContent = t || ''; err.hidden = !t; }
-  function tally() {
-    var all = body.querySelectorAll('.md-q'), done = body.querySelectorAll('.md-q input:checked').length;
-    count.textContent = done + ' of ' + all.length + ' answered';
+  function openM(m) { void m.offsetWidth; m.classList.add('open'); }
+  function closeM(m) { m.classList.remove('open'); }
+  function show(el, t) { el.textContent = t || ''; el.hidden = !t; }
+  function tally(body, out) {
+    var all = body.querySelectorAll('.md-q');
+    out.textContent = body.querySelectorAll('.md-q input:checked').length + ' of ' + all.length + ' answered';
   }
-  function submit(e) {
-    e.preventDefault(); if (busy) return;
+  // every row needs an answer: flag the ones that do not have one and return the first
+  function firstMissing(body) {
     var first = null;
-    body.querySelectorAll('.md-q').forEach(function (q) {   // every item needs an answer
+    body.querySelectorAll('.md-q').forEach(function (q) {
       var miss = !q.querySelector('input:checked');
       q.classList.toggle('miss', miss);
       if (miss && !first) first = q;
     });
-    if (first) { show('Please answer every item with Yes, No or N/A.'); first.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
-    show(''); busy = true; go.disabled = true; go.textContent = 'Departing\u2026';
-    var d = new FormData(box.querySelector('form')); d.append('mid', mid); d.append('ajax', '1');
+    return first;
+  }
+  function clearOnChange(m, body, out) {
+    m.addEventListener('change', function (e) {
+      if (e.target.type === 'radio') { e.target.closest('.md-q').classList.remove('miss'); tally(body, out); }
+    });
+  }
+
+  function build() {
+    // ---- step 1: MDSD
+    mbox = make('<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Master\u2019s Declaration of Safe Departure</h3><p class="sub"></p></div>' +
+      '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
+      '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
+      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel">Cancel</button><button type="submit" class="btn sm md-next">Next</button></div></form></div>');
+    mbody = mbox.querySelector('.md-body'); merr = mbox.querySelector('.md-err'); mcount = mbox.querySelector('.md-count'); msub = mbox.querySelector('.sub');
+    clearOnChange(mbox, mbody, mcount);
+    mbox.addEventListener('click', function (e) { if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) closeM(mbox); });   // no backdrop close: a half-filled checklist is not lost by a stray tap
+    mbox.querySelector('form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var first = firstMissing(mbody);
+      if (first) { show(merr, 'Please answer every item with Yes, No or N/A.'); first.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+      show(merr, ''); closeM(mbox); openM(pbox);   // on to the PDIC
+    });
+
+    // ---- step 2: PDIC (no Cancel here: the only action is to depart the motorbanca; the arrow goes back to the MDSD)
+    pbox = make('<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Pre-Departure Inspection Checklist</h3><p class="sub"></p></div>' +
+      '<div class="mdl-tools"><button type="button" class="x md-back" aria-label="Back to the MDSD">&lsaquo;</button></div></div>' +
+      '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
+      '<div class="md-foot"><span class="md-count"></span><button type="submit" class="btn sm md-go md-go-wide">Depart motorbanca</button></div></form></div>');
+    pbody = pbox.querySelector('.md-body'); perr = pbox.querySelector('.md-err'); pcount = pbox.querySelector('.md-count'); psub = pbox.querySelector('.sub'); pgo = pbox.querySelector('.md-go');
+    clearOnChange(pbox, pbody, pcount);
+    pbox.addEventListener('click', function (e) { if (e.target.classList.contains('md-back')) { closeM(pbox); openM(mbox); } });
+    pbox.addEventListener('input', function (e) { if (e.target.name === 'inspector') e.target.closest('.md-ins').classList.remove('miss'); });
+    pbox.querySelector('form').addEventListener('submit', submit);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (dbox && dbox.classList.contains('open')) location.reload();
+      else if (pbox.classList.contains('open')) { closeM(pbox); openM(mbox); }
+      else if (mbox.classList.contains('open')) closeM(mbox);
+    });
+  }
+
+  function submit(e) {
+    e.preventDefault(); if (busy) return;
+    var first = firstMissing(pbody), ins = pbody.querySelector('[name=inspector]'), name = ins.value.trim();
+    ins.closest('.md-ins').classList.toggle('miss', !name);
+    if (first || !name) {
+      show(perr, first ? 'Please answer every item with Yes or No.' : 'Please enter the name of the inspector.');
+      (first || ins.closest('.md-ins')).scrollIntoView({ block: 'center', behavior: 'smooth' });
+      return;
+    }
+    show(perr, ''); busy = true; pgo.disabled = true; pgo.textContent = 'Departing\u2026';
+    var d = new FormData();
+    d.append('mid', mid); d.append('ajax', '1'); d.append('started', started); d.append('inspector', name);
+    [mbody, pbody].forEach(function (b) { b.querySelectorAll('input[type=radio]:checked').forEach(function (i) { d.append(i.name, i.value); }); });
+    function fail(t) { show(perr, t); busy = false; pgo.disabled = false; pgo.textContent = 'Depart motorbanca'; }
     fetch(url, { method: 'POST', body: d, credentials: 'same-origin' })
       .then(function (x) { return x.json(); })
-      .then(function (j) { if (j.ok) location.reload(); else { show(j.error || 'Could not depart the boat.'); busy = false; go.disabled = false; go.textContent = 'Depart'; } })
-      .catch(function () { show('Could not reach the server. Check your connection and try again.'); busy = false; go.disabled = false; go.textContent = 'Depart'; });
+      .then(function (j) { if (j.ok) done(j.trip); else fail(j.error || 'Could not depart the boat.'); })
+      .catch(function () { fail('Could not reach the server. Check your connection and try again.'); });
   }
+
+  // ---- step 3: the boat has departed: print the MDSD and the PDIC if wanted
+  function done(trip) {
+    closeM(mbox); closeM(pbox);
+    if (!trip) { location.reload(); return; }
+    dbox = make('<div class="mdl-box wide md-done"><div class="mdl-head"><div class="mdl-title"><h3>Motorbanca departed</h3><p class="sub">Do you want to print the documents of this trip? You can also print them later from Trip History.</p></div></div>' +
+      '<div class="mdl-body md-docs">' +
+      '<div class="md-doc"><div><b>MDSD</b><span>Master\u2019s Declaration of Safe Departure</span></div><button type="button" class="btn sm ghost pdfbtn" data-print="mdsd_print.php?trip=' + trip + '&print=1">' + PRINT + '<span>Print</span></button></div>' +
+      '<div class="md-doc"><div><b>PDIC</b><span>Pre-Departure Inspection Checklist</span></div><button type="button" class="btn sm ghost pdfbtn" data-print="pdic_print.php?trip=' + trip + '&print=1">' + PRINT + '<span>Print</span></button></div>' +
+      '</div><div class="md-foot"><button type="button" class="btn sm ghost md-close">Close</button></div></div>');
+    dbox.addEventListener('click', function (e) { if (e.target.classList.contains('md-close')) location.reload(); });
+    openM(dbox);
+  }
+
   function open(f) {
     mid = f.querySelector('[name=mid]').value;
     url = f.action.replace(/depart\.php.*$/, 'mdsd.php');
-    if (!box) build();
-    busy = false; go.disabled = false; go.textContent = 'Depart'; show('');
-    sub.textContent = 'Loading\u2026'; body.innerHTML = ''; count.textContent = '';
-    void box.offsetWidth; box.classList.add('open');
+    if (!mbox) build();
+    busy = false; pgo.disabled = false; pgo.textContent = 'Depart motorbanca'; show(merr, ''); show(perr, '');
+    msub.textContent = 'Loading\u2026'; mbody.innerHTML = ''; pbody.innerHTML = ''; mcount.textContent = ''; pcount.textContent = '';
+    openM(mbox);
     fetch(url + '?ajax=1&mid=' + encodeURIComponent(mid), { credentials: 'same-origin' })
       .then(function (x) { return x.json(); })
       .then(function (d) {
-        if (d.ok === false) { sub.textContent = ''; show(d.error); return; }
-        sub.textContent = d.sub;
-        body.innerHTML = d.html;   // built and escaped on the server
-        tally();
+        if (d.ok === false) { msub.textContent = ''; show(merr, d.error); return; }
+        msub.textContent = d.sub; psub.textContent = d.sub;
+        mbody.innerHTML = d.html;   // built and escaped on the server
+        pbody.innerHTML = d.pdic + '<div class="md-ins"><label for="pd-ins">Name of inspector</label><input id="pd-ins" name="inspector" type="text" maxlength="100" autocomplete="off"></div>';
+        started = d.started;   // the inspection starts when the checklist is opened
+        tally(mbody, mcount); tally(pbody, pcount);
       })
-      .catch(function () { sub.textContent = ''; show('Could not load the checklist.'); });
+      .catch(function () { msub.textContent = ''; show(merr, 'Could not load the checklist.'); });
   }
   // The Depart button never sends the boat straight away: both a click and a form submit (Enter key) open the checklist.
   document.addEventListener('click', function (e) {
@@ -110,14 +177,16 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
 // Trip history: double-click a row to see that trip's passengers
 (function () {
   var box;
+  // one white print button of the trip popup; a form that may not exist for this trip starts disabled
+  function docBtn(label, kind, off) {
+    return '<button type="button" class="btn sm ghost pdfbtn" data-print="" data-kind="' + kind + '"' + (off ? ' disabled' : '') + '><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg><span>' + label + '</span></button>';
+  }
   function build() {
     box = document.createElement('div');
     box.className = 'mdl';
     box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
     box.innerHTML = '<div class="mdl-box wide"><div class="mdl-head"><div class="mdl-title"><h3></h3><p class="sub"></p></div>' +
-      '<div class="mdl-tools"><button type="button" class="btn sm ghost pdfbtn" data-print="" data-kind="print_crew"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg><span>Crew list</span></button>' +
-      '<button type="button" class="btn sm pdfbtn" data-print="" data-kind="print"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg><span>Manifest</span></button>' +
-      '<button type=\"button\" class=\"btn sm ghost pdfbtn\" data-print=\"\" data-kind=\"admin/mdsd_print\" disabled><svg class=\"ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z\"/></svg><span>MDSD</span></button>' +
+      '<div class="mdl-tools">' + docBtn('Crew list', 'print_crew', false) + docBtn('Manifest', 'print', false) + docBtn('MDSD', 'admin/mdsd_print', true) + docBtn('PDIC', 'admin/pdic_print', true) +
       '<button type="button" class="x" aria-label="Close">&times;</button></div></div><div class="mdl-body"></div></div>';
     document.body.appendChild(box);
     box.addEventListener('click', function (e) { if (e.target === box || e.target.classList.contains('x')) box.classList.remove('open'); });
@@ -133,7 +202,8 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       var k = b.getAttribute('data-kind');
       b.setAttribute('data-print', r.dataset.url.replace('admin/passengers.php', (k.indexOf('/') < 0 ? 'operator/' : '') + k + '.php') + '&print=1');
     });
-    var mb = box.querySelector('[data-kind="admin/mdsd_print"]'); mb.disabled = true; mb.title = '';   // on only if this trip has an MDSD
+    var mb = box.querySelector('[data-kind="admin/mdsd_print"]'), pb = box.querySelector('[data-kind="admin/pdic_print"]');
+    mb.disabled = true; mb.title = ''; pb.disabled = true; pb.title = '';   // on only if this trip has an MDSD / a PDIC
     box.querySelector('.mdl-body').innerHTML = '';
     void box.offsetWidth;
     box.classList.add('open');
@@ -144,6 +214,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
         box.querySelector('.sub').textContent = d.sub;
         box.querySelector('.mdl-body').innerHTML = d.html;   // built and escaped on the server
         mb.disabled = !d.mdsd; mb.title = d.mdsd ? '' : 'No MDSD was made for this trip';
+        pb.disabled = !d.pdic; pb.title = d.pdic ? '' : 'No PDIC was made for this trip';
       })
       .catch(function () { box.querySelector('.sub').textContent = 'Could not load the passengers.'; });
   });
