@@ -4445,3 +4445,157 @@ body.r-public .main>h1:has(+ .fx) {
 .main>.ann:not(:has(~ .ann))::after {
     display: none
 }
+
+/* MDSD checklist form (PCG, on Depart): open list, no cards */
+.md-sum {
+    margin: 0 0 10px;
+    color: #8c8279
+}
+
+.md-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap
+}
+
+.md-note {
+    margin: 0;
+    color: #8c8279;
+    font-size: .88rem
+}
+
+.r-admin .md-top .btn {
+    width: auto;
+    min-height: 0;
+    height: 38px;
+    padding: 0 18px;
+    font-size: .85rem
+}
+
+.md-h {
+    margin: 22px 0 4px;
+    font-size: 1.05rem;
+    font-weight: 800
+}
+
+.md-q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1e9e2
+}
+
+.md-q.sub {
+    margin-left: 18px
+}
+
+.md-t {
+    flex: 1;
+    min-width: 0;
+    line-height: 1.4;
+    font-size: .92rem
+}
+
+.md-t b {
+    margin-right: 4px
+}
+
+.md-opts {
+    display: flex;
+    gap: 8px;
+    flex: none
+}
+
+.md-o {
+    position: relative
+}
+
+.md-o input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer
+}
+
+.md-o span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 62px;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid #e6dcd3;
+    border-radius: 999px;
+    background: #fff;
+    color: #3b3430;
+    font-size: .85rem;
+    font-weight: 600
+}
+
+.md-o input:focus-visible+span {
+    outline: 2px solid #f26b1d;
+    outline-offset: 2px
+}
+
+.md-yes input:checked+span {
+    background: #15803d;
+    border-color: #15803d;
+    color: #fff
+}
+
+.md-no input:checked+span {
+    background: #b42318;
+    border-color: #b42318;
+    color: #fff
+}
+
+.md-na input:checked+span {
+    background: #8c8279;
+    border-color: #8c8279;
+    color: #fff
+}
+
+.md-act {
+    display: flex;
+    gap: 10px;
+    margin-top: 26px
+}
+
+.md-act .btn {
+    flex: 1
+}
+
+@media (max-width:699px) {
+    .md-q {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px
+    }
+
+    .md-q.sub {
+        margin-left: 10px
+    }
+
+    .md-opts {
+        gap: 8px
+    }
+
+    .md-o {
+        flex: 1
+    }
+
+    .md-o span {
+        width: 100%;
+        min-width: 0
+    }
+
+    .md-top .btn {
+        width: 100%
+    }
+}
