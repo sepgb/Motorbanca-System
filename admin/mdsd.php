@@ -28,7 +28,7 @@ function md_opts($k, $cur)
 // One question row
 function md_row($k, $label, $cur, $sub = false)
 {
-    return "<div class='md-q" . ($sub ? ' sub' : '') . "' role='radiogroup' aria-labelledby='md-$k'><div class='md-t' id='md-$k'>$label</div>" . md_opts($k, $cur) . "</div>";
+    return "<div class='md-q" . ($sub ? ' md-sub' : '') . "' role='radiogroup' aria-labelledby='md-$k'><div class='md-t' id='md-$k'>$label</div>" . md_opts($k, $cur) . "</div>";
 }
 
 // Every question of the checklist

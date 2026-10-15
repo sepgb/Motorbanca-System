@@ -4485,7 +4485,7 @@ body.r-public .main>h1:has(+ .fx) {
     border-bottom: 1px solid #f4ede7
 }
 
-.md-q.sub {
+.md-q.md-sub {
     padding-left: 14px
 }
 
@@ -4647,8 +4647,8 @@ body.r-public .main>h1:has(+ .fx) {
         min-width: 0
     }
 
-    .md-q.sub {
-        padding-left: 8px
+    .md-q.md-sub {
+        padding-left: 0
     }
 
     .md-err {
