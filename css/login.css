@@ -114,7 +114,8 @@ body.login {
 .lg-form .btn {
     margin-top: 10px;
     min-height: 52px;
-    font-size: 1rem
+    font-size: 1rem;
+    box-shadow: inset 0 1px 0 #ffffff59, inset 0 -2px 0 #0003, 0 1px 2px #0006, 0 8px 24px -6px #f26b1d99
 }
 
 .lbl {
@@ -369,12 +370,17 @@ body.login {
         font-size: 1rem;
         font-weight: 700;
         color: #1f1a17;
-        background: linear-gradient(135deg, #ff8a3d, #f26b1d);
-        border: 0
+        background: linear-gradient(180deg, #ff8f45, #f26b1d);
+        border: 0;
+        box-shadow: inset 0 1px 0 #ffffff59, inset 0 -2px 0 #0003, 0 1px 2px #0006, 0 8px 24px -6px #f26b1d99
     }
 
     .lg-form .btn:hover {
         filter: brightness(1.06)
+    }
+
+    .lg-form .btn:active {
+        transform: translateY(1px)
     }
 
     .lg-form .alert {
