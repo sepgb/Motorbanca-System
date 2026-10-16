@@ -50,7 +50,7 @@ $fn = 'Crew List.pdf';
     <title>Crew List - <?= e($m['motorbanca_name']) ?></title>
     <style>
         @page {
-            size: A4;
+            size: letter;
             margin: 12mm
         }
 
@@ -66,7 +66,7 @@ $fn = 'Crew List.pdf';
         }
 
         .page {
-            width: 210mm;
+            width: 215.9mm;
             margin: 0 auto;
             padding: 22mm 14mm 10mm
         }
@@ -249,7 +249,7 @@ $fn = 'Crew List.pdf';
                             },
                             jsPDF: {
                                 unit: 'mm',
-                                format: 'a4',
+                                format: 'letter',
                                 orientation: 'portrait'
                             }
                         })

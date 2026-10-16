@@ -27,7 +27,7 @@ function ck($ans, $n, $v)
     <title>PDIC - <?= e($d['vessel']) ?></title>
     <style>
         @page {
-            size: A4 landscape;
+            size: letter landscape;
             margin: 8mm
         }
 
@@ -74,12 +74,24 @@ function ck($ans, $n, $v)
 
         .pg {
             position: relative;
-            width: 297mm;
-            height: 210mm;
+            display: flex;
+            flex-direction: column;
+            width: 279.4mm;
+            height: 215.9mm;
             margin: 10px auto;
             padding: 8mm;
             background: #fff;
             overflow: hidden
+        }
+
+        /* the table takes all the height that is left on the sheet, so the rows spread out and there is no empty space at the bottom */
+        .tw {
+            flex: 1 1 auto;
+            min-height: 0
+        }
+
+        .tw .t {
+            height: 100%
         }
 
         .formno {
@@ -271,7 +283,7 @@ function ck($ans, $n, $v)
                 margin: 0;
                 padding: 0;
                 width: auto;
-                height: 194mm;
+                height: 199.8mm;
                 break-after: page;
                 page-break-after: always
             }
@@ -321,354 +333,360 @@ function ck($ans, $n, $v)
                 <div class="row"><span class="l">Time Inspection Completed:</span><span class="f"><?= e($d['completed']) ?></span></div>
             </div>
         </div>
-        <table class="t">
-            <colgroup>
-                <col style="width:16%">
-                <col style="width:52%">
-                <col style="width:8%">
-                <col style="width:5%">
-                <col style="width:5%">
-                <col style="width:14%">
-            </colgroup>
-            <thead>
-                <tr>
-                    <th class="ref">REF TO REG</th>
-                    <th>ITEMS FOR INSPECTION</th>
-                    <th>CODE</th>
-                    <th>YES</th>
-                    <th>NO</th>
-                    <th>REMARKS</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="sec">
-                    <td colspan="6">COMPLETE AND VALID SHIP SAFETY CERTIFICATES AND DOCUMENTS</td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 16/MC 2006-06</td>
-                    <td class="it"><b>1.</b> Certificate of Public Convenience (CPC) is valid. Authorized route (Ports of Call) &amp; area of operation is observed<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8113</td>
-                    <td class="yn"><?= ck($ans, 1, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 1, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 177</td>
-                    <td class="it"><b>2.</b> Certificate of Vessel Registry is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8115</td>
-                    <td class="yn"><?= ck($ans, 2, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 2, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 177</td>
-                    <td class="it"><b>3.</b> Certificate of Ownership is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8112</td>
-                    <td class="yn"><?= ck($ans, 3, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 3, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 110</td>
-                    <td class="it"><b>4.</b> Coastwise/ Bay &amp; River License is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8118</td>
-                    <td class="yn"><?= ck($ans, 4, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 4, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 134</td>
-                    <td class="it"><b>5.</b> Certificate of Compliance is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8120</td>
-                    <td class="yn"><?= ck($ans, 5, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 5, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 203</td>
-                    <td class="it"><b>6.</b> Passenger / Cargo Ship Safety Certificate is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8148<br>VS8104</td>
-                    <td class="yn"><?= ck($ans, 6, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 6, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 148; MC 179</td>
-                    <td class="it"><b>7.</b> Minimum Safe Manning Certificate is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8142</td>
-                    <td class="yn"><?= ck($ans, 7, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 7, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 2007-04</td>
-                    <td class="it"><b>8.</b> Tonnage Measurement Certificate is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8165</td>
-                    <td class="yn"><?= ck($ans, 8, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 8, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 90, MC ____ Sec III A.36</td>
-                    <td class="it"><b>9.</b> Certificate of Number (OPTIONAL FOR 15 G.T. AND BELOW)<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8111</td>
-                    <td class="yn"><?= ck($ans, 9, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 9, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">RA 9295, MC 2009-18</td>
-                    <td class="it"><b>10.</b> Passenger Insurance Cover<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8147</td>
-                    <td class="yn"><?= ck($ans, 10, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 10, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">HPCG MC 08-12</td>
-                    <td class="it"><b>11.</b> Master's Declaration of Safe Departure (MDSD) properly accomplished, submitted with the necessary attachments:<div class="nt">(If incomplete, to be RECTIFIED)</div>
-                    </td>
-                    <td class="cd">VS8144</td>
-                    <td class="yn"><?= ck($ans, 11, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 11, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="tw">
+            <table class="t">
+                <colgroup>
+                    <col style="width:16%">
+                    <col style="width:52%">
+                    <col style="width:8%">
+                    <col style="width:5%">
+                    <col style="width:5%">
+                    <col style="width:14%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="ref">REF TO REG</th>
+                        <th>ITEMS FOR INSPECTION</th>
+                        <th>CODE</th>
+                        <th>YES</th>
+                        <th>NO</th>
+                        <th>REMARKS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="sec">
+                        <td colspan="6">COMPLETE AND VALID SHIP SAFETY CERTIFICATES AND DOCUMENTS</td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 16/MC 2006-06</td>
+                        <td class="it"><b>1.</b> Certificate of Public Convenience (CPC) is valid. Authorized route (Ports of Call) &amp; area of operation is observed<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8113</td>
+                        <td class="yn"><?= ck($ans, 1, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 1, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 177</td>
+                        <td class="it"><b>2.</b> Certificate of Vessel Registry is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8115</td>
+                        <td class="yn"><?= ck($ans, 2, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 2, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 177</td>
+                        <td class="it"><b>3.</b> Certificate of Ownership is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8112</td>
+                        <td class="yn"><?= ck($ans, 3, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 3, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 110</td>
+                        <td class="it"><b>4.</b> Coastwise/ Bay &amp; River License is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8118</td>
+                        <td class="yn"><?= ck($ans, 4, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 4, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 134</td>
+                        <td class="it"><b>5.</b> Certificate of Compliance is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8120</td>
+                        <td class="yn"><?= ck($ans, 5, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 5, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 203</td>
+                        <td class="it"><b>6.</b> Passenger / Cargo Ship Safety Certificate is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8148<br>VS8104</td>
+                        <td class="yn"><?= ck($ans, 6, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 6, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 148; MC 179</td>
+                        <td class="it"><b>7.</b> Minimum Safe Manning Certificate is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8142</td>
+                        <td class="yn"><?= ck($ans, 7, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 7, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 2007-04</td>
+                        <td class="it"><b>8.</b> Tonnage Measurement Certificate is valid<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8165</td>
+                        <td class="yn"><?= ck($ans, 8, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 8, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 90, MC ____ Sec III A.36</td>
+                        <td class="it"><b>9.</b> Certificate of Number (OPTIONAL FOR 15 G.T. AND BELOW)<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8111</td>
+                        <td class="yn"><?= ck($ans, 9, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 9, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">RA 9295, MC 2009-18</td>
+                        <td class="it"><b>10.</b> Passenger Insurance Cover<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8147</td>
+                        <td class="yn"><?= ck($ans, 10, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 10, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">HPCG MC 08-12</td>
+                        <td class="it"><b>11.</b> Master's Declaration of Safe Departure (MDSD) properly accomplished, submitted with the necessary attachments:<div class="nt">(If incomplete, to be RECTIFIED)</div>
+                        </td>
+                        <td class="cd">VS8144</td>
+                        <td class="yn"><?= ck($ans, 11, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 11, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="pg">
-        <table class="t">
-            <colgroup>
-                <col style="width:16%">
-                <col style="width:52%">
-                <col style="width:8%">
-                <col style="width:5%">
-                <col style="width:5%">
-                <col style="width:14%">
-            </colgroup>
-            <thead>
-                <tr>
-                    <th class="ref">REF TO REG</th>
-                    <th>ITEMS FOR INSPECTION</th>
-                    <th>CODE</th>
-                    <th>YES</th>
-                    <th>NO</th>
-                    <th>REMARKS</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="sec">
-                    <td colspan="6">OVERLOADING OF CARGO AND EXCESS PASSENGERS STRICTLY NOT ALLOWED</td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 180, MC 2009-13, MC 2009-18</td>
-                    <td class="it"><b>12.</b> Passenger Manifest properly accomplished and submitted prior departure.<ul>
-                            <li>Number of passengers in the manifest within the authorized passenger capacity;</li>
-                            <li>Number of passengers in the manifest corresponds to the actual passengers physically onboard;</li>
-                            <li>Random check of names in the manifest and actual passengers onboard matches</li>
-                        </ul>
-                        <div class="nt">(If No, to be RECTIFIED)</div>
-                    </td>
-                    <td class="cd">VS82404<br>VS82606<br>VS82603</td>
-                    <td class="yn"><?= ck($ans, 12, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 12, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">HPCG MC 04-98, MC 180, MC 2009-13, MC 2009-18</td>
-                    <td class="it"><b>13.</b> Head counting of passengers conducted and finds the vessel carrying only the authorized number of passengers per MARINA issued PSSC<ul>
-                            <li>Number of Passengers onboard: <span class="f"><?= e($d['pax']) ?></span></li>
-                        </ul>
-                        <div class="nt">(If No, to be RECTIFIED)</div>
-                    </td>
-                    <td class="cd">VS82606</td>
-                    <td class="yn"><?= ck($ans, 13, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 13, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr class="sec">
-                    <td colspan="6">ADEQUATE/ ACCESSIBLE LIFEJACKETS</td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 2008-08</td>
-                    <td class="it"><b>14.</b> All passengers and crews in open deck boats are wearing lifejackets prior departure.<div class="nt">(If No, to be RECTIFIED)</div>
-                    </td>
-                    <td class="cd">VS82602</td>
-                    <td class="yn"><?= ck($ans, 14, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 14, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr class="sec">
-                    <td colspan="6">SHIP STABILITY AND TRIM, CARGO SECURING / LASHING ASCERTAINED</td>
-                </tr>
-                <tr>
-                    <td class="ref">HPCG MC 04-98</td>
-                    <td class="it"><b>15.</b> Per visual assessment, motorbanca is in her upright normal condition.<div class="nt">(If No, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8926</td>
-                    <td class="yn"><?= ck($ans, 15, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 15, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 114</td>
-                    <td class="it"><b>16.</b> Cargo / personal effects of passengers stowed in a manner that do not obstruct passenger escape in case of emergency.<div class="nt">(If No, to be RECTIFIED)</div>
-                    </td>
-                    <td class="cd">VS81221</td>
-                    <td class="yn"><?= ck($ans, 16, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 16, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr class="sec">
-                    <td colspan="6">TOTAL NUMBER OF OFFICERS AND CREW MEETS MINIMUM SAFE MANNING REQUIREMENT</td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 89, MC 148, MC 179</td>
-                    <td class="it"><b>17.</b> The actual number, composition and qualifications of crew conform with the Minimum Safe Manning Certificate.<div class="nt">(If No, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8142</td>
-                    <td class="yn"><?= ck($ans, 17, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 17, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 170</td>
-                    <td class="it"><b>18.</b> Master / Patron / Boat Capt and Chief Engr./ Marine Diesel Mechanic possess valid licenses.<div class="nt">(If Not Valid, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8216</td>
-                    <td class="yn"><?= ck($ans, 18, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 18, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="tw">
+            <table class="t">
+                <colgroup>
+                    <col style="width:16%">
+                    <col style="width:52%">
+                    <col style="width:8%">
+                    <col style="width:5%">
+                    <col style="width:5%">
+                    <col style="width:14%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="ref">REF TO REG</th>
+                        <th>ITEMS FOR INSPECTION</th>
+                        <th>CODE</th>
+                        <th>YES</th>
+                        <th>NO</th>
+                        <th>REMARKS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="sec">
+                        <td colspan="6">OVERLOADING OF CARGO AND EXCESS PASSENGERS STRICTLY NOT ALLOWED</td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 180, MC 2009-13, MC 2009-18</td>
+                        <td class="it"><b>12.</b> Passenger Manifest properly accomplished and submitted prior departure.<ul>
+                                <li>Number of passengers in the manifest within the authorized passenger capacity;</li>
+                                <li>Number of passengers in the manifest corresponds to the actual passengers physically onboard;</li>
+                                <li>Random check of names in the manifest and actual passengers onboard matches</li>
+                            </ul>
+                            <div class="nt">(If No, to be RECTIFIED)</div>
+                        </td>
+                        <td class="cd">VS82404<br>VS82606<br>VS82603</td>
+                        <td class="yn"><?= ck($ans, 12, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 12, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">HPCG MC 04-98, MC 180, MC 2009-13, MC 2009-18</td>
+                        <td class="it"><b>13.</b> Head counting of passengers conducted and finds the vessel carrying only the authorized number of passengers per MARINA issued PSSC<ul>
+                                <li>Number of Passengers onboard: <span class="f"><?= e($d['pax']) ?></span></li>
+                            </ul>
+                            <div class="nt">(If No, to be RECTIFIED)</div>
+                        </td>
+                        <td class="cd">VS82606</td>
+                        <td class="yn"><?= ck($ans, 13, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 13, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr class="sec">
+                        <td colspan="6">ADEQUATE/ ACCESSIBLE LIFEJACKETS</td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 2008-08</td>
+                        <td class="it"><b>14.</b> All passengers and crews in open deck boats are wearing lifejackets prior departure.<div class="nt">(If No, to be RECTIFIED)</div>
+                        </td>
+                        <td class="cd">VS82602</td>
+                        <td class="yn"><?= ck($ans, 14, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 14, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr class="sec">
+                        <td colspan="6">SHIP STABILITY AND TRIM, CARGO SECURING / LASHING ASCERTAINED</td>
+                    </tr>
+                    <tr>
+                        <td class="ref">HPCG MC 04-98</td>
+                        <td class="it"><b>15.</b> Per visual assessment, motorbanca is in her upright normal condition.<div class="nt">(If No, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8926</td>
+                        <td class="yn"><?= ck($ans, 15, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 15, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 114</td>
+                        <td class="it"><b>16.</b> Cargo / personal effects of passengers stowed in a manner that do not obstruct passenger escape in case of emergency.<div class="nt">(If No, to be RECTIFIED)</div>
+                        </td>
+                        <td class="cd">VS81221</td>
+                        <td class="yn"><?= ck($ans, 16, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 16, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr class="sec">
+                        <td colspan="6">TOTAL NUMBER OF OFFICERS AND CREW MEETS MINIMUM SAFE MANNING REQUIREMENT</td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 89, MC 148, MC 179</td>
+                        <td class="it"><b>17.</b> The actual number, composition and qualifications of crew conform with the Minimum Safe Manning Certificate.<div class="nt">(If No, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8142</td>
+                        <td class="yn"><?= ck($ans, 17, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 17, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 170</td>
+                        <td class="it"><b>18.</b> Master / Patron / Boat Capt and Chief Engr./ Marine Diesel Mechanic possess valid licenses.<div class="nt">(If Not Valid, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8216</td>
+                        <td class="yn"><?= ck($ans, 18, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 18, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="pg">
-        <table class="t">
-            <colgroup>
-                <col style="width:16%">
-                <col style="width:52%">
-                <col style="width:8%">
-                <col style="width:5%">
-                <col style="width:5%">
-                <col style="width:14%">
-            </colgroup>
-            <thead>
-                <tr>
-                    <th class="ref">REF TO REG</th>
-                    <th>ITEMS FOR INSPECTION</th>
-                    <th>CODE</th>
-                    <th>YES</th>
-                    <th>NO</th>
-                    <th>REMARKS</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="sec">
-                    <td colspan="6">GOOD WEATHER/ SEA CONDITION PREVAILING</td>
-                </tr>
-                <tr>
-                    <td class="ref">PCG MC 01-09</td>
-                    <td class="it"><b>19.</b> Per latest PAGASA weather bulletin, the port of origin or route or port of destination of the motorbanca is not under Storm Signal Nr. 1.</td>
-                    <td class="cd">VS82615</td>
-                    <td class="yn"><?= ck($ans, 19, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 19, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">PCG MC 03-01</td>
-                    <td class="it"><b>20.</b> In the absence of a Storm Signal in the area, assessment of the prevailing sea condition in the origin, motorbanca is allowed to sail.</td>
-                    <td class="cd">VS82614</td>
-                    <td class="yn"><?= ck($ans, 20, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 20, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr class="sec">
-                    <td colspan="6">UPKEEP OF EQUIPMENT AND RUNNING LIGHTS VERIFIED</td>
-                </tr>
-                <tr>
-                    <td class="ref">PMMR 1997 Chapter X and XI</td>
-                    <td class="it"><b>21.</b> Required communications/ navigational equipment (if any) are in operating condition.<div class="nt">(If No, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8745</td>
-                    <td class="yn"><?= ck($ans, 21, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 21, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">PMMR 1997 Chapter X and XI</td>
-                    <td class="it"><b>22.</b> Running lights or other lighting devices are operating.<div class="nt">(If No, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS8746</td>
-                    <td class="yn"><?= ck($ans, 22, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 22, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr class="sec">
-                    <td colspan="6">ALL ENGINES IN OPERATING CONDITION</td>
-                </tr>
-                <tr>
-                    <td class="ref">PMMR 1997 Chapter V</td>
-                    <td class="it"><b>23.</b> Engine(s) in operating condition.<div class="nt">(If No, DETAINABLE)</div>
-                    </td>
-                    <td class="cd">VS81516</td>
-                    <td class="yn"><?= ck($ans, 23, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 23, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr class="sec">
-                    <td colspan="6">RESPONSIBLE SHIPOWNER/CREW/TERMINAL CONTROL</td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 180, MC 2009-13, MC 2009-18</td>
-                    <td class="it"><b>24.</b> Complete Passenger Manifest submitted prior departure.<div class="nt">(If No, to be RECTIFIED)</div>
-                    </td>
-                    <td class="cd">VS82404</td>
-                    <td class="yn"><?= ck($ans, 24, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 24, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 191</td>
-                    <td class="it"><b>25.</b> No indication observed that any Officer is under the influence of alcohol or prohibited drugs.<div class="nt">(If No, to be RECTIFIED)</div>
-                    </td>
-                    <td class="cd">VS82412</td>
-                    <td class="yn"><?= ck($ans, 25, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 25, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 134, MC ____ Sec III.A.24</td>
-                    <td class="it"><b>26.</b> Embarkation / Disembarkation ladder is provided with non-skid steps and guard rails.<div class="nt">(If No, to be RECTIFIED)</div>
-                    </td>
-                    <td class="cd">VS82408</td>
-                    <td class="yn"><?= ck($ans, 26, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 26, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-                <tr>
-                    <td class="ref">MC 134, MC ____ Sec III.A.24</td>
-                    <td class="it"><b>27.</b> The Official Number is painted on both sides of the motorized banca<div class="nt">(If No, to be RECTIFIED)</div>
-                    </td>
-                    <td class="cd">VS82613</td>
-                    <td class="yn"><?= ck($ans, 27, 'yes') ?></td>
-                    <td class="yn"><?= ck($ans, 27, 'no') ?></td>
-                    <td class="rm"></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="tw">
+            <table class="t">
+                <colgroup>
+                    <col style="width:16%">
+                    <col style="width:52%">
+                    <col style="width:8%">
+                    <col style="width:5%">
+                    <col style="width:5%">
+                    <col style="width:14%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="ref">REF TO REG</th>
+                        <th>ITEMS FOR INSPECTION</th>
+                        <th>CODE</th>
+                        <th>YES</th>
+                        <th>NO</th>
+                        <th>REMARKS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="sec">
+                        <td colspan="6">GOOD WEATHER/ SEA CONDITION PREVAILING</td>
+                    </tr>
+                    <tr>
+                        <td class="ref">PCG MC 01-09</td>
+                        <td class="it"><b>19.</b> Per latest PAGASA weather bulletin, the port of origin or route or port of destination of the motorbanca is not under Storm Signal Nr. 1.</td>
+                        <td class="cd">VS82615</td>
+                        <td class="yn"><?= ck($ans, 19, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 19, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">PCG MC 03-01</td>
+                        <td class="it"><b>20.</b> In the absence of a Storm Signal in the area, assessment of the prevailing sea condition in the origin, motorbanca is allowed to sail.</td>
+                        <td class="cd">VS82614</td>
+                        <td class="yn"><?= ck($ans, 20, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 20, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr class="sec">
+                        <td colspan="6">UPKEEP OF EQUIPMENT AND RUNNING LIGHTS VERIFIED</td>
+                    </tr>
+                    <tr>
+                        <td class="ref">PMMR 1997 Chapter X and XI</td>
+                        <td class="it"><b>21.</b> Required communications/ navigational equipment (if any) are in operating condition.<div class="nt">(If No, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8745</td>
+                        <td class="yn"><?= ck($ans, 21, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 21, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">PMMR 1997 Chapter X and XI</td>
+                        <td class="it"><b>22.</b> Running lights or other lighting devices are operating.<div class="nt">(If No, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS8746</td>
+                        <td class="yn"><?= ck($ans, 22, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 22, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr class="sec">
+                        <td colspan="6">ALL ENGINES IN OPERATING CONDITION</td>
+                    </tr>
+                    <tr>
+                        <td class="ref">PMMR 1997 Chapter V</td>
+                        <td class="it"><b>23.</b> Engine(s) in operating condition.<div class="nt">(If No, DETAINABLE)</div>
+                        </td>
+                        <td class="cd">VS81516</td>
+                        <td class="yn"><?= ck($ans, 23, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 23, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr class="sec">
+                        <td colspan="6">RESPONSIBLE SHIPOWNER/CREW/TERMINAL CONTROL</td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 180, MC 2009-13, MC 2009-18</td>
+                        <td class="it"><b>24.</b> Complete Passenger Manifest submitted prior departure.<div class="nt">(If No, to be RECTIFIED)</div>
+                        </td>
+                        <td class="cd">VS82404</td>
+                        <td class="yn"><?= ck($ans, 24, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 24, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 191</td>
+                        <td class="it"><b>25.</b> No indication observed that any Officer is under the influence of alcohol or prohibited drugs.<div class="nt">(If No, to be RECTIFIED)</div>
+                        </td>
+                        <td class="cd">VS82412</td>
+                        <td class="yn"><?= ck($ans, 25, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 25, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 134, MC ____ Sec III.A.24</td>
+                        <td class="it"><b>26.</b> Embarkation / Disembarkation ladder is provided with non-skid steps and guard rails.<div class="nt">(If No, to be RECTIFIED)</div>
+                        </td>
+                        <td class="cd">VS82408</td>
+                        <td class="yn"><?= ck($ans, 26, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 26, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                    <tr>
+                        <td class="ref">MC 134, MC ____ Sec III.A.24</td>
+                        <td class="it"><b>27.</b> The Official Number is painted on both sides of the motorized banca<div class="nt">(If No, to be RECTIFIED)</div>
+                        </td>
+                        <td class="cd">VS82613</td>
+                        <td class="yn"><?= ck($ans, 27, 'yes') ?></td>
+                        <td class="yn"><?= ck($ans, 27, 'no') ?></td>
+                        <td class="rm"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <div style="font-weight:700;font-size:8px;margin-top:3mm">INSTRUCTIONS:</div>
         <ol class="ins" style="margin-top:.5mm">
             <li>No vessel shall be cleared to depart for voyage unless it complies with all the applicable conditions (items of inspection) of this checklist.</li>

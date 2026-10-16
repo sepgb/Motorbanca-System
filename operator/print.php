@@ -54,7 +54,7 @@ $fn = 'Manifest.pdf';
     <title>Manipesto ng Pasahero - <?= e($m['motorbanca_name']) ?></title>
     <style>
         @page {
-            size: A4;
+            size: letter;
             margin: 9mm
         }
 
@@ -70,7 +70,7 @@ $fn = 'Manifest.pdf';
         }
 
         .page {
-            width: 210mm;
+            width: 215.9mm;
             margin: 0 auto;
             background: #fff;
             padding: 9mm
@@ -157,7 +157,7 @@ $fn = 'Manifest.pdf';
         td {
             border: 1px solid #000;
             padding: 0 1.5mm;
-            height: 6.7mm;
+            height: 6.1mm;
             font-size: 10.5px;
             overflow: hidden;
             white-space: nowrap;
@@ -287,7 +287,7 @@ $fn = 'Manifest.pdf';
                             },
                             jsPDF: {
                                 unit: 'mm',
-                                format: 'a4',
+                                format: 'letter',
                                 orientation: 'portrait'
                             }
                         })

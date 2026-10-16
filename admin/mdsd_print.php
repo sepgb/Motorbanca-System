@@ -26,8 +26,8 @@ function bx($ans, $k, $val)
     <title>MDSD - <?= e($v['vessel']) ?></title>
     <style>
         @page {
-            size: A4;
-            margin: 8mm 10mm
+            size: letter;
+            margin: 6mm 10mm
         }
 
         * {
@@ -37,7 +37,7 @@ function bx($ans, $k, $val)
         body {
             margin: 0;
             background: #f3eee9;
-            font: 9.6px/1.25 Arial, Helvetica, sans-serif;
+            font: 9.3px/1.24 Arial, Helvetica, sans-serif;
             color: #000
         }
 
@@ -73,8 +73,8 @@ function bx($ans, $k, $val)
 
         .page {
             position: relative;
-            width: 210mm;
-            min-height: 297mm;
+            width: 215.9mm;
+            min-height: 279.4mm;
             margin: 10px auto;
             padding: 8mm 10mm;
             background: #fff
@@ -108,11 +108,11 @@ function bx($ans, $k, $val)
         }
 
         .hd img {
-            width: 14mm;
-            height: 14mm;
+            width: 12mm;
+            height: 12mm;
             object-fit: contain;
             display: block;
-            margin: 0 auto .5mm
+            margin: 0 auto .3mm
         }
 
         .hd b {
@@ -172,7 +172,7 @@ function bx($ans, $k, $val)
         }
 
         p.l {
-            margin: 1.6mm 0 0;
+            margin: 1.2mm 0 0;
             line-height: 1.5
         }
 
@@ -188,7 +188,7 @@ function bx($ans, $k, $val)
         }
 
         .h2 {
-            margin: 1.6mm 0 0;
+            margin: 1.2mm 0 0;
             padding-left: 8mm;
             text-indent: -8mm
         }
@@ -212,7 +212,7 @@ function bx($ans, $k, $val)
         .q {
             display: flex;
             align-items: flex-start;
-            margin: .5mm 0 0 8mm
+            margin: .3mm 0 0 8mm
         }
 
         .q .bxs {
@@ -320,10 +320,17 @@ function bx($ans, $k, $val)
             }
 
             .page {
+                display: flex;
+                flex-direction: column;
                 margin: 0;
                 padding: 0;
                 width: auto;
-                min-height: 0
+                min-height: 264mm
+            }
+
+            /* the "Distribution" line sits at the bottom of the sheet, so no empty strip is left under the form */
+            .page>p:last-child {
+                margin-top: auto !important
             }
 
             .formc {
