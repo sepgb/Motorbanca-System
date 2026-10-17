@@ -45,23 +45,44 @@ if (!function_exists('ann_ensure')) {
             echo "<div class='ann-empty'><p class='muted' style='margin:0'>No " . (strpos($_SERVER['PHP_SELF'] ?? '', '/passenger/') !== false ? 'notifications' : 'announcements') . " yet.</p></div>";
             return;
         }
-        // Passenger / operator view: fixed-height rows, unread vs read look, tap to read the whole notice in a modal.
-        if (!$admin) echo "<link rel='stylesheet' href='" . (function_exists('asset') ? asset('css/notif.css') : BASE . '/css/notif.css') . "'>";
-        if (!$admin) echo "<div class='ann-bar'><button type='button' class='ann-all' id='ann-all'>Mark all as read</button></div>";
-        foreach ($rows as $a) {
-            $k = isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info';
-            $when = date('M j, Y \a\t g:i A', strtotime($a['created_at']));
-            if (!$admin) {
-                echo "<article class='ann ann-m unread k-$k' data-id='" . (int)$a['id'] . "' tabindex='0' role='button' aria-label='Open notification: " . e($a['title']) . "'><div class='ann-h'><span class='ann-tag'>" . ANN_KINDS[$k] . "</span><time>$when</time></div><h3>" . e($a['title']) . "</h3><p>" . nl2br(e($a['body'])) . "</p></article>";
-                continue;
+        // Admin: the full timeline with delete buttons.
+        if ($admin) {
+            foreach ($rows as $a) {
+                $k = isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info';
+                echo "<article class='ann k-$k'><div class='ann-h'><span class='ann-tag'>" . ANN_KINDS[$k] . "</span><time>" . date('M j, Y \a\t g:i A', strtotime($a['created_at'])) . "</time></div><h3>" . e($a['title']) . "</h3><p>" . nl2br(e($a['body'])) . "</p>";
+                echo "<form method='post' class='ann-del'><input type='hidden' name='del' value='" . (int)$a['id'] . "'><button class='btn sm ghost'>Delete</button></form>";
+                echo "</article>";
             }
-            echo "<article class='ann k-$k'><div class='ann-h'><span class='ann-tag'>" . ANN_KINDS[$k] . "</span><time>$when</time></div><h3>" . e($a['title']) . "</h3><p>" . nl2br(e($a['body'])) . "</p>";
-            echo "<form method='post' class='ann-del'><input type='hidden' name='del' value='" . (int)$a['id'] . "'><button class='btn sm ghost'>Delete</button></form>";
-            echo "</article>";
+            return;
         }
-        if (!$admin) {
-            echo "<div class='mdl' id='ann-mdl' role='dialog' aria-modal='true' aria-labelledby='ann-mt'><div class='mdl-box wide ann-box'><div class='mdl-head'><div class='ann-mk' id='ann-mk'><span class='ann-tag' id='ann-mtag'></span><h3 id='ann-mt'></h3><p class='sub' id='ann-mtime'></p></div><button type='button' class='x' aria-label='Close'>&times;</button></div><div class='ann-mb' id='ann-mb'></div></div></div>";
-            echo <<<'JS'
+        // Passenger / operator: latest 10, split into Today and Earlier, fixed-height rows, unread vs read look, tap to read the whole notice in a modal.
+        echo "<link rel='stylesheet' href='" . (function_exists('asset') ? asset('css/notif.css') : BASE . '/css/notif.css') . "'>";
+        $all = isset($_GET['all']);
+        $more = count($rows) > 10;
+        $shown = ($more && !$all) ? array_slice($rows, 0, 10) : $rows;
+        try {
+            $today = (string)db()->query('SELECT CURDATE()')->fetchColumn();
+        } catch (PDOException $x) {
+            $today = date('Y-m-d');
+        }
+        $grp = ['Today' => [], 'Earlier' => []];
+        foreach ($shown as $a) $grp[substr($a['created_at'], 0, 10) === $today ? 'Today' : 'Earlier'][] = $a;
+        foreach ($grp as $label => $list) {
+            if (!$list) continue;
+            echo "<h2 class='ann-sec'>$label</h2>";
+            $last = count($list) - 1;
+            foreach ($list as $n => $a) {
+                $k = isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info';
+                $when = date('M j, Y \a\t g:i A', strtotime($a['created_at']));
+                echo "<article class='ann ann-m unread k-$k" . ($n === $last ? ' ann-last' : '') . "' data-id='" . (int)$a['id'] . "' tabindex='0' role='button' aria-label='Open notification: " . e($a['title']) . "'><div class='ann-h'><span class='ann-tag'>" . ANN_KINDS[$k] . "</span><time>$when</time></div><h3>" . e($a['title']) . "</h3><p>" . nl2br(e($a['body'])) . "</p></article>";
+            }
+        }
+        if ($more) {
+            $self = e(basename($_SERVER['PHP_SELF'] ?? ''));
+            echo "<div class='ann-more'>" . ($all ? "<a href='$self'>Show latest 10 only</a>" : "<a href='$self?all=1'>See all previous notifications</a>") . "</div>";
+        }
+        echo "<div class='mdl' id='ann-mdl' role='dialog' aria-modal='true' aria-labelledby='ann-mt'><div class='mdl-box wide ann-box'><div class='mdl-head'><div class='ann-mk' id='ann-mk'><span class='ann-tag' id='ann-mtag'></span><h3 id='ann-mt'></h3><p class='sub' id='ann-mtime'></p></div><button type='button' class='x' aria-label='Close'>&times;</button></div><div class='ann-mb' id='ann-mb'></div></div></div>";
+        echo <<<'JS'
 <script>(function(){
 var K='ann_read_v1',R=[];
 try{R=JSON.parse(localStorage.getItem(K))||[];}catch(e){}
@@ -70,11 +91,6 @@ var L=document.querySelectorAll('.ann-m'),m=document.getElementById('ann-mdl'),l
 if(!m)return;
 document.body.appendChild(m);
 L.forEach(function(a){if(R.indexOf(a.getAttribute('data-id'))>-1)a.classList.remove('unread');});
-var AB=document.getElementById('ann-all');
-function sync(){if(AB)AB.disabled=!document.querySelector('.ann-m.unread');}
-function save(){if(R.length>300)R=R.slice(-300);try{localStorage.setItem(K,JSON.stringify(R));}catch(e){}}
-sync();
-if(AB)AB.addEventListener('click',function(){L.forEach(function(a){var id=a.getAttribute('data-id');a.classList.remove('unread');if(R.indexOf(id)<0)R.push(id);});save();sync();});
 function openN(a){
   last=a;
   var kc=(a.className.match(/k-\w+/)||['k-info'])[0];
@@ -85,8 +101,7 @@ function openN(a){
   document.getElementById('ann-mb').innerHTML=a.querySelector('p').innerHTML;   // already escaped by the server
   a.classList.remove('unread');
   var id=a.getAttribute('data-id');
-  if(R.indexOf(id)<0){R.push(id);save();}
-  sync();
+  if(R.indexOf(id)<0){R.push(id);if(R.length>300)R=R.slice(-300);try{localStorage.setItem(K,JSON.stringify(R));}catch(e){}}
   void m.offsetWidth;m.classList.add('open');
   m.querySelector('.x').focus();
 }
@@ -99,7 +114,6 @@ m.addEventListener('click',function(e){if(e.target===m||e.target.closest('.x'))c
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList.contains('open'))closeN();});
 })();</script>
 JS;
-        }
     }
 }
 
