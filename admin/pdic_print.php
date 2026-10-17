@@ -37,9 +37,20 @@ function ck($ans, $n, $v)
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>PDIC - <?= e($d['vessel']) ?></title>
     <style>
+        /* no browser header / footer (date, title, address): only the page count "1/1" at the bottom right */
         @page {
             size: letter landscape;
-            margin: 8mm
+            margin: 5mm;
+
+            @top-center {
+                content: ""
+            }
+
+            @bottom-right {
+                content: counter(page) "/" counter(pages);
+                font: 600 9px Arial, sans-serif;
+                color: #000
+            }
         }
 
         * {
@@ -294,7 +305,7 @@ function ck($ans, $n, $v)
                 margin: 0;
                 padding: 0;
                 width: auto;
-                height: 199.8mm;
+                height: 205.8mm;
                 break-after: page;
                 page-break-after: always
             }

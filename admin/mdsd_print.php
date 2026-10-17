@@ -36,9 +36,20 @@ function bx($ans, $k, $val)
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>MDSD - <?= e($v['vessel']) ?></title>
     <style>
+        /* no browser header / footer (date, title, address): only the page count "1/1" at the bottom right */
         @page {
             size: letter;
-            margin: 6mm 10mm
+            margin: 6mm 10mm;
+
+            @top-center {
+                content: ""
+            }
+
+            @bottom-right {
+                content: counter(page) "/" counter(pages);
+                font: 600 9px Arial, sans-serif;
+                color: #000
+            }
         }
 
         * {
