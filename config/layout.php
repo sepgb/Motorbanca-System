@@ -21,7 +21,7 @@ function page_head($title, $role = 'public')
         $me = basename($_SERVER['PHP_SELF']);
         $dir = $role === 'operator' ? 'operator' : 'admin';
         $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers', 'trips.php' => 'Trip History', 'announcements.php' => 'Announcements']
-            : ['dashboard.php' => 'Dashboard', 'motorbancas.php' => 'Register', 'queue.php' => 'Queue', 'trip' . 's.php' => 'Trip History', 'announcements.php' => 'Announcements'];
+            : ['dashboard.php' => 'Dashboard', 'queue.php' => 'Queue', 'motorbancas.php' => 'Register', 'announcements.php' => 'Alert', 'trip' . 's.php' => 'History'];
         $logo = "<svg viewBox='0 0 40 40' width='40' height='40' fill='none' stroke='#f26b1d' stroke-width='5' stroke-linecap='round'><circle cx='20' cy='20' r='15' stroke-dasharray='19 12.42' transform='rotate(-80 20 20)'/></svg>";
         echo "<header class='atop'><a class='logo' href='$b/$dir/dashboard.php'>$logo<span>Port Control</span></a>
 <button class='ibtn a-burger' aria-label='Menu' onclick=\"document.body.classList.toggle('nav-open')\">" . ico('<path d="M4 7h16M4 12h16M4 17h16"/>') . "</button>
@@ -51,7 +51,7 @@ JS;
         $short = ['announcements.php' => 'Alerts', 'trips.php' => 'History'];
         // phone / tablet bottom bar for operator and admin: icons only (the name stays as aria-label), all tabs the same size, Home like the others
         $tabIco['dashboard.php'] = '<path d="M15 21v-8a1 1 0 00-1-1h-4a1 1 0 00-1 1v8"/><path d="M3 10a2 2 0 01.709-1.528l7-5.999a2 2 0 012.582 0l7 5.999A2 2 0 0121 10v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>';
-        $order = $role === 'operator' ? ['announcements.php', 'manifest.php', 'dashboard.php', 'trips.php'] : ['queue.php', 'motorbancas.php', 'dashboard.php', 'trips.php', 'announcements.php'];
+        $order = $role === 'operator' ? ['announcements.php', 'manifest.php', 'dashboard.php', 'trips.php'] : array_keys($links);   // admin: the same order as the top menu
         echo "<nav class='btabs btabs-pub' aria-label='Main'>";
         foreach ($order as $f) echo "<a href='$b/$dir/$f' aria-label='" . e($links[$f]) . "'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($tabIco[$f]) . "</i></a>";
         echo "<a href='$b/logout.php' class='lo' aria-label='Log out'><i>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</i></a></nav>";
