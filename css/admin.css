@@ -4909,3 +4909,88 @@ body.r-public .main>h1:has(+ .lead) {
     height: 16px;
     stroke-width: 2
 }
+
+/* Trip history on desktop (admin and operator): one table with Year / Month / Day filters.
+   Phones and tablets keep the Year > Month > Week > Day list. */
+.th-desk {
+    display: none
+}
+
+@media (min-width:1000px) {
+    .thx.th-mob {
+        display: none
+    }
+
+    .th-desk {
+        display: block
+    }
+}
+
+.thf {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+    margin: 0 0 14px
+}
+
+.thf label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: .74rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #8c8279
+}
+
+.thf select {
+    height: 40px;
+    min-width: 140px;
+    padding: 0 38px 0 16px;
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #1f1a17;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f26b1d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center/16px;
+    border: 1px solid #efe7e0;
+    border-radius: 999px;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer
+}
+
+.thf select:focus-visible {
+    outline: 3px solid #f26b1d;
+    outline-offset: 2px
+}
+
+.r-admin .thf .btn {
+    width: auto;
+    min-height: 40px;
+    padding: 0 20px
+}
+
+.thf-sum {
+    margin-left: auto;
+    align-self: center;
+    font-size: .88rem;
+    font-weight: 600;
+    color: #8c8279
+}
+
+.th-desk .th-t {
+    margin: 0
+}
+
+.th-desk tr.th-off {
+    display: none
+}
+
+.th-desk .th-empty td {
+    padding: 26px 14px;
+    text-align: center
+}
