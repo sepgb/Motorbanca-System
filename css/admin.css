@@ -1359,7 +1359,7 @@ body.nav-open .pills {
 
     /* nothing left in it on phones/tablets: the bottom bar has the nav + log out */
     .r-admin .main {
-        padding-top: max(24px, env(safe-area-inset-top));
+        padding-top: max(14px, env(safe-area-inset-top));
         padding-bottom: 104px
     }
 
@@ -2261,7 +2261,7 @@ body.nav-open .pills {
     }
 
     .r-public .main {
-        padding: max(24px, env(safe-area-inset-top)) 16px 40px
+        padding: max(14px, env(safe-area-inset-top)) 16px 40px
     }
 
     .pub-staff {
@@ -3833,7 +3833,7 @@ body.r-public .main>.lead {
 /* passenger phones/tablets: a little space above the page */
 @media (max-width:999px) {
     body.r-public .main {
-        padding-top: max(28px, env(safe-area-inset-top)) !important
+        padding-top: max(14px, env(safe-area-inset-top)) !important
     }
 }
 
@@ -4826,6 +4826,17 @@ body.r-public .main>h1:has(+ .lead) {
 
 @media (max-width:999px) {
     body.r-operator .main>h1:has(+ .lead) {
+        margin-bottom: 16px !important
+    }
+}
+
+/* announcements page (admin): no subtitle under the title on phones; the title then gets its normal gap below */
+@media (max-width:999px) {
+    .ann-lead {
+        display: none
+    }
+
+    body.r-admin .main>h1:has(+ .ann-lead) {
         margin-bottom: 16px !important
     }
 }

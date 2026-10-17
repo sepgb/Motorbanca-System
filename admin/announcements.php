@@ -39,7 +39,7 @@ $tpl = [
 page_head('Announcements', 'admin');
 ?>
 <h1>Announcements</h1>
-<p class="lead">Post a notice that operators and passengers will see right away.</p>
+<p class="lead ann-lead">Post a notice that operators and passengers will see right away.</p>
 <?php if ($err): ?><div class="alert err"><?= e($err) ?></div><?php endif; ?>
 <div class="ann-wrap">
     <div class="card ann-compose">
