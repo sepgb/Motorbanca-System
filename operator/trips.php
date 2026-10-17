@@ -77,9 +77,8 @@ page_head('Trip History', 'operator');
                                                     <th>Queued</th>
                                                     <th>Departed</th>
                                                     <th>Passengers</th>
-                                                    <th></th>
                                                 </tr>
-                                                <?php foreach ($dn['rows'] as $r) echo "<tr class='th-row'><td>" . $tm($r['start_time']) . "</td><td>" . ($r['status'] === 'Departed' || $r['departure_time'] ? $tm($r['departure_time']) : '<span class="muted">On queue</span>') . "</td><td>" . (int)$r['pax'] . "</td><td class='th-act'><button type='button' class='btn sm ghost pdfbtn' data-pdf='print.php?trip=" . (int)$r['id'] . "'><svg class=\"ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 9V3h12v6\"/><path d=\"M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2\"/><path d=\"M6 14h12v7H6z\"/></svg><span>Print manifest</span></button></td></tr>"; ?>
+                                                <?php foreach ($dn['rows'] as $r) echo "<tr class='th-row' data-trip='" . (int)$r['id'] . "' data-name='" . e(date('M j, Y', strtotime($r['trip_date']))) . "' data-hint='Double-click to see the passengers and download the documents'><td>" . $tm($r['start_time']) . "</td><td>" . ($r['status'] === 'Departed' || $r['departure_time'] ? $tm($r['departure_time']) : '<span class="muted">On queue</span>') . "</td><td>" . (int)$r['pax'] . "</td></tr>"; ?>
                                             </table>
                                         </div>
                                     </details>
@@ -119,15 +118,13 @@ page_head('Trip History', 'operator');
                     <th>Queued</th>
                     <th>Departed</th>
                     <th>Passengers</th>
-                    <th></th>
                 </tr>
                 <?php foreach ($rows as $r) {
                     $ts = strtotime($r['trip_date']);
-                    $pdf = '<button type="button" class="btn sm ghost pdfbtn" data-pdf="print.php?trip=' . (int)$r['id'] . '"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><path d="M6 14h12v7H6z"/></svg><span>Print manifest</span></button>';
-                    echo "<tr class='th-row' data-y='" . date('Y', $ts) . "' data-m='" . (int)date('n', $ts) . "' data-d='" . (int)date('j', $ts) . "' data-pax='" . (int)$r['pax'] . "'><td>" . date('M j, Y', $ts) . "</td><td>" . $tm($r['start_time']) . "</td><td>" . ($r['status'] === 'Departed' || $r['departure_time'] ? $tm($r['departure_time']) : '<span class="muted">On queue</span>') . "</td><td>" . (int)$r['pax'] . "</td><td class='th-act'>$pdf</td></tr>";
+                    echo "<tr class='th-row' data-trip='" . (int)$r['id'] . "' data-name='" . e(date('M j, Y', $ts)) . "' data-hint='Double-click to see the passengers and download the documents' data-y='" . date('Y', $ts) . "' data-m='" . (int)date('n', $ts) . "' data-d='" . (int)date('j', $ts) . "' data-pax='" . (int)$r['pax'] . "'><td>" . date('M j, Y', $ts) . "</td><td>" . $tm($r['start_time']) . "</td><td>" . ($r['status'] === 'Departed' || $r['departure_time'] ? $tm($r['departure_time']) : '<span class="muted">On queue</span>') . "</td><td>" . (int)$r['pax'] . "</td></tr>";
                 } ?>
                 <tr class="th-empty th-off">
-                    <td colspan="5" class="muted">No trips on these dates.</td>
+                    <td colspan="4" class="muted">No trips on these dates.</td>
                 </tr>
             </table>
         </div>
@@ -168,67 +165,112 @@ page_head('Trip History', 'operator');
         })();
     </script>
 <?php endif; ?>
-<div class="mdl" id="pdf-mdl" role="dialog" aria-modal="true" aria-labelledby="pdf-t">
-    <div class="mdl-box">
-        <div class="mdl-ic"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
-            </svg></div>
-        <h3 id="pdf-t">Download manifest?</h3>
-        <p>The manifest of this trip will be saved as a PDF.</p>
-        <div class="mdl-act"><button type="button" class="no">Cancel</button><button type="button" class="go">Download</button></div>
+<div class="mdl" id="tr-mdl" role="dialog" aria-modal="true" aria-labelledby="tr-t">
+    <div class="mdl-box wide">
+        <div class="mdl-head">
+            <div class="mdl-title">
+                <h3 id="tr-t"></h3>
+                <p class="sub"></p>
+            </div>
+            <div class="mdl-tools">
+                <button type="button" class="btn sm ghost pdfbtn" data-doc="crew"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+                    </svg><span>Crew list</span></button>
+                <button type="button" class="btn sm ghost pdfbtn" data-doc="manifest"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+                    </svg><span>Manifest</span></button>
+                <button type="button" class="btn sm ghost pdfbtn" data-doc="mdsd" disabled><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+                    </svg><span>MDSD</span></button>
+                <button type="button" class="btn sm ghost pdfbtn" data-doc="pdic" disabled><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+                    </svg><span>PDIC</span></button>
+                <button type="button" class="x" aria-label="Close">&times;</button>
+            </div>
+        </div>
+        <div class="mdl-body"></div>
     </div>
 </div>
 <script>
+    // Trip history: double-click a trip (tap it on a phone) to see its passengers and download its 4 documents as PDF files.
     (function() {
-        var m = document.getElementById('pdf-mdl'),
-            btn = null,
-            last = null,
-            lt = 0;
-        if (!m) return;
+        var box = document.getElementById('tr-mdl'),
+            docs = {
+                crew: 'print_crew.php',
+                manifest: 'print.php',
+                mdsd: '../admin/mdsd_print.php',
+                pdic: '../admin/pdic_print.php'
+            };
+        if (!box) return;
+        var h = box.querySelector('h3'),
+            sub = box.querySelector('.sub'),
+            body = box.querySelector('.mdl-body');
+
+        function bt(k) {
+            return box.querySelector('[data-doc="' + k + '"]')
+        }
 
         function mobile() {
             return window.innerWidth < 1000
         }
 
-        function ask(b) {
-            btn = b;
-            m.classList.add('open');
-            m.querySelector('.go').focus()
+        function open(r) {
+            var id = r.getAttribute('data-trip');
+            if (window.getSelection) window.getSelection().removeAllRanges();
+            h.textContent = r.getAttribute('data-name') || 'Trip';
+            sub.textContent = 'Loading\u2026';
+            body.innerHTML = '';
+            Object.keys(docs).forEach(function(k) {
+                var b = bt(k);
+                b.setAttribute('data-pdf', docs[k] + '?trip=' + encodeURIComponent(id));
+                if (k === 'mdsd' || k === 'pdic') {
+                    b.disabled = true;
+                    b.title = ''
+                }
+            });
+            void box.offsetWidth;
+            box.classList.add('open');
+            fetch('trip_pax.php?trip=' + encodeURIComponent(id), {
+                    credentials: 'same-origin'
+                })
+                .then(function(x) {
+                    return x.ok ? x.json() : Promise.reject()
+                })
+                .then(function(d) {
+                    h.textContent = d.title;
+                    sub.textContent = d.sub;
+                    body.innerHTML = d.html; // built and escaped on the server
+                    ['mdsd', 'pdic'].forEach(function(k) {
+                        var b = bt(k),
+                            on = !!d[k];
+                        b.disabled = !on;
+                        b.title = on ? '' : 'No ' + k.toUpperCase() + ' was made for this trip'
+                    })
+                })
+                .catch(function() {
+                    sub.textContent = 'Could not load the passengers.'
+                })
         }
 
         function close() {
-            m.classList.remove('open')
+            box.classList.remove('open')
         }
-        document.addEventListener('touchend', function(e) { // double tap on a trip row (phones and tablets)
+        document.addEventListener('dblclick', function(e) { // desktop: double-click, like the PCG Trip History
+            if (mobile()) return;
+            var r = e.target.closest && e.target.closest('.th-row[data-trip]');
+            if (r) open(r)
+        });
+        document.addEventListener('click', function(e) { // phones and tablets: one tap
             if (!mobile()) return;
-            var r = e.target.closest && e.target.closest('.th-row');
-            if (!r) return;
-            var n = Date.now();
-            if (last === r && n - lt < 400) {
-                e.preventDefault();
-                last = null;
-                ask(r.querySelector('[data-pdf]'))
-            } else {
-                last = r;
-                lt = n
-            }
+            var r = e.target.closest && e.target.closest('.th-row[data-trip]');
+            if (r) open(r)
         });
-        document.addEventListener('dblclick', function(e) {
-            if (!mobile()) return;
-            var r = e.target.closest('.th-row');
-            if (r) ask(r.querySelector('[data-pdf]'))
-        });
-        m.querySelector('.no').addEventListener('click', close);
-        m.querySelector('.go').addEventListener('click', function() {
-            close();
-            if (btn) btn.click()
-        });
-        m.addEventListener('click', function(e) {
-            if (e.target === m) close()
+        box.addEventListener('click', function(e) {
+            if (e.target === box || e.target.classList.contains('x')) close()
         });
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') close()
-        });
+        })
     })();
 </script>
 <?php page_foot('operator');

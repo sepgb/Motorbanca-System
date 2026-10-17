@@ -1,8 +1,18 @@
 <?php
-// Printable MDSD (Master's Declaration of Safe Departure, Coast Guard Form C) for one trip. PCG only.
+// Printable MDSD (Master's Declaration of Safe Departure, Coast Guard Form C) for one trip. PCG (any trip) or the operator of that boat (own trips only).
 // The blanks fill in by themselves from the trip; the YES / NO / N/A boxes show the answers the PCG gave when the boat departed.
 require_once '../config/mdsd_helpers.php';
-need('admin');
+$isOp = ($_SESSION['role'] ?? '') === 'operator';
+if ($isOp) {   // an operator may open the forms of this boat's own trips (for the PDF download in Trip History)
+    need('operator');
+    $mb = my_mb();
+    $own = db()->prepare("SELECT 1 FROM trips WHERE id=? AND motorbanca_id=? AND status NOT IN ('Cancelled','Inspection')");
+    $own->execute([(int)($_GET['trip'] ?? 0), $mb['id'] ?? 0]);
+    if (!$mb || !$own->fetchColumn()) {
+        http_response_code(404);
+        exit('Trip not found.');
+    }
+} else need('admin');
 $tid = (int)($_GET['trip'] ?? 0);
 $v = mdsd_data($tid);
 if (!$v) {
@@ -12,6 +22,7 @@ if (!$v) {
 $ans = mdsd_get($tid);
 $ref = (string)($_GET['back'] ?? '');
 $back = strpos($ref, BASE . '/admin/') === 0 ? $ref : 'dashboard.php';
+if ($isOp) $back = BASE . '/operator/trips.php';
 function bx($ans, $k, $val)
 {
     return "<span class='bx" . (($ans[$k] ?? '') === $val ? " on" : "") . "'></span>";
@@ -442,6 +453,52 @@ function bx($ans, $k, $val)
 
         <p style="margin:2.5mm 0 0;display:flex;gap:16mm;font-weight:700;font-style:italic;padding-left:30mm"><span>Distribution:</span><span>Original-PCG Copy</span><span>Duplicate- Master's File (Ship's file)</span></p>
     </div>
+    <?php if (!isset($_GET['print'])): ?>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <script>
+            // Opened inside the hidden frame of the Trip History page: build the PDF and download it.
+            if (window.self !== window.top) window.addEventListener('load', function() {
+                var done = function(s) {
+                    parent.postMessage({
+                        pdf: s
+                    }, '*');
+                };
+                try {
+                    html2pdf().set({
+                            margin: 0,
+                            filename: 'MDSD.pdf',
+                            image: {
+                                type: 'jpeg',
+                                quality: 0.98
+                            },
+                            html2canvas: {
+                                scale: 2,
+                                useCORS: true,
+                                backgroundColor: '#ffffff',
+                                windowWidth: 1200,
+                                scrollX: 0,
+                                scrollY: 0
+                            },
+                            jsPDF: {
+                                unit: 'mm',
+                                format: 'letter',
+                                orientation: 'portrait'
+                            }
+                        })
+                        .from(document.querySelector('.page')).outputPdf('blob').then(function(b) {
+                            parent.postMessage({
+                                pdf: 'done',
+                                blob: b
+                            }, '*');
+                        }).catch(function() {
+                            done('fail');
+                        });
+                } catch (e) {
+                    done('fail');
+                }
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>

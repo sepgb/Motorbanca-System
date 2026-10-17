@@ -280,7 +280,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     shown = true; ax = lx; ay = ly;
   }
   document.addEventListener('mousemove', function (e) {
-    var r = e.target.closest ? e.target.closest('.mb-row,.trip-row') : null;
+    var r = e.target.closest ? e.target.closest('.mb-row,.trip-row,.th-row[data-hint]') : null;
     if (!r) { hide(); lr = null; return; }
     if (shown && Math.abs(e.clientX - ax) < 6 && Math.abs(e.clientY - ay) < 6) return;   // tiny jitter: keep it
     hide();
@@ -298,7 +298,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   document.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('[data-pdf]') : null;
     if (!b || b.disabled || !b.getAttribute('data-pdf')) return;
-    var u = b.getAttribute('data-pdf'), sp = b.querySelector('span'), label = sp.textContent, f = document.createElement('iframe'), t, fname = u.indexOf('print_crew') === 0 ? 'Crew List.pdf' : 'Manifest.pdf';
+    var u = b.getAttribute('data-pdf'), sp = b.querySelector('span'), label = sp.textContent, f = document.createElement('iframe'), t, fname = u.indexOf('print_crew') >= 0 ? 'Crew List.pdf' : u.indexOf('mdsd_print') >= 0 ? 'MDSD.pdf' : u.indexOf('pdic_print') >= 0 ? 'PDIC.pdf' : 'Manifest.pdf';
     var finish = function (ok) {
       clearTimeout(t); window.removeEventListener('message', on); f.remove();
       b.disabled = false; sp.textContent = label;

@@ -1,8 +1,18 @@
 <?php
-// Printable PDIC (Pre-Departure Inspection Checklist, Coast Guard Form D-3) for one trip. PCG only.
+// Printable PDIC (Pre-Departure Inspection Checklist, Coast Guard Form D-3) for one trip. PCG (any trip) or the operator of that boat (own trips only).
 // The header fills in by itself from the trip; the YES / NO columns show the answers the PCG gave when the boat departed.
 require_once '../config/pdic_helpers.php';
-need('admin');
+$isOp = ($_SESSION['role'] ?? '') === 'operator';
+if ($isOp) {   // an operator may open the forms of this boat's own trips (for the PDF download in Trip History)
+    need('operator');
+    $mb = my_mb();
+    $own = db()->prepare("SELECT 1 FROM trips WHERE id=? AND motorbanca_id=? AND status NOT IN ('Cancelled','Inspection')");
+    $own->execute([(int)($_GET['trip'] ?? 0), $mb['id'] ?? 0]);
+    if (!$mb || !$own->fetchColumn()) {
+        http_response_code(404);
+        exit('Trip not found.');
+    }
+} else need('admin');
 $tid = (int)($_GET['trip'] ?? 0);
 $d = pdic_data($tid);
 if (!$d) {
@@ -13,6 +23,7 @@ $g = pdic_get($tid);
 $ans = $g['answers'] ?? [];
 $ref = (string)($_GET['back'] ?? '');
 $back = strpos($ref, BASE . '/admin/') === 0 ? $ref : 'trips.php';
+if ($isOp) $back = BASE . '/operator/trips.php';
 function ck($ans, $n, $v)
 {
     return (($ans[$n] ?? '') === $v) ? "<span class='ck'></span>" : '';
@@ -712,6 +723,52 @@ function ck($ans, $n, $v)
         </div>
         <div style="font-size:7px;margin-top:3mm">NOTE: PCG INSPECTORS SHOULD ALWAYS ENSURE THE ATTACHMENT OF FORM &ldquo;B&rdquo; AFTER THE INSPECTION</div>
     </div>
+    <?php if (!isset($_GET['print'])): ?>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <script>
+            // Opened inside the hidden frame of the Trip History page: build the PDF and download it.
+            if (window.self !== window.top) window.addEventListener('load', function() {
+                var done = function(s) {
+                    parent.postMessage({
+                        pdf: s
+                    }, '*');
+                };
+                try {
+                    html2pdf().set({
+                            margin: 0,
+                            filename: 'PDIC.pdf',
+                            image: {
+                                type: 'jpeg',
+                                quality: 0.98
+                            },
+                            html2canvas: {
+                                scale: 2,
+                                useCORS: true,
+                                backgroundColor: '#ffffff',
+                                windowWidth: 1200,
+                                scrollX: 0,
+                                scrollY: 0
+                            },
+                            jsPDF: {
+                                unit: 'mm',
+                                format: 'letter',
+                                orientation: 'landscape'
+                            }
+                        })
+                        .from(document.querySelector('.pg')).outputPdf('blob').then(function(b) {
+                            parent.postMessage({
+                                pdf: 'done',
+                                blob: b
+                            }, '*');
+                        }).catch(function() {
+                            done('fail');
+                        });
+                } catch (e) {
+                    done('fail');
+                }
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>

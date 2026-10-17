@@ -5106,3 +5106,35 @@ body.r-public .main>h1:has(+ .lead) {
     outline: 3px solid #f26b1d;
     outline-offset: 2px
 }
+
+/* operator Trip History: rows open the trip popup; the 4 download buttons wrap on phones */
+.r-operator .th-row[data-trip] {
+    cursor: pointer
+}
+
+#tr-mdl .mdl-body table {
+    width: 100%
+}
+
+@media (max-width:699px) {
+    #tr-mdl .mdl-head {
+        flex-wrap: wrap;
+        row-gap: 12px
+    }
+
+    #tr-mdl .mdl-tools {
+        flex-wrap: wrap;
+        width: 100%;
+        margin-left: 0
+    }
+
+    #tr-mdl .mdl-tools .pdfbtn {
+        flex: 1 1 calc(50% - 8px)
+    }
+
+    #tr-mdl .mdl-tools .x {
+        order: -1;
+        margin-left: auto;
+        flex: none
+    }
+}
