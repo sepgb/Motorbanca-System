@@ -4845,3 +4845,10 @@ body.r-public .main>h1:has(+ .lead) {
 .btabs-pub .ico {
     stroke-width: 2.3
 }
+
+/* operator Passengers page (phones and tablets): the M/B name and its status tag sit close together */
+@media (max-width:999px) {
+    body.r-operator .main>h1:has(+ .optag) {
+        margin-bottom: 4px !important
+    }
+}
