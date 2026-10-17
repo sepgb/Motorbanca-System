@@ -5176,3 +5176,9 @@ body.r-public .main>h1:has(+ .lead) {
     padding-left: 24px;
     padding-right: 24px
 }
+
+/* Download and Log out popups: the icon has no tinted box, only the green / red icon */
+#dl-mdl .mdl-ic,
+#lo-mdl .mdl-ic {
+    background: none
+}
