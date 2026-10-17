@@ -1,6 +1,16 @@
 <?php
 require_once __DIR__ . '/live.php';
 require_once __DIR__ . '/announcements.php';
+require_once __DIR__ . '/profile.php';
+// First name of this device's passenger profile, or 'passenger' if there is none yet.
+function pax_first_name()
+{
+    $p = pax_profile();
+    $n = trim((string)($p['full_name'] ?? ''));
+    if ($n === '') return 'passenger';
+    if (strpos($n, ',') !== false) $n = trim(substr($n, strpos($n, ',') + 1)) ?: $n;   // "Dela Cruz, Juan" -> Juan
+    return preg_split('/\s+/', $n)[0];
+}
 // URL of a css/js file with its last-modified time, so phones and browsers never keep an old copy after an update.
 function asset($path)
 {
@@ -83,7 +93,7 @@ JS;
         foreach (['fares.php', 'track.php', 'index.php', 'announcements.php', 'profile.php'] as $f) echo "<a href='$b/passenger/$f' aria-label='" . e($plinks[$f]) . "'" . ($f === 'index.php' ? " data-q='1'" : '') . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i></a>";
         echo "</nav><main class='main'>";
         if ($me === 'index.php') echo ann_strip($b . '/passenger/announcements.php');
-        if ($me === 'index.php') echo "<h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", passenger</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><button type='button' class='scan-btn' id='scan-open' aria-label='Scan QR code' title='Scan QR code'>" . ico('<path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2M7 12h10"/>') . "</button><i class='dot'></i>Live queue</h2>";
+        if ($me === 'index.php') echo "<h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", " . e(pax_first_name()) . "</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><button type='button' class='scan-btn' id='scan-open' aria-label='Scan QR code' title='Scan QR code'>" . ico('<path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2M7 12h10"/>') . "</button><i class='dot'></i>Live queue</h2>";
     }
 }
 function page_foot($role = 'public')
