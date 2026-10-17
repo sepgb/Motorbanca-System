@@ -4895,3 +4895,17 @@ body.r-public .main>h1:has(+ .lead) {
     flex: 0 0 calc(50% - 5px);
     width: auto
 }
+
+/* desktop top menu (admin and operator): an icon in front of each label */
+.pills a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px
+}
+
+.pills a .ico {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    stroke-width: 2
+}
