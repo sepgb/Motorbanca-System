@@ -100,9 +100,15 @@ function stats_html()
 {
     $q = fn($s) => (int)db()->query($s)->fetchColumn();
     $rows = live_rows();
-    $nextCount = 0;
-    foreach (db()->query("SELECT id FROM clusters")->fetchAll() as $c) if (split_cluster($rows, $c['id'])[2]) $nextCount++;
-    $paxSql = "SELECT COUNT(*) FROM passengers p JOIN trips t ON t.id=p.trip_id WHERE t.status<>'Cancelled' AND DATE(COALESCE(t.departure_time, t.trip_date))=";   // a departed trip counts on the day it left
+    $queuedCount = 0;   // boats ON QUEUE (the one boarding in each cluster). The NEXT TRIP and WAITING boats are not counted here.
+    $nextCount = 0;     // boats tagged NEXT TRIP (one per cluster at most)
+    foreach (db()->query("SELECT id FROM clusters")->fetchAll() as $c) {
+        [$dep, $qd, $next] = split_cluster($rows, $c['id']);
+        if (!$dep && $qd) $queuedCount++;
+        if ($next) $nextCount++;
+    }
+    // Passengers are counted on the day they were added (operator input or QR scan), so the number moves live, before the boat departs.
+    $paxSql = "SELECT COUNT(*) FROM passengers p JOIN trips t ON t.id=p.trip_id WHERE t.status<>'Cancelled' AND DATE(p.created_at)=";
     $today = $q($paxSql . "CURDATE()");
     $yday = $q($paxSql . "CURDATE() - INTERVAL 1 DAY");
     if ($yday > 0) {
@@ -110,8 +116,8 @@ function stats_html()
         $delta = "<b class='" . ($d >= 0 ? 'up' : 'down') . "'>" . ($d >= 0 ? '+' : '') . "$d%</b> than yesterday";
     } else $delta = $today > 0 ? "<b class='up'>+$today</b> than yesterday" : 'no passengers yet';
     $cards = [
-        ['Currently Queued', $q("SELECT COUNT(*) FROM motorbancas WHERE status='Queued'"), 'waiting to depart'],
-        ['Currently Departed', $q("SELECT COUNT(*) FROM motorbancas m WHERE m.status='Departed' AND " . DEP_RECENT), 'left the port'],
+        ['Currently Queued', $queuedCount, 'on queue, waiting to depart'],
+        ['Currently Departed', $q("SELECT COUNT(*) FROM trips WHERE status='Departed' AND DATE(departure_time)=CURDATE()"), 'left the port today'],
         ['Next Trips', $nextCount, 'clusters with a next boat'],
         ['Passengers Today', $today, $delta],
     ];
