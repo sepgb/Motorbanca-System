@@ -4852,3 +4852,25 @@ body.r-public .main>h1:has(+ .lead) {
         margin-bottom: 4px !important
     }
 }
+
+/* phone bottom bar (passenger, operator, admin): the space you see between two icons is the same as the space from the screen edge to the first / last icon.
+   Each tab box is 52px wide with a 24px icon in it, so the side padding is the 14px of empty room around an icon. */
+@media (max-width:999px) {
+    .btabs.btabs-pub {
+        justify-content: space-evenly;
+        gap: 0;
+        padding-left: 14px;
+        padding-right: 14px
+    }
+
+    .btabs-pub a {
+        flex: 0 1 52px;
+        min-width: 0;
+        padding-left: 0;
+        padding-right: 0
+    }
+
+    .btabs-pub a[data-q] {
+        flex: 0 1 56px
+    }
+}
