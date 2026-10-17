@@ -35,7 +35,7 @@ function page_head($title, $role = 'public')
         // icons for the nav (top pills on desktop, bottom bar on phones / tablets)
         $tabIco = [
             'dashboard.php' => '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
-            'motorbancas.php' => '<path d="M12 5v14M5 12h14"/>',
+            'motorbancas.php' => '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
             'manifest.php' => '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.6a3.5 3.5 0 010 6.8M18 14.3c2.2.7 3.5 2.6 3.5 5.2"/>',
             'queue.php' => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
             'trips.php' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
