@@ -4840,3 +4840,8 @@ body.r-public .main>h1:has(+ .lead) {
         margin-bottom: 16px !important
     }
 }
+
+/* bottom nav icons: a little thicker line */
+.btabs-pub .ico {
+    stroke-width: 2.3
+}
