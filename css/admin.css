@@ -4278,46 +4278,13 @@ body.r-public .main>.lead {
     }
 }
 
-/* space under every page title (a title that has a subtitle right under it keeps them close) */
-.r-admin .main>h1,
-body.r-public .main>h1 {
-    margin-bottom: 20px !important
-}
 
-.r-admin .main>h1:has(+ .lead),
-body.r-public .main>h1:has(+ .lead) {
-    margin-bottom: 2px !important
-}
-
-@media (max-width:699px) {
-
-    .r-admin .main>h1,
-    body.r-public .main>h1 {
-        margin-bottom: 16px !important
-    }
-
-    .r-admin .main>h1:has(+ .lead),
-    body.r-public .main>h1:has(+ .lead) {
-        margin-bottom: 2px !important
-    }
-}
-
-/* page titles a little bigger */
-.r-admin .main>h1,
-body.r-public .main>h1 {
-    font-size: 1.75rem
-}
 
 /* notification cards: thinner colored left border */
 .ann {
     border-left-width: 3px
 }
 
-/* fares page: title sits close to the fares */
-.r-admin .main>h1:has(+ .fx),
-body.r-public .main>h1:has(+ .fx) {
-    margin-bottom: 6px !important
-}
 
 /* operator phone: no page subtitle */
 @media (max-width:999px) {
@@ -4831,4 +4798,34 @@ body.r-public .main>h1:has(+ .fx) {
 .depart:active {
     transform: translateY(1px);
     box-shadow: inset 0 1px 0 #ffffff33, inset 0 -1px 0 #0003, 0 1px 2px #0006, 0 4px 12px -6px #15803d99
+}
+
+/* Page titles: big bold system font (like the title of a phone app), with room above and below. A title with a subtitle right under it keeps them close. */
+.r-admin .main>h1,
+body.r-public .main>h1 {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0;
+    margin: 0 0 16px !important
+}
+
+@media (min-width:700px) {
+
+    .r-admin .main>h1,
+    body.r-public .main>h1 {
+        margin: 0 0 22px !important
+    }
+}
+
+.r-admin .main>h1:has(+ .lead),
+body.r-public .main>h1:has(+ .lead) {
+    margin-bottom: 2px !important
+}
+
+@media (max-width:999px) {
+    body.r-operator .main>h1:has(+ .lead) {
+        margin-bottom: 16px !important
+    }
 }
