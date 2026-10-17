@@ -62,10 +62,6 @@ $ini = $p ? strtoupper(mb_substr(trim($p['full_name']), 0, 1)) : '';
     </section>
 <?php else: ?>
     <section class="card pf">
-        <?php if (!$editTitle): ?>
-            <h3 style="margin:0 0 4px">Set up your profile</h3>
-            <p class="muted" style="margin:0 0 14px">Enter your details once. This device will remember you.</p>
-        <?php endif; ?>
         <form method="post" class="pf-form" autocomplete="off">
             <input type="hidden" name="next" value="<?= e($next) ?>">
             <label>Full name</label>
