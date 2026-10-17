@@ -7,10 +7,11 @@ if (!$m) {
     header('Location: ../logout.php');
     exit;
 }
-$q = db()->prepare("SELECT t.id, t.trip_date, t.start_time, t.departure_time, t.status, COUNT(p.id) pax FROM trips t
+// A trip shows in the history only after it has departed, on the day it left.
+$q = db()->prepare("SELECT t.id, DATE(COALESCE(t.departure_time, t.trip_date)) trip_date, t.start_time, t.departure_time, t.status, COUNT(p.id) pax FROM trips t
     LEFT JOIN passengers p ON p.trip_id=t.id
-    WHERE t.motorbanca_id=? AND t.status NOT IN ('Inspection','Cancelled')
-    GROUP BY t.id ORDER BY t.trip_date DESC, t.id DESC");
+    WHERE t.motorbanca_id=? AND t.status IN ('Departed','Arrived','Completed')
+    GROUP BY t.id ORDER BY COALESCE(t.departure_time, t.trip_date) DESC, t.id DESC");
 $q->execute([$m['id']]);
 $rows = $q->fetchAll();
 $tree = [];

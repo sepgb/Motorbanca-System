@@ -2,9 +2,10 @@
 // PCG: trip history of every boat. Phones: grouped Year > Month > Week > Day. Desktop: one table with Year / Month / Day filters.
 require_once '../config/layout.php';
 need('admin');
-$rows = db()->query("SELECT t.*, m.motorbanca_name n, c.name cname, COUNT(p.id) pax FROM trips t
+// A trip shows in the history only after it has departed, on the day it left.
+$rows = db()->query("SELECT t.*, DATE(COALESCE(t.departure_time, t.trip_date)) trip_date, m.motorbanca_name n, c.name cname, COUNT(p.id) pax FROM trips t
     JOIN motorbancas m ON m.id=t.motorbanca_id JOIN clusters c ON c.id=t.cluster_id
-    LEFT JOIN passengers p ON p.trip_id=t.id WHERE t.status NOT IN ('Inspection','Cancelled') GROUP BY t.id ORDER BY t.trip_date DESC, t.id DESC")->fetchAll();
+    LEFT JOIN passengers p ON p.trip_id=t.id WHERE t.status IN ('Departed','Arrived','Completed') GROUP BY t.id ORDER BY COALESCE(t.departure_time, t.trip_date) DESC, t.id DESC")->fetchAll();
 $tree = [];
 $tot = ['trips' => 0, 'pax' => 0];
 foreach ($rows as $r) {
