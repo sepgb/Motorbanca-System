@@ -32,51 +32,26 @@ $saved = !empty($_SESSION['pax_saved']);
 unset($_SESSION['pax_saved']);
 $editTitle = $editing && pax_profile();   // changing an existing profile
 page_head($editTitle ? 'Edit Profile' : 'Profile', 'public');
-$ini = $p ? strtoupper(mb_substr(trim($p['full_name']), 0, 1)) : '';
 ?>
 <h1><?= $editTitle ? 'Edit Profile' : 'Profile' ?></h1>
 <?php if ($err): ?><div class="alert bad"><?= e($err) ?></div><?php endif; ?>
-<?php if (!$editing): ?>
-    <section class="card pf">
-        <div class="pf-head">
-            <div class="pf-av"><?= e($ini) ?></div>
-            <div>
-                <h2><?= e($p['full_name']) ?></h2><span class="pf-sub">Passenger &middot; this device</span>
-            </div>
+<?php $view = !$editing;   // saved profile shown in the same layout as the form: fields locked, button says Edit 
+?>
+<section class="card pf">
+    <form method="post" class="pf-form<?= $view ? ' ro' : '' ?>" autocomplete="off">
+        <input type="hidden" name="next" value="<?= e($next) ?>">
+        <label>Full name</label>
+        <input name="full_name" maxlength="80" required<?= $view ? ' disabled' : '' ?> value="<?= e($p['full_name'] ?? '') ?>" placeholder="Juan Dela Cruz">
+        <div class="pf-row">
+            <div><label>Age</label><input name="age" type="number" inputmode="numeric" min="1" max="120" required<?= $view ? ' disabled' : '' ?> value="<?= e($p['age'] ?? '') ?>"></div>
+            <div><label>Barangay</label><select name="barangay" required<?= $view ? ' disabled' : '' ?>>
+                    <option value="">Choose barangay</option>
+                    <?php foreach ($brgys as $b): ?><option<?= ($p['barangay'] ?? '') === $b ? ' selected' : '' ?>><?= e($b) ?></option><?php endforeach; ?>
+                </select></div>
         </div>
-        <dl class="pf-list">
-            <div>
-                <dt>Age</dt>
-                <dd><?= (int)$p['age'] ?></dd>
-            </div>
-            <div>
-                <dt>Barangay</dt>
-                <dd><?= e($p['barangay']) ?></dd>
-            </div>
-        </dl>
-        <div class="pf-view-act">
-            <a class="btn" href="profile.php?edit=1"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" />
-                </svg><span>Edit</span></a>
-        </div>
-    </section>
-<?php else: ?>
-    <section class="card pf">
-        <form method="post" class="pf-form" autocomplete="off">
-            <input type="hidden" name="next" value="<?= e($next) ?>">
-            <label>Full name</label>
-            <input name="full_name" maxlength="80" required value="<?= e($p['full_name'] ?? '') ?>" placeholder="Juan Dela Cruz">
-            <div class="pf-row">
-                <div><label>Age</label><input name="age" type="number" inputmode="numeric" min="1" max="120" required value="<?= e($p['age'] ?? '') ?>"></div>
-                <div><label>Barangay</label><select name="barangay" required>
-                        <option value="">Choose barangay</option>
-                        <?php foreach ($brgys as $b): ?><option<?= ($p['barangay'] ?? '') === $b ? ' selected' : '' ?>><?= e($b) ?></option><?php endforeach; ?>
-                    </select></div>
-            </div>
-            <div class="pf-act"><?php if (pax_profile()): ?><a class="btn ghost" href="profile.php">Cancel</a><?php endif; ?><button class="btn">Save</button></div>
-        </form>
-    </section>
-<?php endif; ?>
+        <div class="pf-act"><?php if ($view): ?><a class="btn" href="profile.php?edit=1">Edit</a><?php else: ?><?php if (pax_profile()): ?><a class="btn ghost" href="profile.php">Cancel</a><?php endif; ?><button class="btn">Save</button><?php endif; ?></div>
+    </form>
+</section>
 <script>
     (function() {
         try {

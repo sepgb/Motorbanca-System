@@ -4874,3 +4874,24 @@ body.r-public .main>h1:has(+ .lead) {
         flex: 0 1 56px
     }
 }
+
+/* passenger profile: after saving, the same form layout stays; the fields are locked and the button says Edit */
+.pf-form.ro input,
+.pf-form.ro select {
+    background-color: #fbf7f3;
+    color: #1f1a17;
+    -webkit-text-fill-color: #1f1a17;
+    opacity: 1;
+    cursor: default
+}
+
+.pf-form.ro select {
+    background-image: none;
+    padding-right: 14px
+}
+
+/* Edit (after saving) is as wide as the Save button next to Cancel: half the row, on the right */
+.pf-form.ro .pf-act .btn {
+    flex: 0 0 calc(50% - 5px);
+    width: auto
+}
