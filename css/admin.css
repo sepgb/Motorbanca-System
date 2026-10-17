@@ -4994,3 +4994,115 @@ body.r-public .main>h1:has(+ .lead) {
     padding: 26px 14px;
     text-align: center
 }
+
+/* history filters: styled dropdown list (modern Chrome / Edge get a fully styled list, other browsers get the basic option colors) */
+.thf select option {
+    font-weight: 600;
+    color: #1f1a17;
+    background: #fff
+}
+
+.thf select option:checked {
+    background: #fff0e5;
+    color: #b4470a
+}
+
+@supports (appearance: base-select) {
+
+    .thf select,
+    .thf select::picker(select) {
+        appearance: base-select
+    }
+
+    .thf select {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 0 14px 0 16px;
+        background: #fff
+    }
+
+    .thf select::picker-icon {
+        content: "";
+        width: 16px;
+        height: 16px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f26b1d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center/16px no-repeat;
+        transition: rotate .2s
+    }
+
+    .thf select:open::picker-icon {
+        rotate: 180deg
+    }
+
+    .thf select::picker(select) {
+        margin-top: 6px;
+        padding: 6px;
+        max-height: 320px;
+        border: 1px solid #efe7e0;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 18px 40px -12px #1f1a1740
+    }
+
+    .thf select option {
+        display: flex;
+        align-items: center;
+        padding: 9px 14px;
+        border-radius: 10px;
+        font-size: .9rem;
+        cursor: pointer
+    }
+
+    .thf select option::checkmark {
+        display: none
+    }
+
+    .thf select option:hover,
+    .thf select option:focus-visible {
+        background: #fff0e5;
+        color: #b4470a;
+        outline: 0
+    }
+
+    .thf select option:checked {
+        background: #f26b1d;
+        color: #fff
+    }
+}
+
+/* Clear button: same look as the Cancel button in the modals (plain white pill, no shadow, soft hover) */
+.r-admin .thf #f-clear {
+    width: auto;
+    height: 40px;
+    min-height: 0;
+    padding: 0 22px;
+    border: 1px solid var(--ln);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--tx);
+    font-family: inherit;
+    font-size: .92rem;
+    font-weight: 600;
+    box-shadow: none;
+    filter: none;
+    transform: none;
+    transition: background .15s
+}
+
+.r-admin .thf #f-clear:hover {
+    background: #fbf7f3;
+    filter: none;
+    transform: none;
+    box-shadow: none
+}
+
+.r-admin .thf #f-clear:active {
+    transform: none;
+    box-shadow: none
+}
+
+.r-admin .thf #f-clear:focus-visible {
+    outline: 3px solid #f26b1d;
+    outline-offset: 2px
+}
