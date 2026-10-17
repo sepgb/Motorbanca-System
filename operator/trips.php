@@ -185,8 +185,8 @@ page_head('Trip History', 'operator');
                 <button type="button" class="btn sm ghost pdfbtn" data-doc="pdic" disabled><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
                     </svg><span>PDIC</span></button>
-                <button type="button" class="x" aria-label="Close">&times;</button>
             </div>
+            <button type="button" class="x" aria-label="Close">&times;</button>
         </div>
         <div class="mdl-body"></div>
     </div>
