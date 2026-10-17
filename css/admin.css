@@ -4841,9 +4841,9 @@ body.r-public .main>h1:has(+ .lead) {
     }
 }
 
-/* bottom nav icons: a little thicker line */
+/* bottom nav icons: thinner line */
 .btabs-pub .ico {
-    stroke-width: 2.3
+    stroke-width: 1.8
 }
 
 /* operator Passengers page (phones and tablets): the M/B name and its status tag sit close together */
