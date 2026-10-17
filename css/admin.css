@@ -5177,8 +5177,47 @@ body.r-public .main>h1:has(+ .lead) {
     padding-right: 24px
 }
 
-/* Download and Log out popups: the icon has no tinted box, only the green / red icon */
-#dl-mdl .mdl-ic,
-#lo-mdl .mdl-ic {
+/* confirmation popups (download, log out, delete, cancel ...): just the green / red icon, no tinted box, and tight spacing above and below it */
+.mdl-ic,
+.mdl-ic.red {
+    width: auto;
+    height: 30px;
+    margin: 0 auto 10px;
+    border-radius: 0;
     background: none
+}
+
+.mdl-ic .ico {
+    width: 30px;
+    height: 30px
+}
+
+.mdl-box:has(>.mdl-ic) {
+    padding-top: 22px
+}
+
+/* Remove button in the passenger list: same look as the red button in the popups */
+.r-admin .rm-btn {
+    border: 0;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 10px 20px -8px #dc262699;
+    transition: transform .15s, box-shadow .15s
+}
+
+.r-admin .rm-btn:hover {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 26px -8px #dc2626cc
+}
+
+.r-admin .rm-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 6px 14px -8px #dc2626cc
+}
+
+.r-admin .rm-btn:focus-visible {
+    outline: 3px solid #dc2626;
+    outline-offset: 2px
 }

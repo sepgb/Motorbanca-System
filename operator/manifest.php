@@ -150,14 +150,6 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
             <dd><?php if ($tc && $tc['crew']) foreach ($tc['crew'] as $c) echo "<div>" . e($c['name']) . " <span class='muted'>&middot; " . ucwords(strtolower(e($c['position']))) . "</span></div>";
                 else echo '&mdash;'; ?></dd>
           </dl>
-          <div class="dl-act">
-            <button type="button" class="btn sm ghost" data-pdf="print_crew.php"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
-              </svg><span>Crew list</span></button>
-            <button type="button" class="btn sm" data-pdf="print.php"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
-              </svg><span>Manifest</span></button>
-          </div>
         </div>
       <?php endif; ?>
     </div>
