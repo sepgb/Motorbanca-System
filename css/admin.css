@@ -5156,3 +5156,23 @@ body.r-public .main>h1:has(+ .lead) {
         width: 100%
     }
 }
+
+/* operator Trip History popup: the passenger table runs edge to edge (its header background reaches both sides of the popup) */
+#tr-mdl .mdl-body {
+    padding: 0
+}
+
+#tr-mdl .mdl-body th:first-child,
+#tr-mdl .mdl-body td:first-child {
+    padding-left: 24px
+}
+
+#tr-mdl .mdl-body th:last-child,
+#tr-mdl .mdl-body td:last-child {
+    padding-right: 24px
+}
+
+#tr-mdl .mdl-body .none {
+    padding-left: 24px;
+    padding-right: 24px
+}

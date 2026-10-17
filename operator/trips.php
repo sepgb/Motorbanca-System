@@ -191,6 +191,16 @@ page_head('Trip History', 'operator');
         <div class="mdl-body"></div>
     </div>
 </div>
+<div class="mdl" id="dl-mdl" role="dialog" aria-modal="true" aria-labelledby="dl-t">
+    <div class="mdl-box">
+        <div class="mdl-ic"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+            </svg></div>
+        <h3 id="dl-t">Download document?</h3>
+        <p id="dl-p">This document will be saved as a PDF.</p>
+        <div class="mdl-act"><button type="button" class="no">Cancel</button><button type="button" class="go">Download</button></div>
+    </div>
+</div>
 <script>
     // Trip history: double-click a trip (tap it on a phone) to see its passengers and download its 4 documents as PDF files.
     (function() {
@@ -268,8 +278,53 @@ page_head('Trip History', 'operator');
         box.addEventListener('click', function(e) {
             if (e.target === box || e.target.classList.contains('x')) close()
         });
+
+        // a question comes first: Download? Cancel / Download
+        var dm = document.getElementById('dl-mdl'),
+            pick = null,
+            ok = false;
+
+        function name(b) {
+            return b.querySelector('span').textContent
+        }
+
+        function askNo() {
+            dm.classList.remove('open')
+        }
+        box.addEventListener('click', function(e) {
+            var b = e.target.closest && e.target.closest('[data-pdf]');
+            if (!b) return;
+            if (ok) { // confirmed: let the click go on to the download
+                ok = false;
+                return
+            }
+            e.stopPropagation();
+            if (b.disabled) return;
+            pick = b;
+            var n = name(b),
+                l = (n === 'MDSD' || n === 'PDIC') ? n : n.toLowerCase();
+            document.getElementById('dl-t').textContent = 'Download ' + l + '?';
+            document.getElementById('dl-p').textContent = 'The ' + l + ' of this trip will be saved as a PDF.';
+            void dm.offsetWidth;
+            dm.classList.add('open');
+            dm.querySelector('.go').focus()
+        });
+        dm.querySelector('.no').addEventListener('click', askNo);
+        dm.querySelector('.go').addEventListener('click', function() {
+            askNo();
+            if (pick) {
+                ok = true;
+                pick.click();
+                ok = false
+            }
+        });
+        dm.addEventListener('click', function(e) {
+            if (e.target === dm) askNo()
+        });
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') close()
+            if (e.key !== 'Escape') return;
+            if (dm.classList.contains('open')) askNo();
+            else close()
         })
     })();
 </script>
