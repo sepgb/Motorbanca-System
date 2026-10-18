@@ -5228,13 +5228,14 @@ body.r-public .main>h1:has(+ .lead) {
     font-weight: 700;
     font-size: 20.85px;
     letter-spacing: .16em;
-    line-height: 1
+    line-height: .92
 }
 
 /* small grey line under the BATIS name (wide screens only, so it never crowds the menu and the date) */
 .r-admin .logo span small {
     display: none;
-    font: 500 10.7px/1.15 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    font: 500 10.7px/1.05 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    margin-top: -1px;
     letter-spacing: .03em;
     color: var(--mut)
 }
@@ -5243,12 +5244,75 @@ body.r-public .main>h1:has(+ .lead) {
     .r-admin .logo span {
         display: flex;
         flex-direction: column;
-        gap: 1px
+        gap: 0
     }
 }
 
 @media(min-width:1440px) {
     .r-admin .logo span small {
         display: block
+    }
+}
+
+/* page title (H1), its subtitle and the top menu: Bricolage Grotesque. Everything else keeps Plus Jakarta Sans. */
+.r-admin .main>h1,
+body.r-public .main>h1 {
+    font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -.025em
+}
+
+body.r-admin .lead,
+body.r-admin .main>.lead,
+body.r-public .main>.lead {
+    font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: -.005em
+}
+
+.pills a {
+    font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -.005em
+}
+
+/* Admin side only (not operator or passenger).
+   Nav stays as it is: BATIS name (Newsreader), top menu, page title and subtitle (Bricolage Grotesque),
+   header date chip (Plus Jakarta Sans). Everything in the page contents uses DM Sans. */
+body.r-admin:not(.r-operator):not(.r-public) .atop {
+    font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
+}
+
+body.r-admin:not(.r-operator):not(.r-public) .main,
+body.r-admin:not(.r-operator):not(.r-public) .mdl {
+    font-family: "DM Sans", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
+}
+
+body.r-admin:not(.r-operator):not(.r-public) .main *:not(h1):not(.lead):not(code):not(pre):not(kbd):not(samp),
+body.r-admin:not(.r-operator):not(.r-public) .mdl *:not(code):not(pre):not(kbd):not(samp) {
+    font-family: "DM Sans", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
+}
+
+/* Admin side only: page title (H1) and its subtitle use Sora. The top menu and BATIS name are not touched. */
+body.r-admin:not(.r-operator):not(.r-public) .main h1,
+body.r-admin:not(.r-operator):not(.r-public) .main .lead {
+    font-family: "Sora", "DM Sans", system-ui, sans-serif
+}
+
+body.r-admin:not(.r-operator):not(.r-public) .main h1 {
+    font-weight: 700;
+    letter-spacing: -.03em
+}
+
+body.r-admin:not(.r-operator):not(.r-public) .main .lead {
+    font-weight: 400;
+    letter-spacing: -.01em
+}
+
+/* Admin phones: smaller page title, since Sora runs wider than the old font */
+@media (max-width:699px) {
+    body.r-admin:not(.r-operator):not(.r-public) .main>h1 {
+        font-size: 25px;
+        line-height: 1.2
     }
 }
