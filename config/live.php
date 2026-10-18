@@ -314,7 +314,7 @@ function tag_for($hasDep, $i)
 function mb_card($r, $pos, $tag, $admin = false)
 {
     $wait = in_array($tag, ['NEXT TRIP', 'WAITING'], true);   // not boarding yet: just shown as available
-    return "<article class='mb'><div class='mb-top'><span class='pos'>$pos</span><div style='flex:1;min-width:0'><h3>" . e($r['name']) . "</h3>" .
+    return "<article class='mb'><div class='mb-top'><div style='flex:1;min-width:0'><h3>" . e($r['name']) . "</h3>" .
         ($tag ? "<div style='margin-top:1px;line-height:1.2;font-size:.72rem;font-weight:800;letter-spacing:.06em;color:" . ($tag === 'DEPARTED' ? 'var(--depc,#12468f)' : 'var(--tagc,#15803d)') . "'>$tag</div>" : '') .
         "</div></div>" .
         ($wait ? "<p class='muted' style='font-size:1rem'>✅ Available · capacity " . (int)$r['capacity'] . "</p>"
