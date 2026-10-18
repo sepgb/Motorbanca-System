@@ -61,7 +61,7 @@ page_head('Announcements', 'admin');
 
 </div>
 <h2 class="pub-h2" style="margin-top:22px"><i class="dot"></i>Posted announcements</h2>
-<div class="ann-grid"><?php ann_list(true); ?></div>
+<?php ann_list(true); ?>
 <script>
     (function() {
         var T = <?= json_encode($tpl, JSON_UNESCAPED_UNICODE) ?>;

@@ -45,17 +45,7 @@ if (!function_exists('ann_ensure')) {
             echo "<div class='ann-empty'><p class='muted' style='margin:0'>No " . (strpos($_SERVER['PHP_SELF'] ?? '', '/passenger/') !== false ? 'notifications' : 'announcements') . " yet.</p></div>";
             return;
         }
-        // Admin: the full timeline with delete buttons.
-        if ($admin) {
-            foreach ($rows as $a) {
-                $k = isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info';
-                echo "<article class='ann k-$k'><div class='ann-h'><span class='ann-tag'>" . ANN_KINDS[$k] . "</span><time>" . date('M j, Y \a\t g:i A', strtotime($a['created_at'])) . "</time></div><h3>" . e($a['title']) . "</h3><p>" . nl2br(e($a['body'])) . "</p>";
-                echo "<form method='post' class='ann-del'><input type='hidden' name='del' value='" . (int)$a['id'] . "'><button class='btn sm ghost'>Delete</button></form>";
-                echo "</article>";
-            }
-            return;
-        }
-        // Passenger / operator: latest 10, split into Today and Earlier, fixed-height rows, unread vs read look, tap to read the whole notice in a modal.
+        // Passenger / operator / admin: latest 10, split into Today and Earlier, fixed-height rows, unread vs read look, tap to read the whole notice in a modal.
         echo "<link rel='stylesheet' href='" . (function_exists('asset') ? asset('css/notif.css') : BASE . '/css/notif.css') . "'>";
         $all = isset($_GET['all']);
         $more = count($rows) > 10;
@@ -74,7 +64,7 @@ if (!function_exists('ann_ensure')) {
             foreach ($list as $n => $a) {
                 $k = isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info';
                 $when = date('M j, Y \a\t g:i A', strtotime($a['created_at']));
-                echo "<article class='ann ann-m unread k-$k" . ($n === $last ? ' ann-last' : '') . "' data-id='" . (int)$a['id'] . "' tabindex='0' role='button' aria-label='Open notification: " . e($a['title']) . "'><div class='ann-h'><span class='ann-tag'>" . ANN_KINDS[$k] . "</span><time>$when</time></div><h3>" . e($a['title']) . "</h3><p>" . nl2br(e($a['body'])) . "</p></article>";
+                echo "<article class='ann ann-m unread k-$k" . ($n === $last ? ' ann-last' : '') . ($admin ? ' ann-adm' : '') . "' data-id='" . (int)$a['id'] . "' tabindex='0' role='button' aria-label='Open notification: " . e($a['title']) . "'><div class='ann-h'><span class='ann-tag'>" . ANN_KINDS[$k] . "</span><time>$when</time></div><h3>" . e($a['title']) . "</h3><p>" . nl2br(e($a['body'])) . "</p>" . ($admin ? "<form method='post' class='ann-del'><input type='hidden' name='del' value='" . (int)$a['id'] . "'><button type='submit' class='ann-x' aria-label='Delete announcement'><svg class='ico' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3'/></svg></button></form>" : '') . "</article>";
             }
         }
         if ($more) {
@@ -107,8 +97,8 @@ function openN(a){
 }
 function closeN(){m.classList.remove('open');if(last)last.focus();}
 L.forEach(function(a){
-  a.addEventListener('click',function(){openN(a);});
-  a.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openN(a);}});
+  a.addEventListener('click',function(e){if(e.target.closest('.ann-del'))return;openN(a);});
+  a.addEventListener('keydown',function(e){if(e.target.closest('.ann-del'))return;if(e.key==='Enter'||e.key===' '){e.preventDefault();openN(a);}});
 });
 m.addEventListener('click',function(e){if(e.target===m||e.target.closest('.x'))closeN();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList.contains('open'))closeN();});

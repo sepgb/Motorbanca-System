@@ -5788,3 +5788,43 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
         bottom: 10px
     }
 }
+
+/* Admin posted announcements use the notification rows (like passenger and operator), with a small delete button at the bottom right */
+.main>.ann.ann-adm {
+    position: relative
+}
+
+.ann-adm p {
+    padding-right: 44px
+}
+
+.ann-adm .ann-del {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    margin: 0
+}
+
+.ann-adm .ann-x {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--ln);
+    border-radius: 50%;
+    background: #fff;
+    color: #b42318;
+    cursor: pointer;
+    transition: background .15s, border-color .15s
+}
+
+.ann-adm .ann-x:hover {
+    background: #fff1f0;
+    border-color: #f3c1bb
+}
+
+.ann-adm .ann-x .ico {
+    width: 17px;
+    height: 17px
+}
