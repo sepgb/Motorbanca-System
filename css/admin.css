@@ -5325,3 +5325,10 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h1 {
 body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
     margin-top: 30px !important
 }
+
+/* Admin phones and tablets (no top header there): page title pulled up a little closer to the top */
+@media (max-width:999px) {
+    body.r-admin:not(.r-operator):not(.r-public) .main>h1 {
+        margin-top: 0 !important
+    }
+}
