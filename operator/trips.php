@@ -105,9 +105,11 @@ page_head('Trip History', 'operator');
                     <option value="">All months</option>
                     <?php foreach (range(1, 12) as $i) echo "<option value='$i'>" . date('F', mktime(0, 0, 0, $i, 1)) . "</option>"; ?>
                 </select></label>
-            <label>Day<select id="f-d">
+            <label>Week<select id="f-w" disabled>
+                    <option value="">All weeks</option>
+                </select></label>
+            <label>Day<select id="f-d" disabled>
                     <option value="">All days</option>
-                    <?php foreach (range(1, 31) as $i) echo "<option value='$i'>$i</option>"; ?>
                 </select></label>
             <button type="button" class="btn sm ghost" id="f-clear">Clear</button>
             <span class="thf-sum" id="f-sum"></span>
@@ -135,17 +137,56 @@ page_head('Trip History', 'operator');
             var f = {
                     y: document.getElementById('f-y'),
                     m: document.getElementById('f-m'),
+                    w: document.getElementById('f-w'),
                     d: document.getElementById('f-d')
                 },
                 rows = [].slice.call(document.querySelectorAll('#th-tbl tr[data-y]')),
                 none = document.querySelector('#th-tbl .th-empty'),
-                sum = document.getElementById('f-sum');
+                sum = document.getElementById('f-sum'),
+                MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            // days in the chosen month (the chosen year, or this year when no year is chosen)
+            function dim() {
+                return new Date(+f.y.value || new Date().getFullYear(), +f.m.value, 0).getDate()
+            }
+
+            // Weeks only exist once a month is chosen: 1-7, 8-14, 15-21, 22-28 and 29 to the end of that month
+            function weeks() {
+                var keep = f.w.value,
+                    html = '<option value="">All weeks</option>';
+                if (f.m.value) {
+                    var n = dim(),
+                        mn = MON[f.m.value - 1];
+                    for (var s = 1; s <= n; s += 7) html += '<option value="' + s + '">' + mn + ' ' + s + ' - ' + mn + ' ' + Math.min(s + 6, n) + '</option>'
+                }
+                f.w.innerHTML = html;
+                f.w.disabled = !f.m.value;
+                f.w.value = keep;
+                if (f.w.value !== keep) f.w.value = ''
+            }
+
+            // Days: greyed out until a week is chosen, then only the days of that week
+            function days() {
+                var keep = f.d.value,
+                    s = +f.w.value,
+                    html = '<option value="">All days</option>';
+                if (s) {
+                    var max = dim();
+                    for (var i = s; i <= Math.min(s + 6, max); i++) html += '<option value="' + i + '">' + i + '</option>'
+                }
+                f.d.innerHTML = html;
+                f.d.disabled = !s;
+                f.d.value = keep;
+                if (f.d.value !== keep) f.d.value = ''
+            }
 
             function run() {
                 var n = 0,
-                    p = 0;
+                    p = 0,
+                    ws = +f.w.value;
                 rows.forEach(function(r) {
-                    var ok = (!f.y.value || r.dataset.y === f.y.value) && (!f.m.value || r.dataset.m === f.m.value) && (!f.d.value || r.dataset.d === f.d.value);
+                    var d = +r.dataset.d,
+                        ok = (!f.y.value || r.dataset.y === f.y.value) && (!f.m.value || r.dataset.m === f.m.value) && (!ws || (d >= ws && d <= ws + 6)) && (!f.d.value || r.dataset.d === f.d.value);
                     r.classList.toggle('th-off', !ok);
                     if (ok) {
                         n++;
@@ -155,11 +196,26 @@ page_head('Trip History', 'operator');
                 none.classList.toggle('th-off', n > 0);
                 sum.textContent = n + ' trip' + (n === 1 ? '' : 's') + ' \u00b7 ' + p + ' passenger' + (p === 1 ? '' : 's')
             }
-            [f.y, f.m, f.d].forEach(function(s) {
-                s.addEventListener('change', run)
+            f.y.addEventListener('change', function() {
+                weeks();
+                days();
+                run()
             });
+            f.m.addEventListener('change', function() {
+                f.w.value = '';
+                weeks();
+                days();
+                run()
+            });
+            f.w.addEventListener('change', function() {
+                days();
+                run()
+            });
+            f.d.addEventListener('change', run);
             document.getElementById('f-clear').addEventListener('click', function() {
-                f.y.value = f.m.value = f.d.value = '';
+                f.y.value = f.m.value = f.w.value = f.d.value = '';
+                weeks();
+                days();
                 run()
             });
             run()

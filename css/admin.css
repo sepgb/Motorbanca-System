@@ -5965,3 +5965,18 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     font-size: 1.2rem;
     line-height: 1.2
 }
+
+/* Trip history filter: the Week list stays greyed out until a month is chosen */
+.thf select:disabled {
+    opacity: .5;
+    cursor: not-allowed
+}
+
+/* Trip history filter: label sits closer to its list */
+.thf label {
+    gap: 2px
+}
+
+.thf select {
+    margin-top: 0
+}
