@@ -5828,3 +5828,46 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
     width: 17px;
     height: 17px
 }
+
+/* Passenger and operator: page title (H1) and subtitle use the same Sora style as admin, and the same smaller title size on phones */
+body.r-operator .main>h1,
+body.r-public .main>h1,
+body.r-operator .main>.lead,
+body.r-public .main>.lead {
+    font-family: "Sora", "Figtree", system-ui, sans-serif
+}
+
+body.r-operator .main>h1,
+body.r-public .main>h1 {
+    font-weight: 700;
+    letter-spacing: -.03em
+}
+
+body.r-operator .main>.lead,
+body.r-public .main>.lead {
+    font-weight: 400;
+    letter-spacing: -.01em
+}
+
+@media (max-width:699px) {
+
+    body.r-operator .main>h1,
+    body.r-public .main>h1 {
+        font-size: 25px
+    }
+}
+
+/* Passenger and operator: page contents use Figtree like admin. Nav, title and subtitle keep their own fonts. */
+body.r-operator .main,
+body.r-public .main,
+body.r-operator .mdl,
+body.r-public .mdl {
+    font-family: "Figtree", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
+}
+
+body.r-operator .main *:not(h1):not(.lead):not(code):not(pre):not(kbd):not(samp),
+body.r-public .main *:not(h1):not(.lead):not(code):not(pre):not(kbd):not(samp),
+body.r-operator .mdl *:not(code):not(pre):not(kbd):not(samp),
+body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
+    font-family: "Figtree", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
+}
