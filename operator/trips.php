@@ -79,7 +79,7 @@ page_head('Trip History', 'operator');
                                                     <th>Departed</th>
                                                     <th>Passengers</th>
                                                 </tr>
-                                                <?php foreach ($dn['rows'] as $r) echo "<tr class='th-row' data-trip='" . (int)$r['id'] . "' data-name='" . e(date('M j, Y', strtotime($r['trip_date']))) . "' data-hint='Double-click to see the passengers and download the documents'><td>" . $tm($r['start_time']) . "</td><td>" . ($r['status'] === 'Departed' || $r['departure_time'] ? $tm($r['departure_time']) : '<span class="muted">On queue</span>') . "</td><td>" . (int)$r['pax'] . "</td></tr>"; ?>
+                                                <?php foreach ($dn['rows'] as $r) echo "<tr class='th-row' data-trip='" . (int)$r['id'] . "' data-name='" . e(date('M j, Y', strtotime($r['trip_date']))) . "' data-hint='Double-click to see documents'><td>" . $tm($r['start_time']) . "</td><td>" . ($r['status'] === 'Departed' || $r['departure_time'] ? $tm($r['departure_time']) : '<span class="muted">On queue</span>') . "</td><td>" . (int)$r['pax'] . "</td></tr>"; ?>
                                             </table>
                                         </div>
                                     </details>
@@ -122,7 +122,7 @@ page_head('Trip History', 'operator');
                 </tr>
                 <?php foreach ($rows as $r) {
                     $ts = strtotime($r['trip_date']);
-                    echo "<tr class='th-row' data-trip='" . (int)$r['id'] . "' data-name='" . e(date('M j, Y', $ts)) . "' data-hint='Double-click to see the passengers and download the documents' data-y='" . date('Y', $ts) . "' data-m='" . (int)date('n', $ts) . "' data-d='" . (int)date('j', $ts) . "' data-pax='" . (int)$r['pax'] . "'><td>" . date('M j, Y', $ts) . "</td><td>" . $tm($r['start_time']) . "</td><td>" . ($r['status'] === 'Departed' || $r['departure_time'] ? $tm($r['departure_time']) : '<span class="muted">On queue</span>') . "</td><td>" . (int)$r['pax'] . "</td></tr>";
+                    echo "<tr class='th-row' data-trip='" . (int)$r['id'] . "' data-name='" . e(date('M j, Y', $ts)) . "' data-hint='Double-click to see documents' data-y='" . date('Y', $ts) . "' data-m='" . (int)date('n', $ts) . "' data-d='" . (int)date('j', $ts) . "' data-pax='" . (int)$r['pax'] . "'><td>" . date('M j, Y', $ts) . "</td><td>" . $tm($r['start_time']) . "</td><td>" . ($r['status'] === 'Departed' || $r['departure_time'] ? $tm($r['departure_time']) : '<span class="muted">On queue</span>') . "</td><td>" . (int)$r['pax'] . "</td></tr>";
                 } ?>
                 <tr class="th-empty th-off">
                     <td colspan="4" class="muted">No trips on these dates.</td>
