@@ -5278,25 +5278,25 @@ body.r-public .main>.lead {
 
 /* Admin side only (not operator or passenger).
    Nav stays as it is: BATIS name (Newsreader), top menu, page title and subtitle (Bricolage Grotesque),
-   header date chip (Plus Jakarta Sans). Everything in the page contents uses DM Sans. */
+   header date chip (Plus Jakarta Sans). Everything in the page contents uses Figtree. */
 body.r-admin:not(.r-operator):not(.r-public) .atop {
     font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
 }
 
 body.r-admin:not(.r-operator):not(.r-public) .main,
 body.r-admin:not(.r-operator):not(.r-public) .mdl {
-    font-family: "DM Sans", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
+    font-family: "Figtree", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
 }
 
 body.r-admin:not(.r-operator):not(.r-public) .main *:not(h1):not(.lead):not(code):not(pre):not(kbd):not(samp),
 body.r-admin:not(.r-operator):not(.r-public) .mdl *:not(code):not(pre):not(kbd):not(samp) {
-    font-family: "DM Sans", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
+    font-family: "Figtree", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
 }
 
 /* Admin side only: page title (H1) and its subtitle use Sora. The top menu and BATIS name are not touched. */
 body.r-admin:not(.r-operator):not(.r-public) .main h1,
 body.r-admin:not(.r-operator):not(.r-public) .main .lead {
-    font-family: "Sora", "DM Sans", system-ui, sans-serif
+    font-family: "Sora", "Figtree", system-ui, sans-serif
 }
 
 body.r-admin:not(.r-operator):not(.r-public) .main h1 {
@@ -5315,4 +5315,13 @@ body.r-admin:not(.r-operator):not(.r-public) .main .lead {
         font-size: 25px;
         line-height: 1.2
     }
+}
+
+/* Admin side only: space above every page title, and above the Live queue heading on the dashboard */
+body.r-admin:not(.r-operator):not(.r-public) .main>h1 {
+    margin-top: 14px !important
+}
+
+body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
+    margin-top: 30px !important
 }
