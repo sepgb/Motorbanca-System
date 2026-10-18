@@ -105,6 +105,7 @@ $sub = $m['motorbanca_name'] . ' · ' . $np . ' of ' . (int)$m['capacity'] . ' p
 if ($ajax) md_json([
     'title' => "Master's Declaration of Safe Departure",
     'sub' => $sub,
+    'trip' => (int)$qt,
     'html' => md_rows($cur),
     'pdic' => pdic_rows($pcur),
     'started' => date('Y-m-d H:i:s'),

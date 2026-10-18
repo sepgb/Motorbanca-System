@@ -5871,3 +5871,76 @@ body.r-operator .mdl *:not(code):not(pre):not(kbd):not(samp),
 body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     font-family: "Figtree", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
 }
+
+/* Depart: first window shows the whole Crew List and Manifest forms (Crew list / Manifest tabs) */
+.rv-tabs {
+    display: inline-flex;
+    gap: 2px;
+    padding: 4px;
+    margin: 14px 0 12px;
+    background: #f5eee8;
+    border-radius: 999px
+}
+
+.rv-tabs button {
+    border: 0;
+    background: transparent;
+    border-radius: 999px;
+    padding: 8px 18px;
+    font-weight: 700;
+    font-size: .88rem;
+    color: #7a6f67;
+    cursor: pointer;
+    transition: all .15s
+}
+
+.rv-tabs button.on {
+    background: #fff;
+    color: var(--tx);
+    box-shadow: 0 1px 2px #1f1a1726, 0 4px 10px -4px #1f1a1733
+}
+
+.rv-stage {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--ln);
+    border-radius: 14px;
+    background: #fff
+}
+
+.rv-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 816px;
+    height: 1056px;
+    border: 0;
+    background: #fff;
+    overflow: hidden;
+    transform-origin: 0 0
+}
+
+/* Crew List and Manifest window: narrower on desktop (the MDSD and PDIC windows keep their width) */
+@media (min-width:1000px) {
+    .mdl-box.wide.md-rv {
+        max-width: 560px
+    }
+}
+
+/* Crew List and Manifest window on phones: the same footer buttons as the MDSD window (Cancel and Continue side by side, equal width) */
+@media (max-width:999px) {
+    .md-rv .md-count {
+        display: none
+    }
+
+    .md-rv .md-foot {
+        flex-wrap: nowrap
+    }
+
+    .r-admin .md-rv .md-foot .btn,
+    .r-admin .md-rv .md-foot .btn.md-go-wide {
+        flex: 1 1 0;
+        width: auto;
+        padding: 0
+    }
+}

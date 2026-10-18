@@ -35,10 +35,10 @@ setInterval(function () {
 // Cards fade in only on first load (not on every live refresh)
 setTimeout(function () { document.body.classList.remove('enter'); }, 900);
 
-// Depart button: the MDSD checklist opens in a modal, then the PDIC (inspection checklist) in a second one.
+// Depart button: first a window to check the crew list and the manifest, then the MDSD checklist in a modal, then the PDIC (inspection checklist) in a third one.
 // The boat departs when the PCG submits the PDIC; a last window then offers to print the MDSD and the PDIC.
 (function () {
-  var mbox, pbox, dbox, mbody, pbody, merr, perr, mcount, pcount, msub, psub, pgo, url, mid, started, busy;
+  var rtrip = 0, rbox, rbody, rerr, rsub, rnext, mbox, pbox, dbox, mbody, pbody, merr, perr, mcount, pcount, msub, psub, pgo, url, mid, started, busy;
   var PRINT = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg>';
 
   function make(html) {
@@ -73,7 +73,20 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   }
 
   function build() {
-    // ---- step 1: MDSD
+    // ---- step 1: check the crew list and the passenger manifest
+    rbox = make('<div class="mdl-box wide md-box md-rv"><div class="mdl-head"><div class="mdl-title"><h3>Crew List and Manifest</h3><p class="sub"></p></div>' +
+      '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
+      '<div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
+      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel">Cancel</button><button type="button" class="btn sm md-next md-go-wide" disabled>Continue to MDSD</button></div></div>');
+    rbody = rbox.querySelector('.md-body'); rerr = rbox.querySelector('.md-err'); rsub = rbox.querySelector('.sub'); rnext = rbox.querySelector('.md-next');
+    rbox.addEventListener('click', function (e) {
+      var tb = e.target.closest('.rv-tabs button');   // Crew list / Manifest tabs: the whole document is shown
+      if (tb) { showDoc(tb.getAttribute('data-t')); return; }
+      if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) closeM(rbox);
+      else if (e.target.classList.contains('md-next') && !rnext.disabled) { closeM(rbox); openM(mbox); }   // on to the MDSD
+    });
+
+    // ---- step 2: MDSD
     mbox = make('<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Master\u2019s Declaration of Safe Departure</h3><p class="sub"></p></div>' +
       '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
       '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
@@ -88,7 +101,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       show(merr, ''); closeM(mbox); openM(pbox);   // on to the PDIC
     });
 
-    // ---- step 2: PDIC (no Cancel here: the only action is to depart the motorbanca; the arrow goes back to the MDSD)
+    // ---- step 3: PDIC (no Cancel here: the only action is to depart the motorbanca; the arrow goes back to the MDSD)
     pbox = make('<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Pre-Departure Inspection Checklist</h3><p class="sub"></p></div>' +
       '<div class="mdl-tools"><button type="button" class="x md-back" aria-label="Back to the MDSD">&lsaquo;</button></div></div>' +
       '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
@@ -103,9 +116,34 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       if (e.key !== 'Escape') return;
       if (dbox && dbox.classList.contains('open')) location.reload();
       else if (pbox.classList.contains('open')) { closeM(pbox); openM(mbox); }
+      else if (rbox.classList.contains('open')) closeM(rbox);
       else if (mbox.classList.contains('open')) closeM(mbox);
     });
   }
+
+  // the real Crew List or Manifest form of the trip that is about to depart (same pages used for printing, shown here as a preview)
+  function showDoc(kind) {
+    var fr = rbody.querySelector('.rv-frame'); if (!fr || !rtrip) return;
+    rbody.querySelectorAll('.rv-tabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-t') === kind); });
+    fr.style.visibility = 'hidden';
+    fr.onload = function () { fitDoc(); fr.style.visibility = 'visible'; };
+    fr.src = '../operator/' + kind + '.php?trip=' + rtrip + '&print=1';
+  }
+
+  // zoom the whole page out so it fits the window (no scrollbars)
+  function fitDoc() {
+    var st = rbody && rbody.querySelector('.rv-stage'), fr = st && st.querySelector('.rv-frame'); if (!fr) return;
+    var w = 816, h = 1056;
+    try { var d = fr.contentDocument.documentElement; w = Math.max(d.scrollWidth, 816); h = Math.max(d.scrollHeight, 1056); } catch (x) { }
+    fr.style.width = w + 'px'; fr.style.height = h + 'px';
+    st.style.width = '';   // measure the room available, then shrink the card to the page
+    var k = Math.min(st.clientWidth / w, Math.max(320, window.innerHeight * 0.62) / h);   // fit the width, but never taller than the window
+    st.style.height = Math.round(h * k) + 'px';   // the card is exactly as tall as the page, no empty space
+    fr.style.transform = 'scale(' + k + ')';
+    st.style.width = Math.round(w * k) + 'px'; st.style.margin = '0 auto';   // the card is only as wide as the page
+    fr.style.left = '0px';
+  }
+  window.addEventListener('resize', fitDoc);
 
   function submit(e) {
     e.preventDefault(); if (busy) return;
@@ -127,7 +165,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       .catch(function () { fail('Could not reach the server. Check your connection and try again.'); });
   }
 
-  // ---- step 3: the boat has departed: print the MDSD and the PDIC if wanted
+  // ---- step 4: the boat has departed: print the MDSD and the PDIC if wanted
   function done(trip) {
     closeM(mbox); closeM(pbox);
     if (!trip) { location.reload(); return; }
@@ -145,19 +183,24 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     url = f.action.replace(/depart\.php.*$/, 'mdsd.php');
     if (!mbox) build();
     busy = false; pgo.disabled = false; pgo.textContent = 'Depart motorbanca'; show(merr, ''); show(perr, '');
-    msub.textContent = 'Loading\u2026'; mbody.innerHTML = ''; pbody.innerHTML = ''; mcount.textContent = ''; pcount.textContent = '';
-    openM(mbox);
+    rtrip = 0; rsub.textContent = 'Loading\u2026'; rbody.innerHTML = ''; rnext.disabled = true; show(rerr, '');
+    msub.textContent = ''; mbody.innerHTML = ''; pbody.innerHTML = ''; mcount.textContent = ''; pcount.textContent = '';
+    openM(rbox);
     fetch(url + '?ajax=1&mid=' + encodeURIComponent(mid), { credentials: 'same-origin' })
       .then(function (x) { return x.json(); })
       .then(function (d) {
-        if (d.ok === false) { msub.textContent = ''; show(merr, d.error); return; }
-        msub.textContent = d.sub; psub.textContent = d.sub;
+        if (d.ok === false) { rsub.textContent = ''; show(rerr, d.error); return; }
+        msub.textContent = d.sub; psub.textContent = d.sub; rsub.textContent = d.sub;
+        rtrip = d.trip || 0;
+        rbody.innerHTML = rtrip ? '<div class="rv-tabs"><button type="button" class="on" data-t="print_crew">Crew list</button><button type="button" data-t="print">Manifest</button></div><div class="rv-stage"><iframe class="rv-frame" title="Document preview" scrolling="no"></iframe></div>' : '<div class="alert bad">No trip was found for this boat.</div>';
+        if (rtrip) showDoc('print_crew');
+        rnext.disabled = false;
         mbody.innerHTML = d.html;   // built and escaped on the server
         pbody.innerHTML = d.pdic + '<div class="md-ins"><label for="pd-ins">Name of inspector</label><input id="pd-ins" name="inspector" type="text" maxlength="100" autocomplete="off"></div>';
         started = d.started;   // the inspection starts when the checklist is opened
         tally(mbody, mcount); tally(pbody, pcount);
       })
-      .catch(function () { msub.textContent = ''; show(merr, 'Could not load the checklist.'); });
+      .catch(function () { rsub.textContent = ''; show(rerr, 'Could not load the checklist.'); });
   }
   // The Depart button never sends the boat straight away: both a click and a form submit (Enter key) open the checklist.
   document.addEventListener('click', function (e) {
