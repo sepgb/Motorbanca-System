@@ -39,12 +39,9 @@ $tpl = [
 page_head('Announcements', 'admin');
 ?>
 <h1>Announcements</h1>
-<p class="lead ann-lead">Post a notice that operators and passengers will see right away.</p>
 <?php if ($err): ?><div class="alert err"><?= e($err) ?></div><?php endif; ?>
 <div class="ann-wrap">
     <div class="card ann-compose">
-        <h3 style="margin-top:0">New announcement</h3>
-        <p class="muted" style="margin:0 0 8px">Pick a template to fill the form, then edit it if you need to.</p>
         <div class="ann-tpl">
             <?php foreach ($tpl as $i => $t): ?><button type="button" class="ann-chip k-<?= $t[1] ?>" data-i="<?= $i ?>"><b><?= e($t[0]) ?></b><span class="ann-d"><?= e($t[3]) ?></span></button><?php endforeach; ?>
         </div>
@@ -76,6 +73,7 @@ page_head('Announcements', 'admin');
                 document.getElementById('a-act').value = a;
                 var n = document.getElementById('a-actn');
                 n.hidden = !a;
+                n.classList.toggle('good', a === 'resume');
                 n.textContent = a === 'suspend' ? 'Posting this will make every boat on queue depart and block all new trips until a Resumption of travel notice is posted.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
                 document.getElementById('a-title').value = t[2];
                 document.getElementById('a-body').value = t[3];

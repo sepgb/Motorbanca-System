@@ -5332,3 +5332,459 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
         margin-top: 0 !important
     }
 }
+
+/* Announcements: restyled "New announcement" card (desktop). Same palette, softer and tidier. */
+@media (min-width:1000px) {
+    .ann-compose {
+        padding: 30px 34px 32px;
+        border-radius: 22px;
+        box-shadow: 0 1px 2px #1f1a170d, 0 18px 40px -26px #b4470a40
+    }
+
+    .ann-compose>h3 {
+        font-size: 1.3rem;
+        letter-spacing: -.02em
+    }
+
+    .ann-compose>p {
+        padding-bottom: 20px;
+        margin-bottom: 22px !important;
+        border-bottom: 1px solid var(--ln);
+        grid-column: 1 / -1
+    }
+
+    /* templates panel */
+    .ann-tpl {
+        border-right: 0;
+        padding: 14px;
+        background: #fbf7f3;
+        border: 1px solid var(--ln);
+        border-radius: 18px;
+        gap: 10px
+    }
+
+    .ann-tpl::before {
+        content: 'Templates';
+        padding: 2px 4px 2px;
+        font-size: .7rem;
+        font-weight: 800;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--mut)
+    }
+
+    .ann-chip {
+        background: #fff;
+        border: 1px solid var(--ln);
+        border-radius: 14px;
+        padding: 12px 14px 12px 20px;
+        box-shadow: 0 1px 2px #1f1a1708;
+        transition: border-color .15s, box-shadow .15s, transform .15s
+    }
+
+    .ann-chip::before {
+        left: 8px;
+        top: 12px;
+        bottom: 12px;
+        width: 3px
+    }
+
+    .ann-chip:hover {
+        background: #fff;
+        border-color: #f9c9a8;
+        box-shadow: 0 8px 18px -12px #b4470a66;
+        transform: translateY(-1px)
+    }
+
+    .ann-chip:active {
+        transform: translateY(0)
+    }
+
+    .ann-chip b {
+        font-size: .88rem;
+        font-weight: 800
+    }
+
+    .ann-chip .ann-d {
+        color: var(--mut)
+    }
+
+    /* form */
+    #annf label {
+        display: block;
+        margin: 18px 0 8px;
+        font-size: .72rem;
+        font-weight: 800;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        color: #6b6058
+    }
+
+    #annf>label:first-of-type {
+        margin-top: 2px
+    }
+
+    #annf #a-seg {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        gap: 2px;
+        padding: 4px;
+        background: #f5eee8;
+        border-radius: 999px
+    }
+
+    #annf #a-seg button {
+        border: 0;
+        background: transparent;
+        padding: 8px 18px;
+        font-weight: 700;
+        color: #7a6f67;
+        box-shadow: none
+    }
+
+    #annf #a-seg button:hover {
+        color: var(--tx)
+    }
+
+    #annf #a-seg button.on {
+        background: #fff;
+        color: var(--tx);
+        box-shadow: 0 1px 2px #1f1a1726, 0 4px 10px -4px #1f1a1733
+    }
+
+    #annf #a-seg button.on.k-danger {
+        color: #b42318
+    }
+
+    #annf #a-seg button.on.k-warn {
+        color: #b54708
+    }
+
+    #annf #a-seg button.on.k-ok {
+        color: #15803d
+    }
+
+    #annf #a-seg button.on.k-info {
+        color: #1d4ed8
+    }
+
+    #annf input,
+    #annf textarea {
+        background: #fff;
+        border: 1.5px solid #e9dfd6;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-weight: 500;
+        box-shadow: inset 0 1px 2px #1f1a170a
+    }
+
+    #annf input:hover,
+    #annf textarea:hover {
+        border-color: #dccdbf
+    }
+
+    #annf textarea {
+        min-height: 170px;
+        line-height: 1.55
+    }
+
+    .ann-cnt {
+        padding: 2px 10px;
+        border-radius: 999px;
+        background: #f5eee8;
+        color: #7a6f67;
+        font-size: .72rem;
+        letter-spacing: 0;
+        text-transform: none
+    }
+
+    #annf .btn {
+        margin-top: 18px !important;
+        padding: 13px 30px;
+        border-radius: 14px;
+        font-weight: 800;
+        letter-spacing: .01em;
+        box-shadow: 0 10px 20px -10px #f26b1dcc
+    }
+
+    #annf .btn::after {
+        content: '\2192';
+        margin-left: 10px;
+        display: inline-block;
+        transition: transform .15s
+    }
+
+    #annf .btn:hover::after {
+        transform: translateX(3px)
+    }
+}
+
+/* Announcements: the same restyled "New announcement" card on phones and tablets (stacked layout) */
+@media (max-width:999px) {
+    .ann-compose {
+        padding: 18px 16px 20px;
+        border-radius: 22px;
+        box-shadow: 0 1px 2px #1f1a170d, 0 18px 40px -26px #b4470a40
+    }
+
+    .ann-tpl {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 10px;
+        margin: 0 0 20px;
+        padding: 12px;
+        background: #fbf7f3;
+        border: 1px solid var(--ln);
+        border-radius: 18px
+    }
+
+    .ann-tpl::before {
+        content: 'Templates';
+        padding: 2px 4px;
+        font-size: .7rem;
+        font-weight: 800;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--mut)
+    }
+
+    .ann-chip {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+        text-align: left;
+        width: 100%;
+        position: relative;
+        background: #fff;
+        border: 1px solid var(--ln);
+        border-radius: 14px;
+        padding: 12px 14px 12px 20px;
+        box-shadow: 0 1px 2px #1f1a1708;
+        transition: border-color .15s, box-shadow .15s, transform .15s
+    }
+
+    .ann-chip::before {
+        content: '';
+        position: absolute;
+        left: 8px;
+        top: 12px;
+        bottom: 12px;
+        width: 3px;
+        border-radius: 4px;
+        background: #3b82f6
+    }
+
+    .ann-chip.k-danger::before {
+        background: #d92d20
+    }
+
+    .ann-chip.k-warn::before {
+        background: #f59e0b
+    }
+
+    .ann-chip.k-ok::before {
+        background: #16a34a
+    }
+
+    .ann-chip:active {
+        transform: scale(.99)
+    }
+
+    .ann-chip b {
+        font-size: .88rem;
+        font-weight: 800
+    }
+
+    .ann-chip .ann-d {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-weight: 500;
+        font-size: .75rem;
+        line-height: 1.4;
+        color: var(--mut)
+    }
+
+    #annf label {
+        display: block;
+        margin: 18px 0 8px;
+        font-size: .72rem;
+        font-weight: 800;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        color: #6b6058
+    }
+
+    #annf>label:first-of-type {
+        margin-top: 2px
+    }
+
+    #a-kind {
+        display: none
+    }
+
+    #annf #a-seg {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2px;
+        padding: 4px;
+        background: #f5eee8;
+        border-radius: 22px
+    }
+
+    #annf #a-seg button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 0;
+        background: transparent;
+        border-radius: 999px;
+        padding: 10px 12px;
+        font-weight: 700;
+        font-size: .85rem;
+        color: #7a6f67;
+        cursor: pointer;
+        transition: all .15s
+    }
+
+    #annf #a-seg button i {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #3b82f6
+    }
+
+    #annf #a-seg .k-danger i {
+        background: #d92d20
+    }
+
+    #annf #a-seg .k-warn i {
+        background: #f59e0b
+    }
+
+    #annf #a-seg .k-ok i {
+        background: #16a34a
+    }
+
+    #annf #a-seg button.on {
+        background: #fff;
+        color: var(--tx);
+        box-shadow: 0 1px 2px #1f1a1726, 0 4px 10px -4px #1f1a1733
+    }
+
+    #annf #a-seg button.on.k-danger {
+        color: #b42318
+    }
+
+    #annf #a-seg button.on.k-warn {
+        color: #b54708
+    }
+
+    #annf #a-seg button.on.k-ok {
+        color: #15803d
+    }
+
+    #annf #a-seg button.on.k-info {
+        color: #1d4ed8
+    }
+
+    #annf input,
+    #annf textarea {
+        background: #fff;
+        border: 1.5px solid #e9dfd6;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-weight: 500;
+        box-shadow: inset 0 1px 2px #1f1a170a
+    }
+
+    #annf input:focus,
+    #annf textarea:focus {
+        outline: 0;
+        border-color: #f26b1d;
+        box-shadow: 0 0 0 4px rgba(242, 107, 29, .12)
+    }
+
+    #annf textarea {
+        min-height: 150px;
+        line-height: 1.55;
+        resize: vertical
+    }
+
+    .ann-cnt {
+        display: inline;
+        float: right;
+        padding: 2px 10px;
+        border-radius: 999px;
+        background: #f5eee8;
+        color: #7a6f67;
+        font-style: normal;
+        font-weight: 600;
+        font-size: .72rem;
+        letter-spacing: 0;
+        text-transform: none
+    }
+
+    #annf .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin-top: 18px !important;
+        padding: 13px 30px;
+        border-radius: 14px;
+        font-weight: 800;
+        letter-spacing: .01em;
+        box-shadow: 0 10px 20px -10px #f26b1dcc
+    }
+
+    #annf .btn::after {
+        content: '\2192';
+        margin-left: 10px
+    }
+}
+
+/* Announcements: note under the template buttons. Same look on desktop and mobile; green when the template is a Resumption of travel. */
+#annf #a-actn {
+    padding: 14px 20px;
+    border-radius: 16px;
+    font-size: .92rem;
+    line-height: 1.5
+}
+
+#annf #a-actn.good {
+    background: #d8f3e2;
+    color: #14663a
+}
+
+/* Announcements on phones and tablets: no Type picker (the template sets it), templates show only their title */
+@media (max-width:999px) {
+
+    #annf>label:first-of-type,
+    #annf #a-seg {
+        display: none
+    }
+
+    #annf>label:nth-of-type(2) {
+        margin-top: 2px
+    }
+
+    .ann-chip .ann-d {
+        display: none
+    }
+
+    .ann-chip {
+        padding-top: 14px;
+        padding-bottom: 14px
+    }
+
+    .ann-chip::before {
+        top: 10px;
+        bottom: 10px
+    }
+}
