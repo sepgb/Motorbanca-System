@@ -39,8 +39,8 @@ function ck($ans, $n, $v)
     <style>
         /* no browser header / footer (date, title, address): only the page count "1/1" at the bottom right */
         @page {
-            size: letter landscape;
-            margin: 5mm;
+            size: letter;
+            margin: 6mm 10mm;
 
             @top-center {
                 content: ""
@@ -98,10 +98,10 @@ function ck($ans, $n, $v)
             position: relative;
             display: flex;
             flex-direction: column;
-            width: 279.4mm;
-            height: 215.9mm;
+            width: 215.9mm;
+            height: 279.4mm;
             margin: 10px auto;
-            padding: 8mm;
+            padding: 6mm 10mm;
             background: #fff;
             overflow: hidden
         }
@@ -118,8 +118,8 @@ function ck($ans, $n, $v)
 
         .formno {
             position: absolute;
-            top: 8mm;
-            right: 8mm;
+            top: 6mm;
+            right: 10mm;
             font-weight: 700;
             font-size: 11px
         }
@@ -305,7 +305,7 @@ function ck($ans, $n, $v)
                 margin: 0;
                 padding: 0;
                 width: auto;
-                height: 205.8mm;
+                height: 267.3mm;
                 break-after: page;
                 page-break-after: always
             }
@@ -745,9 +745,23 @@ function ck($ans, $n, $v)
                     }, '*');
                 };
                 try {
+                    // all pages of the form go in one PDF, one sheet each
+                    var st = document.createElement('style');
+                    st.textContent = '.pg{margin:0!important;height:278.8mm!important}';
+                    document.head.appendChild(st);
+                    var pgs = [].slice.call(document.querySelectorAll('.pg')),
+                        wrap = document.createElement('div');
+                    pgs[0].parentNode.insertBefore(wrap, pgs[0]);
+                    pgs.forEach(function(p) {
+                        wrap.appendChild(p)
+                    });
                     html2pdf().set({
                             margin: 0,
                             filename: 'PDIC.pdf',
+                            pagebreak: {
+                                mode: ['css'],
+                                after: '.pg'
+                            },
                             image: {
                                 type: 'jpeg',
                                 quality: 0.98
@@ -763,10 +777,10 @@ function ck($ans, $n, $v)
                             jsPDF: {
                                 unit: 'mm',
                                 format: 'letter',
-                                orientation: 'landscape'
+                                orientation: 'portrait'
                             }
                         })
-                        .from(document.querySelector('.pg')).outputPdf('blob').then(function(b) {
+                        .from(wrap).outputPdf('blob').then(function(b) {
                             parent.postMessage({
                                 pdf: 'done',
                                 blob: b
