@@ -42,13 +42,13 @@ $b = BASE;
 <body class="r-admin login">
     <main class="lg">
         <section class="lg-brand">
-            <h2>Port Control</h2>
+            <h2>BATIS</h2>
             <p><b>Banca Tracking and Information System</b><br>Live boat queue and trip monitoring at Binangonan port</p>
             <img src="<?= $b ?>/admin/logo.webp" alt="Philippine Coast Guard" width="96" height="96">
             <img class="lg-photo" src="<?= $b ?>/admin/pcg.jpg" alt="Coast Guard personnel helping a passenger board a motorbanca">
         </section>
         <section class="lg-form">
-            <div class="lg-mark"><img src="<?= $b ?>/admin/logo.webp" alt="" width="44" height="44"><span>Port Control</span><small><b>Banca Tracking and Information System</b><br>Live boat queue and trip monitoring at Binangonan port</small></div>
+            <div class="lg-mark"><img src="<?= $b ?>/admin/logo.webp" alt="" width="44" height="44"><span>BATIS</span><small><b>Banca Tracking and Information System</b><br>Live boat queue and trip monitoring at Binangonan port</small></div>
             <h1>Welcome back</h1>
             <p class="muted lg-sub">Log in to continue</p>
             <?php if ($err) echo "<div class='alert bad' role='alert'>" . e($err) . "</div>"; ?>

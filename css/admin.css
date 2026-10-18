@@ -16,7 +16,7 @@ body.r-admin {
     --depc: #2563eb;
     --cdc: #b4470a;
     display: block;
-    font: 1rem/1.55 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    font: 1rem/1.55 var(--fb);
     color: var(--tx);
     background: radial-gradient(900px 380px at 85% -8%, #ffe6d4 0%, rgba(255, 230, 212, 0) 70%) fixed, var(--bg)
 }
@@ -639,7 +639,7 @@ body.nav-open .pills {
     background: linear-gradient(135deg, #22a455, #15803d);
     color: #fff;
     box-shadow: 0 10px 20px -8px #15803d99;
-    font: 600 .88rem "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    font: 600 .88rem var(--fb);
     cursor: pointer;
     transition: transform .15s, box-shadow .15s
 }
@@ -1233,7 +1233,7 @@ body.nav-open .pills {
     border-radius: 14px;
     background: #1f1a17;
     color: #fff;
-    font: 600 .78rem/1.3 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    font: 600 .78rem/1.3 var(--fb);
     box-shadow: 0 14px 28px -10px #1f1a1790;
     pointer-events: none;
     opacity: 0;
@@ -1765,7 +1765,7 @@ body.nav-open .pills {
     border: 1px solid var(--ln);
     background: #fff;
     color: var(--tx);
-    font: 600 .88rem "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    font: 600 .88rem var(--fb);
     cursor: pointer;
     transition: background .15s
 }
@@ -1785,7 +1785,7 @@ body.nav-open .pills {
     background: linear-gradient(135deg, #ff8a3d, #f26b1d);
     color: #fff;
     box-shadow: 0 10px 20px -8px #f26b1d99;
-    font: 600 .88rem "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    font: 600 .88rem var(--fb);
     cursor: pointer;
     transition: transform .15s, box-shadow .15s
 }
@@ -2780,7 +2780,7 @@ body.r-public .main>.lead {
     background: #fff;
     border-radius: 999px;
     padding: 7px 13px;
-    font: 600 .82rem 'Plus Jakarta Sans', system-ui, sans-serif;
+    font: 600 .82rem var(--fb);
     cursor: pointer;
     color: #3b3430
 }
@@ -3060,7 +3060,7 @@ body.r-public .main>.lead {
         background: #fff;
         border-radius: 999px;
         padding: 8px 16px;
-        font: 700 .85rem 'Plus Jakarta Sans', system-ui, sans-serif;
+        font: 700 .85rem var(--fb);
         color: #5b514a;
         cursor: pointer;
         transition: all .15s
@@ -3434,7 +3434,7 @@ body.r-public .main>.lead {
     border-radius: 999px;
     background: #fff1e6;
     color: #c2500f;
-    font: 700 .88rem 'Plus Jakarta Sans', system-ui, sans-serif;
+    font: 700 .88rem var(--fb);
     text-decoration: none;
     line-height: 1;
     transition: background .15s, color .15s, transform .15s
@@ -4800,14 +4800,14 @@ body.r-public .main>.lead {
     box-shadow: inset 0 1px 0 #ffffff33, inset 0 -1px 0 #0003, 0 1px 2px #0006, 0 4px 12px -6px #15803d99
 }
 
-/* Page titles: big bold system font (like the title of a phone app), with room above and below. A title with a subtitle right under it keeps them close. */
+/* Page titles: big bold display font (Bricolage Grotesque), with room above and below. A title with a subtitle right under it keeps them close. */
 .r-admin .main>h1,
 body.r-public .main>h1 {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 30px;
+    font-family: var(--fh);
+    font-size: 31px;
     font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: 0;
+    line-height: 1.15;
+    letter-spacing: -.025em;
     margin: 0 0 16px !important
 }
 
@@ -5220,4 +5220,35 @@ body.r-public .main>h1:has(+ .lead) {
 .r-admin .rm-btn:focus-visible {
     outline: 3px solid #dc2626;
     outline-offset: 2px
+}
+
+/* App fonts (admin, operator, passenger pages; the login page keeps its own fonts):
+   Figtree for text, Bricolage Grotesque for titles, big numbers and the BATIS name. */
+body.r-admin {
+    --fb: "Figtree", "Segoe UI", system-ui, sans-serif;
+    --fh: "Bricolage Grotesque", "Figtree", "Segoe UI", system-ui, sans-serif
+}
+
+.r-admin h1,
+.r-admin h2,
+.r-admin h3,
+.r-admin .logo,
+.r-admin .stat b,
+.r-admin .pub-h1 {
+    font-family: var(--fh)
+}
+
+.r-admin h2,
+.r-admin h3 {
+    letter-spacing: -.015em
+}
+
+.r-admin .stat b {
+    font-weight: 700;
+    letter-spacing: -.02em
+}
+
+.r-admin .logo {
+    font-weight: 800;
+    letter-spacing: -.01em
 }
