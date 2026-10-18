@@ -133,11 +133,34 @@ if (!function_exists('susp_ensure')) {
         }
         return $v;
     }
-    // Admin posted a suspension: every boat on queue departs, boats waiting for inspection are cancelled.
+    // A boat leaves the queue and its waiting trip is cancelled (it never departs).
+    function cancel_queued_trip($mid)
+    {
+        $pdo = db();
+        $pdo->beginTransaction();
+        $pdo->prepare("UPDATE motorbancas SET status='Not Queued' WHERE id=?")->execute([$mid]);
+        $pdo->prepare("UPDATE trips SET status='Cancelled' WHERE motorbanca_id=? AND status IN ('Queued','Inspection')")->execute([$mid]);
+        $pdo->commit();
+    }
+    // Admin posted a suspension. The boat that is ON QUEUE in each cluster is NOT departed here: the PCG must depart and
+    // check it (MDSD and PDIC) right away. Boats in NEXT TRIP / WAITING and boats waiting for inspection are cancelled.
     function suspend_all_boats()
     {
-        foreach (db()->query("SELECT id, status FROM motorbancas WHERE status IN ('Queued','Inspection') ORDER BY queued_at, id")->fetchAll() as $b)
-            set_status((int)$b['id'], $b['status'] === 'Queued' ? 'Departed' : 'Not Queued');
+        $rows = live_rows();
+        foreach (db()->query("SELECT id FROM clusters")->fetchAll() as $c) {
+            [$dep, $q] = split_cluster($rows, $c['id']);
+            foreach ($q as $i => $b) if ($dep || $i > 0) cancel_queued_trip((int)$b['id']);   // keep only the boat that is ON QUEUE
+        }
+        foreach (db()->query("SELECT id FROM motorbancas WHERE status='Inspection'")->fetchAll() as $b) set_status((int)$b['id'], 'Not Queued');
+    }
+    // Red notice for the admin while travel is suspended and a boat is still on queue (it has to be departed and checked).
+    function susp_notice_html()
+    {
+        if (!travel_suspended()) return;
+        $r = db()->query("SELECT m.motorbanca_name n, c.name cn FROM motorbancas m JOIN clusters c ON c.id=m.cluster_id WHERE m.status='Queued' ORDER BY m.queued_at, m.id")->fetchAll();
+        if (!$r) return;
+        $names = implode(', ', array_map(fn($x) => '<b>' . e($x['n']) . '</b> (' . e($x['cn']) . ')', $r));
+        echo "<div class='alert bad susp-note' style='margin:0 0 18px'><b>Travel is suspended.</b> Depart and check the MDSD and PDIC of the boat still on queue right away: $names. <a href='" . BASE . "/admin/queue.php' style='font-weight:700;color:inherit;text-decoration:underline'>Go to the queue &rsaquo;</a></div>";
     }
 }
 

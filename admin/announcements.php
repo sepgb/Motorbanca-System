@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else {
             db()->prepare("INSERT INTO announcements(kind,title,body,act) VALUES(?,?,?,?)")->execute([$k, $t, $b, $act]);
             if ($act === 'suspend') suspend_all_boats();
-            $_SESSION['ann_msg'] = $act === 'suspend' ? 'Travel suspended. All boats on queue have departed and new trips are blocked.' : ($act === 'resume' ? 'Travel resumed. Operators can start new trips again.' : 'Announcement posted to operators and passengers.');
+            $_SESSION['ann_msg'] = $act === 'suspend' ? 'Travel suspended. Boats waiting for their next trip were cancelled and new trips are blocked. Depart and check the boat still on queue right away.' : ($act === 'resume' ? 'Travel resumed. Operators can start new trips again.' : 'Announcement posted to operators and passengers.');
             header('Location: announcements.php');
             exit;
         }
@@ -74,7 +74,7 @@ page_head('Announcements', 'admin');
                 var n = document.getElementById('a-actn');
                 n.hidden = !a;
                 n.classList.toggle('good', a === 'resume');
-                n.textContent = a === 'suspend' ? 'Posting this will make every boat on queue depart and block all new trips until a Resumption of travel notice is posted.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
+                n.textContent = a === 'suspend' ? 'Posting this will cancel the boats waiting for their next trip and block all new trips until a Resumption of travel notice is posted. The boat on queue is not departed automatically: you must depart and check it (MDSD and PDIC) right away.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
                 document.getElementById('a-title').value = t[2];
                 document.getElementById('a-body').value = t[3];
                 document.getElementById('a-title').focus()
