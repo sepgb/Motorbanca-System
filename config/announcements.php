@@ -153,16 +153,16 @@ if (!function_exists('susp_ensure')) {
 
 // ---- Live pop-up: a new announcement appears on operator and passenger pages without reloading ----
 if (!function_exists('ann_latest')) {
-    // The newest announcement (id, kind, title) as an array, or null. Polled by api/live.php?v=ann.
+    // The newest announcement (id, kind, title, message) as an array, or null. Polled by api/live.php?v=ann.
     function ann_latest()
     {
         susp_ensure();
         try {
-            $a = db()->query("SELECT id, kind, title FROM announcements ORDER BY id DESC LIMIT 1")->fetch();
+            $a = db()->query("SELECT id, kind, title, body FROM announcements ORDER BY id DESC LIMIT 1")->fetch();
         } catch (PDOException $x) {
             return null;
         }
-        return $a ? ['id' => (int)$a['id'], 'kind' => isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info', 'title' => $a['title']] : null;
+        return $a ? ['id' => (int)$a['id'], 'kind' => isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info', 'title' => $a['title'], 'body' => $a['body']] : null;
     }
     // $who is 'operator' or 'passenger' (the folder of the page that opens when the pop-up is tapped).
     function ann_live_html($who)
@@ -172,23 +172,37 @@ if (!function_exists('ann_latest')) {
         $base = $now ? $now['id'] : 0;   // only announcements newer than this one pop up
         $go = e(BASE . '/' . $who . '/announcements.php');
         $api = e(BASE . '/api/live.php?v=ann');
-        echo "<a class='ann-pop' id='ann-pop' href='$go' hidden><i></i><span><b></b><small>Tap to view the announcement</small></span></a>";
+        $kinds = json_encode(ANN_KINDS);
+        echo "<div class='ann-pop' id='ann-pop' role='alert' hidden><a class='ap-main' href='$go'>" .
+            "<span class='ap-ic'><svg viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10.3 21a1.9 1.9 0 0 0 3.4 0'/></svg></span>" .
+            "<span class='ap-tx'><span class='ap-tag'></span><b class='ap-t'></b><span class='ap-msg'></span><small class='ap-go'>Tap to read more</small></span></a>" .
+            "<button type='button' class='ap-x' aria-label='Dismiss'>&times;</button></div>";
         echo <<<JS
 <script>
 (function () {
-    var p = document.getElementById('ann-pop'), last = $base;
+    var p = document.getElementById('ann-pop'), last = $base, kinds = $kinds, t;
     if (!p) return;
+    function hide() {
+        p.classList.remove('show');
+        setTimeout(function () { if (!p.classList.contains('show')) p.hidden = true; }, 400);
+    }
+    function show(a) {
+        clearTimeout(t);
+        p.className = 'ann-pop k-' + a.kind;
+        p.querySelector('.ap-tag').textContent = kinds[a.kind] || 'Notice';
+        p.querySelector('.ap-t').textContent = a.title;
+        p.querySelector('.ap-msg').textContent = a.body || '';
+        p.hidden = false;
+        void p.offsetWidth;
+        p.classList.add('show');
+    }
     function check() {
         if (document.hidden) return;
         fetch('$api', {cache: 'no-store', credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (a) {
-            if (a && a.id > last) {
-                last = a.id;
-                p.className = 'ann-pop k-' + a.kind;
-                p.querySelector('b').textContent = a.title;
-                p.hidden = false;
-            }
+            if (a && a.id > last) { last = a.id; show(a); }
         }).catch(function () {});
     }
+    p.querySelector('.ap-x').addEventListener('click', hide);
     setInterval(check, 10000);
     document.addEventListener('visibilitychange', check);
 })();
