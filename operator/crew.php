@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (strlen($addr) < 2 || strlen($addr) > 160) $err = 'Enter the address.';
     elseif (!preg_match('/^[0-9+\-\s()]{7,25}$/', $con)) $err = 'Enter a valid contact number.';
     elseif ($bad) $err = $bad;
-    elseif (count(array_filter(array_slice($crew, 1), fn($c) => $c['name'] !== '')) < 1) $err = 'Add at least 1 crew member besides the boat captain.';
+    elseif (count(array_filter(array_slice($crew, 2), fn($c) => $c['name'] !== '')) < 1) $err = 'Add at least 1 crew member (Crew 3 or 4) besides the boat captain and the motorman.';
     else {
         crew_table();
         set_status($m['id'], 'Inspection');   // creates the trip; the PCG inspects the boat, then puts it on queue
@@ -77,7 +77,7 @@ page_head('Crew list', 'operator');
         </section>
         <section class="crew-col">
             <h3 class="crew-h">Crew</h3>
-            <p class="muted crew-note">The boat captain and at least 1 more crew member are required.</p>
+            <p class="muted crew-note">The boat captain is required, and so is at least 1 crew member besides the captain and the motorman.</p>
             <?php foreach ($roles as $i => $role): ?>
                 <div class="crewrow">
                     <span class="crew-pos"><?= $i + 1 ?> &middot; <?= ucwords(strtolower($role)) ?></span>
@@ -93,19 +93,19 @@ page_head('Crew list', 'operator');
     </div>
 </form>
 <script>
-    // at least 1 crew member besides the boat captain (the server checks it too)
+    // at least 1 crew member (Crew 3 or 4) besides the boat captain and the motorman (the server checks it too)
     (function() {
         var f = document.querySelector('.crewform');
         if (!f) return;
         f.addEventListener('submit', function(e) {
             var n = f.querySelectorAll('input[name="cname[]"]'),
                 ok = false;
-            for (var i = 1; i < n.length; i++)
+            for (var i = 2; i < n.length; i++)
                 if (n[i].value.trim()) ok = true;
             if (!ok) {
                 e.preventDefault();
-                n[1].setCustomValidity('Add at least 1 crew member besides the boat captain.');
-                n[1].reportValidity();
+                n[2].setCustomValidity('Add at least 1 crew member besides the boat captain and the motorman.');
+                n[2].reportValidity();
             }
         });
         f.addEventListener('input', function() {
