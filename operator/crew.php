@@ -62,32 +62,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 page_head('Crew list', 'operator');
 ?>
 <h1>Crew list</h1>
-<p class="lead">Fill this in first. The PCG will inspect your boat, then put it on the queue. This is added to the passenger manifest.</p>
+<p class="lead">The PCG will inspect your boat before putting it on queue</p>
 <?php if ($err) echo "<div class='alert bad' role='alert'>" . e($err) . "</div>"; ?>
-<form method="post" class="crewform crew2" autocomplete="off">
-    <section class="card crew-box">
-        <h3 class="crew-h">Details</h3>
-        <div class="crew-top">
-            <label>Motorbanca<input value="<?= e($m['motorbanca_name']) ?>" readonly></label>
-            <label>Date<input value="<?= date('F j, Y') ?>" readonly></label>
-            <label>Address<input name="address" maxlength="160" value="<?= e($addr) ?>" required></label>
-            <label>Contact No.<input name="contact" type="tel" inputmode="tel" maxlength="25" value="<?= e($con) ?>" required></label>
-        </div>
-    </section>
-    <section class="card crew-box">
-        <h3 class="crew-h">Crew</h3>
-        <p class="muted crew-note">The boat captain and at least 1 more crew member are required.</p>
-        <?php foreach ($roles as $i => $role): ?>
-            <div class="crewrow">
-                <span class="crew-pos"><?= $i + 1 ?> &middot; <?= ucwords(strtolower($role)) ?></span>
-                <input name="cname[]" maxlength="80" placeholder="Full name" value="<?= e($crew[$i]['name'] ?? '') ?>" <?= $i === 0 ? ' required' : '' ?>>
-                <input name="cage[]" type="number" inputmode="numeric" min="0" max="120" placeholder="Age" value="<?= e($crew[$i]['age'] ?? '') ?>" <?= $i === 0 ? ' required' : '' ?>>
+<form method="post" class="card crewform crew2" autocomplete="off">
+    <div class="crew-cols">
+        <section class="crew-col">
+            <h3 class="crew-h">Details</h3>
+            <div class="crew-top">
+                <label>Motorbanca<input value="<?= e($m['motorbanca_name']) ?>" readonly></label>
+                <label>Date<input value="<?= date('F j, Y') ?>" readonly></label>
+                <label>Address<input name="address" maxlength="160" value="<?= e($addr) ?>" required></label>
+                <label>Contact No.<input name="contact" type="tel" inputmode="tel" maxlength="25" value="<?= e($con) ?>" required></label>
             </div>
-        <?php endforeach; ?>
-    </section>
+        </section>
+        <section class="crew-col">
+            <h3 class="crew-h">Crew</h3>
+            <p class="muted crew-note">The boat captain and at least 1 more crew member are required.</p>
+            <?php foreach ($roles as $i => $role): ?>
+                <div class="crewrow">
+                    <span class="crew-pos"><?= $i + 1 ?> &middot; <?= ucwords(strtolower($role)) ?></span>
+                    <input name="cname[]" maxlength="80" placeholder="Full name" value="<?= e($crew[$i]['name'] ?? '') ?>" <?= $i === 0 ? ' required' : '' ?>>
+                    <input name="cage[]" type="number" inputmode="numeric" min="0" max="120" placeholder="Age" value="<?= e($crew[$i]['age'] ?? '') ?>" <?= $i === 0 ? ' required' : '' ?>>
+                </div>
+            <?php endforeach; ?>
+        </section>
+    </div>
     <div class="crew-act">
-        <a class="btn ghost" href="dashboard.php">Cancel</a>
-        <button class="btn">Submit for inspection</button>
+        <a class="btn sm ghost" href="dashboard.php">Cancel</a>
+        <button class="btn sm">Submit for inspection</button>
     </div>
 </form>
 <script>
