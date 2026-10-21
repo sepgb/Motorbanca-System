@@ -178,7 +178,7 @@ if (!function_exists('ann_latest')) {
             $go = e(BASE . '/' . $who . '/announcements.php');
             echo "<div class='ann-pop' id='ann-pop' role='alert' hidden><a class='ap-main' href='$go'>" .
                 "<span class='ap-ic'><svg viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10.3 21a1.9 1.9 0 0 0 3.4 0'/></svg></span>" .
-                "<span class='ap-tx'><span class='ap-tag'></span><b class='ap-t'></b><span class='ap-msg'></span><small class='ap-go'>Tap to read more</small></span></a>" .
+                "<span class='ap-tx'><b class='ap-t'></b><span class='ap-msg'></span><small class='ap-go'>Tap to read more</small></span></a>" .
                 "<button type='button' class='ap-x' aria-label='Dismiss'>&times;</button></div>";
         }
         echo <<<JS
@@ -191,7 +191,6 @@ if (!function_exists('ann_latest')) {
     }
     function show(a) {
         p.className = 'ann-pop k-' + a.kind;
-        p.querySelector('.ap-tag').textContent = kinds[a.kind] || 'Notice';
         p.querySelector('.ap-t').textContent = a.title;
         p.querySelector('.ap-msg').textContent = a.body || '';
         p.hidden = false;

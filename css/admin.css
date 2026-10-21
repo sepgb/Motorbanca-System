@@ -6253,3 +6253,66 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     top: -4px;
     right: 2px
 }
+
+/* Passenger and operator: no alert type label. The alert icon and the title take the color of the alert type. */
+body.r-operator .ann-tag,
+body.r-public .ann-tag,
+.ann-pop .ap-tag {
+    display: none !important
+}
+
+body.r-operator .ann-m.unread.k-danger h3,
+body.r-public .ann-m.unread.k-danger h3,
+body.r-operator .ann-mk.k-danger h3,
+body.r-public .ann-mk.k-danger h3,
+.ann-pop.k-danger .ap-t {
+    color: #b42318
+}
+
+body.r-operator .ann-m.unread.k-danger h3::before,
+body.r-public .ann-m.unread.k-danger h3::before {
+    background: #d92d20
+}
+
+body.r-operator .ann-m.unread.k-warn h3,
+body.r-public .ann-m.unread.k-warn h3,
+body.r-operator .ann-mk.k-warn h3,
+body.r-public .ann-mk.k-warn h3,
+.ann-pop.k-warn .ap-t {
+    color: #b54708
+}
+
+body.r-operator .ann-m.unread.k-warn h3::before,
+body.r-public .ann-m.unread.k-warn h3::before {
+    background: #f59e0b
+}
+
+body.r-operator .ann-m.unread.k-ok h3,
+body.r-public .ann-m.unread.k-ok h3,
+body.r-operator .ann-mk.k-ok h3,
+body.r-public .ann-mk.k-ok h3,
+.ann-pop.k-ok .ap-t {
+    color: #15803d
+}
+
+body.r-operator .ann-m.unread.k-ok h3::before,
+body.r-public .ann-m.unread.k-ok h3::before {
+    background: #16a34a
+}
+
+body.r-operator .ann-m.unread.k-info h3,
+body.r-public .ann-m.unread.k-info h3,
+body.r-operator .ann-mk.k-info h3,
+body.r-public .ann-mk.k-info h3,
+.ann-pop.k-info .ap-t {
+    color: #1d4ed8
+}
+
+body.r-operator .ann-m.unread.k-info h3::before,
+body.r-public .ann-m.unread.k-info h3::before {
+    background: #3b82f6
+}
+
+.ann-pop .ap-t {
+    color: #1d4ed8
+}
