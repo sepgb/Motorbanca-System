@@ -6381,3 +6381,39 @@ body.r-public .btabs .nbadge {
     font-size: .62rem;
     font-weight: 800
 }
+
+/* operator Passengers page, no active trip: the message sits in the very middle of the screen, with no box */
+body.r-operator .mp-empty {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0 24px;
+    background: none;
+    color: #6f655d;
+    font-size: 1.05rem;
+    font-weight: 500;
+    text-align: center;
+    pointer-events: none
+}
+
+/* operator Home: the M/B name and the "Cluster · Owner" line, and "Boat status" and its status tag, sit as close as on the Passengers page */
+@media (min-width:1000px) {
+    body.r-operator .main>h1:has(+ .lead) {
+        margin-bottom: 0 !important
+    }
+
+    body.r-operator .main>h1+.lead {
+        margin-top: 0 !important;
+        line-height: 1.25
+    }
+}
+
+body.r-operator .opgrid .card>h3:has(+ [data-live] .optag) {
+    margin-bottom: 0
+}
+
+body.r-operator .opgrid [data-live]>.optag:first-child {
+    margin-top: 0
+}
