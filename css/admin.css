@@ -6358,3 +6358,19 @@ body.r-public .ann-m.unread.k-info h3::before {
     top: -3px;
     right: 3px
 }
+
+/* Passenger on phones: the unread count is a round badge on the top right corner of the bell, overlapping the icon */
+body.r-public .btabs .nbadge {
+    top: -5px;
+    right: -6px;
+    box-sizing: border-box;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 3px;
+    border: 1.5px solid #fff;
+    border-radius: 50%;
+    background: #d92d20;
+    box-shadow: 0 1px 3px #b4231855;
+    font-size: .62rem;
+    font-weight: 800
+}
