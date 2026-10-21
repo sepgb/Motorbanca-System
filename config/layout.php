@@ -30,7 +30,7 @@ function page_head($title, $role = 'public')
     if ($role === 'admin' || $role === 'operator') {
         $me = basename($_SERVER['PHP_SELF']);
         $dir = $role === 'operator' ? 'operator' : 'admin';
-        $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers', 'announcements.php' => 'Alerts', 'trips.php' => 'Trip History']
+        $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers', 'announcements.php' => 'Alert', 'trips.php' => 'History']
             : ['dashboard.php' => 'Dashboard', 'queue.php' => 'Queue', 'motorbancas.php' => 'Register', 'announcements.php' => 'Alert', 'trip' . 's.php' => 'History'];
         // icons for the nav (top pills on desktop, bottom bar on phones / tablets)
         $tabIco = [
@@ -60,7 +60,7 @@ JS;
         echo "</nav>$pillJs<div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span>
 <a class='ibtn' href='$b/logout.php' title='Log out' aria-label='Log out'>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</a></div></header>";
         // phone / tablet: sticky bottom tab bar (the top pills are hidden below 1000px)
-        $short = ['announcements.php' => 'Alerts', 'trips.php' => 'History'];
+        $short = ['announcements.php' => 'Alert', 'trips.php' => 'History'];
         // phone / tablet bottom bar for operator and admin: icons only (the name stays as aria-label), all tabs the same size, Home like the others
         $order = $role === 'operator' ? ['dashboard.php', 'manifest.php', 'announcements.php', 'trips.php'] : array_keys($links);   // admin: the same order as the top menu
         echo "<nav class='btabs btabs-pub' aria-label='Main'>";
