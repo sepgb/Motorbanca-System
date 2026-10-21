@@ -81,7 +81,6 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList
 })();</script>
 JS;
         echo "<main class='main'>";
-        if ($role === 'operator' && $me === 'dashboard.php') echo ann_strip($b . '/operator/announcements.php');
     } else {
         $me = basename($_SERVER['PHP_SELF']);
         $plinks = ['index.php' => 'Live Queue', 'fares.php' => 'Fares', 'track.php' => 'Track Ride', 'announcements.php' => 'Notifications', 'profile.php' => 'Profile'];
@@ -93,7 +92,6 @@ JS;
         echo "<nav class='btabs btabs-pub' aria-label='Main'>";
         foreach (['fares.php', 'track.php', 'index.php', 'announcements.php', 'profile.php'] as $f) echo "<a href='$b/passenger/$f' aria-label='" . e($plinks[$f]) . "'" . ($f === 'index.php' ? " data-q='1'" : '') . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i></a>";
         echo "</nav><main class='main'>";
-        if ($me === 'index.php') echo ann_strip($b . '/passenger/announcements.php');
         if ($me === 'index.php') echo "<h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", " . e(pax_first_name()) . "</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><button type='button' class='scan-btn' id='scan-open' aria-label='Scan QR code' title='Scan QR code'>" . ico('<path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2M7 12h10"/>') . "</button><i class='dot'></i>Live queue</h2>";
     }
 }
