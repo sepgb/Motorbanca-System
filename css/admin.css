@@ -6321,8 +6321,7 @@ body.r-public .ann-m.unread.k-info h3::before {
 @media (min-width:700px) and (max-width:1439px) {
     body.r-operator .logo span small {
         display: block;
-        max-width: 125px;
-        white-space: normal;
+        white-space: nowrap;
         line-height: 1.15
     }
 
@@ -6342,4 +6341,20 @@ body.r-public .ann-m.unread.k-info h3::before {
 /* The new-announcement pop-up sits above the header and the bottom bar (it was hidden behind them on tablets) */
 .ann-pop {
     z-index: 1150
+}
+
+/* Smaller unread count on the notification icon */
+.nbadge {
+    top: -5px;
+    right: -7px;
+    min-width: 9px;
+    height: 9px;
+    padding: 0 2px;
+    border-width: 1px;
+    font-size: .45rem
+}
+
+.nbadge.nb-end {
+    top: -3px;
+    right: 3px
 }

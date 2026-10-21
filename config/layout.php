@@ -30,7 +30,7 @@ function page_head($title, $role = 'public')
     if ($role === 'admin' || $role === 'operator') {
         $me = basename($_SERVER['PHP_SELF']);
         $dir = $role === 'operator' ? 'operator' : 'admin';
-        $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers', 'trips.php' => 'Trip History', 'announcements.php' => 'Announcements']
+        $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers', 'announcements.php' => 'Announcements', 'trips.php' => 'Trip History']
             : ['dashboard.php' => 'Dashboard', 'queue.php' => 'Queue', 'motorbancas.php' => 'Register', 'announcements.php' => 'Alert', 'trip' . 's.php' => 'History'];
         // icons for the nav (top pills on desktop, bottom bar on phones / tablets)
         $tabIco = [
