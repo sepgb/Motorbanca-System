@@ -58,6 +58,19 @@ function inspection_html()
     }
     return $h . "</section>";
 }
+// Admin notice while travel is suspended and boats are still on queue: they are not departed automatically,
+// so the admin must depart and check them (MDSD and PDIC) right away. Shown on the admin dashboard and queue pages.
+function susp_notice_html()
+{
+    if (!travel_suspended()) return;
+    $rows = live_rows();
+    $n = 0;
+    foreach (array_unique(array_column($rows, 'cluster_id')) as $cid) {
+        [$d, $q] = split_cluster($rows, $cid);
+        if (!$d && $q) $n++;   // a boat is ON QUEUE in this cluster
+    }
+    if ($n) echo "<div class='alert bad susp-note'><b>Travel is suspended.</b> Depart and check " . ($n === 1 ? 'the boat' : "the $n boats") . " on queue right now (MDSD and PDIC).</div>";
+}
 // Live queue, grouped by cluster (used on passenger page and admin pages).
 function render_live($admin = false)
 {
@@ -225,8 +238,8 @@ function set_status($mid, $st)
         $x = $pdo->prepare("SELECT 1 FROM trips WHERE motorbanca_id=? AND status IN ('Inspection','Queued')");
         $x->execute([$mid]);
         if (!$x->fetch()) $pdo->prepare(sprintf($new, '', 'Inspection', ''))->execute([$mid]);
-    } elseif ($st === 'Not Queued') {  // inspection rejected: the waiting trip is cancelled
-        $pdo->prepare("UPDATE trips SET status='Cancelled' WHERE motorbanca_id=? AND status='Inspection'")->execute([$mid]);
+    } elseif ($st === 'Not Queued') {  // inspection rejected, or travel suspended: the waiting or queued trip is cancelled
+        $pdo->prepare("UPDATE trips SET status='Cancelled' WHERE motorbanca_id=? AND status IN ('Inspection','Queued')")->execute([$mid]);
     } elseif ($st === 'Queued') {      // PCG approved the inspection (or joining directly): the boat joins the queue
         $x = $pdo->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status='Queued'");
         $x->execute([$mid]);

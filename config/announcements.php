@@ -133,34 +133,67 @@ if (!function_exists('susp_ensure')) {
         }
         return $v;
     }
-    // A boat leaves the queue and its waiting trip is cancelled (it never departs).
-    function cancel_queued_trip($mid)
-    {
-        $pdo = db();
-        $pdo->beginTransaction();
-        $pdo->prepare("UPDATE motorbancas SET status='Not Queued' WHERE id=?")->execute([$mid]);
-        $pdo->prepare("UPDATE trips SET status='Cancelled' WHERE motorbanca_id=? AND status IN ('Queued','Inspection')")->execute([$mid]);
-        $pdo->commit();
-    }
-    // Admin posted a suspension. The boat that is ON QUEUE in each cluster is NOT departed here: the PCG must depart and
-    // check it (MDSD and PDIC) right away. Boats in NEXT TRIP / WAITING and boats waiting for inspection are cancelled.
+    // Admin posted a suspension: the boat that is ON QUEUE in each cluster is NOT departed (the admin departs and checks it
+    // right away); every other queued boat (next trip, waiting) and every boat waiting for inspection is cancelled.
+    // Returns [boats still on queue, boats cancelled].
     function suspend_all_boats()
     {
-        $rows = live_rows();
-        foreach (db()->query("SELECT id FROM clusters")->fetchAll() as $c) {
-            [$dep, $q] = split_cluster($rows, $c['id']);
-            foreach ($q as $i => $b) if ($dep || $i > 0) cancel_queued_trip((int)$b['id']);   // keep only the boat that is ON QUEUE
+        $keep = [];
+        foreach (db()->query("SELECT id FROM clusters")->fetchAll(PDO::FETCH_COLUMN) as $cid)
+            if ($id = on_queue_id($cid)) $keep[] = (int)$id;
+        $cancelled = 0;
+        foreach (db()->query("SELECT id FROM motorbancas WHERE status IN ('Queued','Inspection') ORDER BY queued_at, id")->fetchAll(PDO::FETCH_COLUMN) as $id) {
+            if (in_array((int)$id, $keep, true)) continue;
+            set_status((int)$id, 'Not Queued');
+            $cancelled++;
         }
-        foreach (db()->query("SELECT id FROM motorbancas WHERE status='Inspection'")->fetchAll() as $b) set_status((int)$b['id'], 'Not Queued');
+        return [count($keep), $cancelled];
     }
-    // Red notice for the admin while travel is suspended and a boat is still on queue (it has to be departed and checked).
-    function susp_notice_html()
+}
+
+// ---- Live pop-up: a new announcement appears on operator and passenger pages without reloading ----
+if (!function_exists('ann_latest')) {
+    // The newest announcement (id, kind, title) as an array, or null. Polled by api/live.php?v=ann.
+    function ann_latest()
     {
-        if (!travel_suspended()) return;
-        $r = db()->query("SELECT m.motorbanca_name n, c.name cn FROM motorbancas m JOIN clusters c ON c.id=m.cluster_id WHERE m.status='Queued' ORDER BY m.queued_at, m.id")->fetchAll();
-        if (!$r) return;
-        $names = implode(', ', array_map(fn($x) => '<b>' . e($x['n']) . '</b> (' . e($x['cn']) . ')', $r));
-        echo "<div class='alert bad susp-note' style='margin:0 0 18px'><b>Travel is suspended.</b> Depart and check the MDSD and PDIC of the boat still on queue right away: $names. <a href='" . BASE . "/admin/queue.php' style='font-weight:700;color:inherit;text-decoration:underline'>Go to the queue &rsaquo;</a></div>";
+        susp_ensure();
+        try {
+            $a = db()->query("SELECT id, kind, title FROM announcements ORDER BY id DESC LIMIT 1")->fetch();
+        } catch (PDOException $x) {
+            return null;
+        }
+        return $a ? ['id' => (int)$a['id'], 'kind' => isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info', 'title' => $a['title']] : null;
+    }
+    // $who is 'operator' or 'passenger' (the folder of the page that opens when the pop-up is tapped).
+    function ann_live_html($who)
+    {
+        if (basename($_SERVER['PHP_SELF'] ?? '') === 'announcements.php') return;   // already on the list
+        $now = ann_latest();
+        $base = $now ? $now['id'] : 0;   // only announcements newer than this one pop up
+        $go = e(BASE . '/' . $who . '/announcements.php');
+        $api = e(BASE . '/api/live.php?v=ann');
+        echo "<a class='ann-pop' id='ann-pop' href='$go' hidden><i></i><span><b></b><small>Tap to view the announcement</small></span></a>";
+        echo <<<JS
+<script>
+(function () {
+    var p = document.getElementById('ann-pop'), last = $base;
+    if (!p) return;
+    function check() {
+        if (document.hidden) return;
+        fetch('$api', {cache: 'no-store', credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (a) {
+            if (a && a.id > last) {
+                last = a.id;
+                p.className = 'ann-pop k-' + a.kind;
+                p.querySelector('b').textContent = a.title;
+                p.hidden = false;
+            }
+        }).catch(function () {});
+    }
+    setInterval(check, 10000);
+    document.addEventListener('visibilitychange', check);
+})();
+</script>
+JS;
     }
 }
 

@@ -5980,3 +5980,84 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
 .thf select {
     margin-top: 0
 }
+
+/* Admin queue: notice while travel is suspended and boats are still on queue */
+.susp-note {
+    grid-column: 1 / -1;
+    margin: 0 0 16px
+}
+
+/* Pop-up for a new announcement (operator and passenger pages) */
+.ann-pop {
+    position: fixed;
+    top: max(14px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: min(92vw, 420px);
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid var(--ln);
+    border-left: 5px solid #3b82f6;
+    border-radius: 16px;
+    box-shadow: 0 14px 34px -12px #1f1a1766;
+    color: var(--tx);
+    text-decoration: none
+}
+
+.ann-pop[hidden] {
+    display: none
+}
+
+.ann-pop.k-danger {
+    border-left-color: #d92d20
+}
+
+.ann-pop.k-warn {
+    border-left-color: #f59e0b
+}
+
+.ann-pop.k-ok {
+    border-left-color: #16a34a
+}
+
+.ann-pop i {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3b82f6
+}
+
+.ann-pop.k-danger i {
+    background: #d92d20
+}
+
+.ann-pop.k-warn i {
+    background: #f59e0b
+}
+
+.ann-pop.k-ok i {
+    background: #16a34a
+}
+
+.ann-pop span {
+    display: flex;
+    flex-direction: column;
+    min-width: 0
+}
+
+.ann-pop b {
+    font-size: .95rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.ann-pop small {
+    color: var(--mut);
+    font-size: .78rem
+}

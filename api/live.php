@@ -8,7 +8,10 @@ $role = $_SESSION['role'] ?? '';
 if ($v === 'stats' && $role === 'admin') stats_html();
 elseif ($v === 'fleet' && $role === 'admin') fleet_html();
 elseif ($v === 'susp' && $role === 'admin') susp_notice_html();
-elseif ($v === 'op' && $role === 'operator') {
+elseif ($v === 'ann') {
+    header('Content-Type: application/json');
+    echo json_encode(ann_latest());
+} elseif ($v === 'op' && $role === 'operator') {
     $m = my_mb();
     if ($m) op_card($m);
 } elseif ($v === 'admin' && $role === 'admin') render_live(true);
