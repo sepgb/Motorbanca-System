@@ -6316,3 +6316,30 @@ body.r-public .ann-m.unread.k-info h3::before {
 .ann-pop .ap-t {
     color: #1d4ed8
 }
+
+/* Operator on tablets (iPad): the BATIS subtitle and the date show in the header, like on a computer */
+@media (min-width:700px) and (max-width:1439px) {
+    body.r-operator .logo span small {
+        display: block;
+        max-width: 125px;
+        white-space: normal;
+        line-height: 1.15
+    }
+
+    body.r-operator .datechip {
+        display: flex;
+        gap: 8px;
+        height: 40px;
+        padding: 0 14px;
+        font-size: .8rem
+    }
+
+    body.r-operator .dt-date {
+        display: inline
+    }
+}
+
+/* The new-announcement pop-up sits above the header and the bottom bar (it was hidden behind them on tablets) */
+.ann-pop {
+    z-index: 1150
+}

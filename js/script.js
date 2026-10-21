@@ -24,9 +24,12 @@ setInterval(function () {
   if (!d || !t) return;
   var D = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     M = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var short = window.matchMedia('(max-width:1399px)');
   function tick() {
     var n = new Date(), h = n.getHours();
-    d.textContent = D[n.getDay()] + ', ' + n.getDate() + ' ' + M[n.getMonth()] + ' ' + n.getFullYear();
+    // narrower screens (tablets) get a shorter date so the header still fits: "Wed, 21 Oct 2026"
+    d.textContent = short.matches ? D[n.getDay()].slice(0, 3) + ', ' + n.getDate() + ' ' + M[n.getMonth()].slice(0, 3) + ' ' + n.getFullYear()
+      : D[n.getDay()] + ', ' + n.getDate() + ' ' + M[n.getMonth()] + ' ' + n.getFullYear();
     t.textContent = ((h % 12) || 12) + ':' + ('0' + n.getMinutes()).slice(-2) + ' ' + (h < 12 ? 'AM' : 'PM');
   }
   tick(); setInterval(tick, 1000);
