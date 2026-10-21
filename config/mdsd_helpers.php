@@ -82,7 +82,7 @@ function mdsd_get($tid)
 // Everything on the form that fills in by itself, as ready-to-print text. Returns null if the trip does not exist.
 function mdsd_data($tid)
 {
-    $s = db()->prepare("SELECT t.id, t.trip_date, t.departure_time, m.motorbanca_name, m.owner_name, m.capacity, c.name cluster
+    $s = db()->prepare("SELECT t.id, t.trip_date, t.departure_time, t.cluster_id, m.motorbanca_name, m.owner_name, m.capacity, c.name cluster
         FROM trips t JOIN motorbancas m ON m.id=t.motorbanca_id JOIN clusters c ON c.id=t.cluster_id WHERE t.id=?");
     $s->execute([(int)$tid]);
     $t = $s->fetch();
@@ -94,14 +94,18 @@ function mdsd_data($tid)
     $ps = db()->prepare("SELECT age, barangay FROM passengers WHERE trip_id=?");
     $ps->execute([$t['id']]);
     $adults = $children = $infants = 0;
-    $dest = [];
     foreach ($ps->fetchAll() as $p) {
         $age = (int)$p['age'];
         if ($age <= MDSD_INFANT_MAX) $infants++;
         elseif ($age <= MDSD_CHILD_MAX) $children++;
         else $adults++;
-        $dest[$p['barangay']] = true;
     }
+    // "sail for": the barangays of the boat's cluster, with "and" before the last one (Kasile and Bombong / A, B and C)
+    $bq = db()->prepare("SELECT name FROM barangays WHERE cluster_id=? ORDER BY id");
+    $bq->execute([$t['cluster_id']]);
+    $brgys = $bq->fetchAll(PDO::FETCH_COLUMN);
+    $lastBrgy = array_pop($brgys);
+    $sailFor = $brgys ? implode(', ', $brgys) . ' and ' . $lastBrgy : (string)$lastBrgy;
     $when = strtotime($t['departure_time'] ?: ($t['trip_date'] . ' 00:00:00'));
     return [
         'vessel' => $t['motorbanca_name'],
@@ -110,7 +114,7 @@ function mdsd_data($tid)
         'station' => MDSD_STATION,
         'master' => $master,
         'berthed' => MDSD_BERTH,
-        'sail_for' => $dest ? implode(', ', array_keys($dest)) : $t['cluster'],
+        'sail_for' => $sailFor !== '' ? $sailFor : $t['cluster'],
         'hrs' => $t['departure_time'] ? date('H:i', $when) : '',
         'capacity' => (string)(int)$t['capacity'],
         'total' => (string)($adults + $children + $infants),
