@@ -151,43 +151,45 @@ if (!function_exists('susp_ensure')) {
     }
 }
 
-// ---- Live pop-up: a new announcement appears on operator and passenger pages without reloading ----
+// ---- Live pop-up and unread count: a new announcement appears on operator and passenger pages without reloading ----
 if (!function_exists('ann_latest')) {
-    // The newest announcement (id, kind, title, message) as an array, or null. Polled by api/live.php?v=ann.
+    // The newest announcement (id, kind, title, message) plus the ids of the latest 50, as an array, or null. Polled by api/live.php?v=ann.
     function ann_latest()
     {
         susp_ensure();
         try {
             $a = db()->query("SELECT id, kind, title, body FROM announcements ORDER BY id DESC LIMIT 1")->fetch();
+            $ids = array_map('intval', db()->query("SELECT id FROM announcements ORDER BY id DESC LIMIT 50")->fetchAll(PDO::FETCH_COLUMN));
         } catch (PDOException $x) {
             return null;
         }
-        return $a ? ['id' => (int)$a['id'], 'kind' => isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info', 'title' => $a['title'], 'body' => $a['body']] : null;
+        return $a ? ['id' => (int)$a['id'], 'kind' => isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info', 'title' => $a['title'], 'body' => $a['body'], 'ids' => $ids] : null;
     }
     // $who is 'operator' or 'passenger' (the folder of the page that opens when the pop-up is tapped).
+    // Also keeps the red unread count on the notification icon: unread = announcements this device has not opened yet.
     function ann_live_html($who)
     {
-        if (basename($_SERVER['PHP_SELF'] ?? '') === 'announcements.php') return;   // already on the list
         $now = ann_latest();
         $base = $now ? $now['id'] : 0;   // only announcements newer than this one pop up
-        $go = e(BASE . '/' . $who . '/announcements.php');
-        $api = e(BASE . '/api/live.php?v=ann');
+        $ids = json_encode($now ? $now['ids'] : []);
         $kinds = json_encode(ANN_KINDS);
-        echo "<div class='ann-pop' id='ann-pop' role='alert' hidden><a class='ap-main' href='$go'>" .
-            "<span class='ap-ic'><svg viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10.3 21a1.9 1.9 0 0 0 3.4 0'/></svg></span>" .
-            "<span class='ap-tx'><span class='ap-tag'></span><b class='ap-t'></b><span class='ap-msg'></span><small class='ap-go'>Tap to read more</small></span></a>" .
-            "<button type='button' class='ap-x' aria-label='Dismiss'>&times;</button></div>";
+        $api = e(BASE . '/api/live.php?v=ann');
+        if (basename($_SERVER['PHP_SELF'] ?? '') !== 'announcements.php') {   // no pop-up on the list itself
+            $go = e(BASE . '/' . $who . '/announcements.php');
+            echo "<div class='ann-pop' id='ann-pop' role='alert' hidden><a class='ap-main' href='$go'>" .
+                "<span class='ap-ic'><svg viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10.3 21a1.9 1.9 0 0 0 3.4 0'/></svg></span>" .
+                "<span class='ap-tx'><span class='ap-tag'></span><b class='ap-t'></b><span class='ap-msg'></span><small class='ap-go'>Tap to read more</small></span></a>" .
+                "<button type='button' class='ap-x' aria-label='Dismiss'>&times;</button></div>";
+        }
         echo <<<JS
 <script>
 (function () {
-    var p = document.getElementById('ann-pop'), last = $base, kinds = $kinds, t;
-    if (!p) return;
+    var p = document.getElementById('ann-pop'), last = $base, kinds = $kinds, ids = $ids;
     function hide() {
         p.classList.remove('show');
         setTimeout(function () { if (!p.classList.contains('show')) p.hidden = true; }, 400);
     }
     function show(a) {
-        clearTimeout(t);
         p.className = 'ann-pop k-' + a.kind;
         p.querySelector('.ap-tag').textContent = kinds[a.kind] || 'Notice';
         p.querySelector('.ap-t').textContent = a.title;
@@ -196,13 +198,31 @@ if (!function_exists('ann_latest')) {
         void p.offsetWidth;
         p.classList.add('show');
     }
+    // red count on the notification icon: announcements this device has not opened yet (9+ above nine)
+    function render() {
+        var R = [];
+        try { R = JSON.parse(localStorage.getItem('ann_read_v1')) || []; } catch (e) {}
+        if (!Array.isArray(R)) R = [];
+        var n = ids.filter(function (i) { return R.indexOf(String(i)) < 0; }).length;
+        document.querySelectorAll(".pills a[href*='announcements.php'], .btabs a[href*='announcements.php']").forEach(function (a) {
+            var b = a.querySelector('.nbadge');
+            if (!b) { var sv = a.querySelector('svg'), host = a; if (sv) { host = document.createElement('span'); host.className = 'nb-wrap'; sv.parentNode.insertBefore(host, sv); host.appendChild(sv); } b = document.createElement('span'); b.className = 'nbadge' + (sv ? '' : ' nb-end'); host.classList.add('has-nb'); host.appendChild(b); }
+            b.textContent = n > 9 ? '9+' : n;
+            b.hidden = !n;
+            b.setAttribute('aria-label', n + ' unread');
+        });
+    }
     function check() {
         if (document.hidden) return;
         fetch('$api', {cache: 'no-store', credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (a) {
-            if (a && a.id > last) { last = a.id; show(a); }
+            ids = a && a.ids ? a.ids : [];
+            render();
+            if (p && a && a.id > last) { last = a.id; show(a); }
         }).catch(function () {});
     }
-    p.querySelector('.ap-x').addEventListener('click', hide);
+    if (p) p.querySelector('.ap-x').addEventListener('click', hide);
+    render();
+    setInterval(render, 1000);   // picks up a notification being opened on this page
     setInterval(check, 10000);
     document.addEventListener('visibilitychange', check);
 })();

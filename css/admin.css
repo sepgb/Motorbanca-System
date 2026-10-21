@@ -6207,3 +6207,49 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     width: 16px;
     height: 16px
 }
+
+/* Red unread count on the notification icon (operator and passenger navigation): a small near-circle on the top right corner of the icon, overlapping it */
+.has-nb {
+    position: relative;
+    overflow: visible
+}
+
+.nb-wrap {
+    display: inline-flex;
+    flex: none
+}
+
+.nb-wrap svg {
+    display: block
+}
+
+.nbadge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    box-sizing: content-box;
+    min-width: 12px;
+    height: 12px;
+    padding: 0 2px;
+    border: 1.5px solid #fff;
+    border-radius: 999px;
+    background: #d92d20;
+    color: #fff;
+    font-style: normal;
+    font-size: .54rem;
+    font-weight: 800;
+    line-height: 1;
+    pointer-events: none
+}
+
+.nbadge[hidden] {
+    display: none
+}
+
+.nbadge.nb-end {
+    top: -4px;
+    right: 2px
+}
