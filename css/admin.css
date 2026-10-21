@@ -4846,11 +4846,18 @@ body.r-public .main>h1:has(+ .lead) {
     stroke-width: 1.8
 }
 
-/* operator Passengers page (phones and tablets): the M/B name and its status tag sit close together */
-@media (max-width:999px) {
-    body.r-operator .main>h1:has(+ .optag) {
-        margin-bottom: 4px !important
-    }
+/* operator Passengers page (all screens): the M/B name and its status tag sit almost touching; the notice box fits its text */
+body.r-operator .main>h1:has(+ .optag) {
+    margin-bottom: 0 !important
+}
+
+body.r-operator .main>h1+.optag {
+    margin-top: 0 !important
+}
+
+body.r-operator .mp-alert {
+    width: fit-content;
+    max-width: 100%
 }
 
 /* phone bottom bar (passenger, operator, admin): the space you see between two icons is the same as the space from the screen edge to the first / last icon.
