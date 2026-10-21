@@ -6417,3 +6417,55 @@ body.r-operator .opgrid .card>h3:has(+ [data-live] .optag) {
 body.r-operator .opgrid [data-live]>.optag:first-child {
     margin-top: 0
 }
+
+/* New trip (Crew list): two separate cards across the full width, details on the left and crew on the right */
+.crewform.crew2 {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: minmax(0, 1fr);
+    max-width: none;
+    min-height: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none
+}
+
+.crew2 .crew-box {
+    margin: 0;
+    padding: 22px 24px 26px
+}
+
+.crew2 .crew-h {
+    margin: 0 0 14px !important;
+    font-size: 1.05rem
+}
+
+.crew2 .crew-top {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px
+}
+
+.crew2 .crew-note {
+    margin: -8px 0 4px;
+    font-size: .85rem
+}
+
+.crew2 .crewrow:first-of-type {
+    margin-top: 6px
+}
+
+.crew2 .crew-act {
+    margin-top: 2px
+}
+
+@media (min-width: 800px) {
+    .crewform.crew2 {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+        align-items: stretch
+    }
+
+    .crew2 .crew-act {
+        grid-column: 1 / -1
+    }
+}

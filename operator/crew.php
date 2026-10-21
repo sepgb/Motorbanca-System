@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (strlen($addr) < 2 || strlen($addr) > 160) $err = 'Enter the address.';
     elseif (!preg_match('/^[0-9+\-\s()]{7,25}$/', $con)) $err = 'Enter a valid contact number.';
     elseif ($bad) $err = $bad;
+    elseif (count(array_filter(array_slice($crew, 1), fn($c) => $c['name'] !== '')) < 1) $err = 'Add at least 1 crew member besides the boat captain.';
     else {
         crew_table();
         set_status($m['id'], 'Inspection');   // creates the trip; the PCG inspects the boat, then puts it on queue
@@ -63,24 +64,53 @@ page_head('Crew list', 'operator');
 <h1>Crew list</h1>
 <p class="lead">Fill this in first. The PCG will inspect your boat, then put it on the queue. This is added to the passenger manifest.</p>
 <?php if ($err) echo "<div class='alert bad' role='alert'>" . e($err) . "</div>"; ?>
-<form method="post" class="card crewform" autocomplete="off">
-    <div class="crew-top">
-        <label>Motorbanca<input value="<?= e($m['motorbanca_name']) ?>" readonly></label>
-        <label>Date<input value="<?= date('F j, Y') ?>" readonly></label>
-        <label>Address<input name="address" maxlength="160" value="<?= e($addr) ?>" required></label>
-        <label>Contact No.<input name="contact" type="tel" inputmode="tel" maxlength="25" value="<?= e($con) ?>" required></label>
-    </div>
-    <h3 class="crew-h">Crew</h3>
-    <?php foreach ($roles as $i => $role): ?>
-        <div class="crewrow">
-            <span class="crew-pos"><?= $i + 1 ?> &middot; <?= ucwords(strtolower($role)) ?></span>
-            <input name="cname[]" maxlength="80" placeholder="Full name" value="<?= e($crew[$i]['name'] ?? '') ?>" <?= $i === 0 ? ' required' : '' ?>>
-            <input name="cage[]" type="number" inputmode="numeric" min="0" max="120" placeholder="Age" value="<?= e($crew[$i]['age'] ?? '') ?>" <?= $i === 0 ? ' required' : '' ?>>
+<form method="post" class="crewform crew2" autocomplete="off">
+    <section class="card crew-box">
+        <h3 class="crew-h">Details</h3>
+        <div class="crew-top">
+            <label>Motorbanca<input value="<?= e($m['motorbanca_name']) ?>" readonly></label>
+            <label>Date<input value="<?= date('F j, Y') ?>" readonly></label>
+            <label>Address<input name="address" maxlength="160" value="<?= e($addr) ?>" required></label>
+            <label>Contact No.<input name="contact" type="tel" inputmode="tel" maxlength="25" value="<?= e($con) ?>" required></label>
         </div>
-    <?php endforeach; ?>
+    </section>
+    <section class="card crew-box">
+        <h3 class="crew-h">Crew</h3>
+        <p class="muted crew-note">The boat captain and at least 1 more crew member are required.</p>
+        <?php foreach ($roles as $i => $role): ?>
+            <div class="crewrow">
+                <span class="crew-pos"><?= $i + 1 ?> &middot; <?= ucwords(strtolower($role)) ?></span>
+                <input name="cname[]" maxlength="80" placeholder="Full name" value="<?= e($crew[$i]['name'] ?? '') ?>" <?= $i === 0 ? ' required' : '' ?>>
+                <input name="cage[]" type="number" inputmode="numeric" min="0" max="120" placeholder="Age" value="<?= e($crew[$i]['age'] ?? '') ?>" <?= $i === 0 ? ' required' : '' ?>>
+            </div>
+        <?php endforeach; ?>
+    </section>
     <div class="crew-act">
         <a class="btn ghost" href="dashboard.php">Cancel</a>
         <button class="btn">Submit for inspection</button>
     </div>
 </form>
+<script>
+    // at least 1 crew member besides the boat captain (the server checks it too)
+    (function() {
+        var f = document.querySelector('.crewform');
+        if (!f) return;
+        f.addEventListener('submit', function(e) {
+            var n = f.querySelectorAll('input[name="cname[]"]'),
+                ok = false;
+            for (var i = 1; i < n.length; i++)
+                if (n[i].value.trim()) ok = true;
+            if (!ok) {
+                e.preventDefault();
+                n[1].setCustomValidity('Add at least 1 crew member besides the boat captain.');
+                n[1].reportValidity();
+            }
+        });
+        f.addEventListener('input', function() {
+            f.querySelectorAll('input[name="cname[]"]').forEach(function(i) {
+                i.setCustomValidity('');
+            });
+        });
+    })();
+</script>
 <?php page_foot('operator');
