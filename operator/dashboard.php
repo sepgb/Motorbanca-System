@@ -40,4 +40,6 @@ page_head('Home', 'operator');
     <?php endif; ?>
   </section>
 </div>
+<h2 class="sub"><i class="dot"></i>Live queue</h2>
+<div class="clusters" data-live="<?= BASE ?>/api/live.php?v=passenger"><?php render_live(); ?></div>
 <?php page_foot('operator');
