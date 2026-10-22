@@ -6615,3 +6615,8 @@ body.r-operator .mp-note.mp-alert {
         opacity: .7
     }
 }
+
+/* Top menu: icon closer to its label */
+.pills a {
+    gap: 4px
+}

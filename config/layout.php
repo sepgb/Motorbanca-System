@@ -42,6 +42,11 @@ function page_head($title, $role = 'public')
             'announcements.php' => '<path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/>'
         ];
         $tabIco['dashboard.php'] = '<path d="M15 21v-8a1 1 0 00-1-1h-4a1 1 0 00-1 1v8"/><path d="M3 10a2 2 0 01.709-1.528l7-5.999a2 2 0 012.582 0l7 5.999A2 2 0 0121 10v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>';
+        if ($role !== 'operator') {   // admin: Dashboard takes the list icon, Queue the people icon (as Passengers on the operator side), Register a document with a plus
+            $tabIco['dashboard.php'] = $tabIco['queue.php'];
+            $tabIco['queue.php'] = $tabIco['manifest.php'];
+            $tabIco['motorbancas.php'] = '<path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6M9 15h6"/>';
+        }
         $logo = "<svg viewBox='0 0 40 40' width='40' height='40' fill='none' stroke='#f26b1d' stroke-width='5' stroke-linecap='round'><circle cx='20' cy='20' r='15' stroke-dasharray='19 12.42' transform='rotate(-80 20 20)'/></svg>";
         echo "<header class='atop'><a class='logo' href='$b/$dir/dashboard.php'>$logo<span>BATIS<small>Banca Tracking and Information System</small></span></a>
 <button class='ibtn a-burger' aria-label='Menu' onclick=\"document.body.classList.toggle('nav-open')\">" . ico('<path d="M4 7h16M4 12h16M4 17h16"/>') . "</button>
