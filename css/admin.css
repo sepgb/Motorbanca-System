@@ -6620,3 +6620,53 @@ body.r-operator .mp-note.mp-alert {
 .pills a {
     gap: 4px
 }
+
+/* Passenger phones/tablets: the scan button floats at the bottom right, just above the bottom bar */
+@media (max-width:999px) {
+    body.r-public .scan-btn {
+        position: fixed;
+        right: 18px;
+        bottom: calc(86px + env(safe-area-inset-bottom));
+        z-index: 40;
+        order: 0;
+        margin: 0;
+        width: 56px;
+        height: 56px;
+        border: 0;
+        border-radius: 50%;
+        background: linear-gradient(180deg, #ff9250, #f26b1d);
+        color: #fff;
+        box-shadow: inset 0 1px 0 #ffffff59, 0 12px 24px -8px #f26b1dcc, 0 2px 6px #0003;
+        cursor: pointer;
+        animation: scanIn .4s cubic-bezier(.2, 1.2, .3, 1) both
+    }
+
+    body.r-public .scan-btn:active {
+        transform: scale(.92);
+        background: linear-gradient(180deg, #f6803a, #e55f14)
+    }
+
+    body.r-public .scan-btn .ico,
+    body.r-public .scan-btn svg {
+        width: 26px;
+        height: 26px
+    }
+}
+
+@keyframes scanIn {
+    from {
+        opacity: 0;
+        transform: scale(.6)
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1)
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.r-public .scan-btn {
+        animation: none
+    }
+}
