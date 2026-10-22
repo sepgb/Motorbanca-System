@@ -6499,3 +6499,119 @@ body.r-operator .btabs .nbadge {
     height: 13px;
     font-size: .42rem
 }
+
+/* Operator Passengers page: status notice (for inspection / next trip / departed).
+   It keeps the .mp-alert grid area, so it sits in the full-width row at the top, above the count, like the old alert. */
+.mp-note {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 18px 22px;
+    background: #fff;
+    border: 1px solid var(--ln);
+    border-radius: 18px;
+    box-shadow: 0 1px 2px #1f1a170d, 0 16px 30px -24px #1f1a1760
+}
+
+.mpage>.mp-note,
+body.r-operator .mp-note.mp-alert {
+    width: auto;
+    max-width: none;
+    margin: 0
+}
+
+.mp-note-ic {
+    flex: none;
+    display: grid;
+    place-items: center;
+    color: #f26b1d
+}
+
+.mp-note-ic .ico {
+    width: 28px;
+    height: 28px;
+    stroke-width: 1.7
+}
+
+.mp-note-tx {
+    flex: 1 1 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0
+}
+
+.mp-note-tx b {
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    color: var(--tx)
+}
+
+.mp-note-tx span {
+    font-size: .9rem;
+    line-height: 1.45;
+    color: var(--mut)
+}
+
+/* "Waiting ..." chip with three pulsing dots, on the right */
+.mp-note-chip {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    padding: 8px 16px;
+    border: 1px solid var(--ln);
+    border-radius: 999px;
+    background: #faf7f4;
+    color: #6f655d;
+    font-size: .8rem;
+    font-weight: 700
+}
+
+.mp-note-chip i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f26b1d;
+    animation: mpdot 1.2s ease-in-out infinite
+}
+
+.mp-note-chip i:nth-child(2) {
+    animation-delay: .18s
+}
+
+.mp-note-chip i:nth-child(3) {
+    animation-delay: .36s;
+    margin-right: 5px
+}
+
+@keyframes mpdot {
+
+    0%,
+    80%,
+    100% {
+        opacity: .25;
+        transform: scale(.8)
+    }
+
+    40% {
+        opacity: 1;
+        transform: scale(1.15)
+    }
+}
+
+@media(max-width:699px) {
+    .mp-note-chip {
+        margin-left: 44px
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    .mp-note-chip i {
+        animation: none;
+        opacity: .7
+    }
+}

@@ -82,11 +82,27 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
   if (!$trip): ?>
     <div class="mp-empty"><?= travel_suspended() ? 'Travel is suspended by the PCG. You cannot start a new trip until travel resumes.' : 'No active trip. Go Home and tap New trip.' ?></div>
   <?php elseif (!$open): ?>
-    <div class="alert mp-alert"><?= $m['status'] === 'Inspection'
-                                  ? 'Your boat is <b>FOR INSPECTION</b>. You can add passengers once the PCG approves it and it is ON QUEUE.'
-                                  : ($m['status'] === 'Queued'
-                                    ? '&#9203; Your boat is <b>' . e($tag) . '</b>. You can add passengers once your boat is ON QUEUE.'
-                                    : 'This trip has departed. Go Home and tap New trip for the next one.') ?></div>
+    <?php
+    if ($m['status'] === 'Inspection') {
+      $noteT = 'For inspection';
+      $noteM = 'You can add passengers once the PCG approves your boat and it is on the queue.';
+      $noteC = 'Waiting for the PCG';
+      $noteI = '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>';
+    } elseif ($m['status'] === 'Queued') {
+      $noteT = strtoupper($tag) === 'NEXT TRIP' ? 'You are next in line' : 'You are waiting in line';
+      $noteM = 'You can add passengers once your boat is on the queue.';
+      $noteC = 'Waiting for your turn';
+      $noteI = '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
+    } else {
+      $noteT = 'Trip departed';
+      $noteM = 'Go Home and tap New trip for the next one.';
+      $noteC = '';
+      $noteI = '<path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/>';
+    } ?>
+    <div class="mp-note mp-alert" role="status"><span class="mp-note-ic"><?= ico($noteI) ?></span>
+      <div class="mp-note-tx"><b><?= e($noteT) ?></b><span><?= e($noteM) ?></span></div>
+      <?php if ($noteC !== ''): ?><span class="mp-note-chip"><i></i><i></i><i></i><?= e($noteC) ?></span><?php endif; ?>
+    </div>
   <?php elseif ($full): ?>
     <div class="alert bad mp-alert"><b>FULL</b> &mdash; no more passengers can be added.</div>
   <?php else: $showForm = true;
