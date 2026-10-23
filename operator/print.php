@@ -34,7 +34,11 @@ $tc = trip_crew_get($trip['id']);
 $crew = $tc['crew'] ?? [];
 $captain = '';
 foreach ($crew as $c) if ($c['position'] === 'BOAT CAPTAIN') $captain = $c['name'];
-$tauhan = $crew[0]['name'] ?? '';   // only the first crew member
+$tauhan = '';   // the first CREW member (position CREW), not the boat captain or the motorman
+foreach ($crew as $c) if ($c['position'] === 'CREW' && $c['name'] !== '') {
+    $tauhan = $c['name'];
+    break;
+}
 $ps = db()->prepare("SELECT * FROM passengers WHERE trip_id=? ORDER BY id LIMIT 45");
 $ps->execute([$trip['id']]);
 $pax = $ps->fetchAll();
