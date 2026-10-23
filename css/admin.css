@@ -7063,3 +7063,12 @@ body.r-operator .mp-note.mp-alert {
 .mdl-box:has(.pdfbtn) .mdl-title {
     padding-right: 44px
 }
+
+/* Header date chip: the same space on both sides of the dash (date - time) */
+.datechip {
+    gap: 8px
+}
+
+.dt-sep {
+    margin-left: 8px
+}

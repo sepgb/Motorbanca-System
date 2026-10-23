@@ -62,7 +62,7 @@ n.addEventListener('click',function(e){var a=e.target.closest('a');if(a&&a!==c)t
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){setTimeout(function(){p(c,false)},500)});
 })();</script>
 JS;
-        echo "</nav>$pillJs<div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date($role === 'operator' ? 'j F Y' : 'l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span>
+        echo "</nav>$pillJs<div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date($role === 'operator' ? 'j F Y' : 'l, j F Y') . "</span><span class='dt-sep'>-</span></span><b id='clk-time'>" . date('g:i A') . "</b></span>
 <a class='ibtn' href='$b/logout.php' title='Log out' aria-label='Log out'>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</a></div></header>";
         // phone / tablet: sticky bottom tab bar (the top pills are hidden below 1000px)
         $short = ['announcements.php' => 'Alert', 'trips.php' => 'History'];
@@ -92,7 +92,7 @@ JS;
         $ptab = ['index.php' => '<path d="M15 21v-8a1 1 0 00-1-1h-4a1 1 0 00-1 1v8"/><path d="M3 10a2 2 0 01.709-1.528l7-5.999a2 2 0 012.582 0l7 5.999A2 2 0 0121 10v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>', 'fares.php' => '<path d="M2 8.5a3 3 0 0 1 0 7V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a3 3 0 0 1 0-7V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M14 4v2.5M14 10.75v2.5M14 17.5V20"/>', 'track.php' => '<path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', 'announcements.php' => '<path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/>', 'profile.php' => '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>'];
         echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'>" . "<svg viewBox='0 0 40 40' width='40' height='40' fill='none' stroke='#f26b1d' stroke-width='5' stroke-linecap='round'><circle cx='20' cy='20' r='15' stroke-dasharray='19 12.42' transform='rotate(-80 20 20)'/></svg>" . "<span>BATIS<small>Banca Tracking and Information System</small></span></a><nav class='pills'>";
         foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on'" : '') . ">$l</a>";
-        echo "</nav><div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span> - </span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header>";
+        echo "</nav><div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span><span class='dt-sep'>-</span></span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header>";
         // phone bar: icons only (the name stays as aria-label), Live Queue in the middle and bigger
         echo "<nav class='btabs btabs-pub' aria-label='Main'>";
         foreach (['fares.php', 'track.php', 'index.php', 'announcements.php', 'profile.php'] as $f) echo "<a href='$b/passenger/$f' aria-label='" . e($plinks[$f]) . "'" . ($f === 'index.php' ? " data-q='1'" : '') . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i></a>";
