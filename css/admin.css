@@ -2757,7 +2757,7 @@ body.r-public .main>.lead {
 }
 
 .trk-box #ts {
-    margin: 0 16px 12px
+    margin: 12px 16px 12px
 }
 
 .trk-box .trk-map {
@@ -6731,7 +6731,8 @@ body.r-operator .mp-note.mp-alert {
 
     body.r-public:has(#s3:not([hidden])) .trk-box .trk-map {
         position: fixed;
-        inset: 0 0 calc(66px + env(safe-area-inset-bottom)) 0;
+        inset: 0;
+        /* the map runs all the way down, underneath the bottom bar */
         z-index: 0;
         width: auto;
         height: auto;
@@ -6756,7 +6757,8 @@ body.r-operator .mp-note.mp-alert {
     body.r-public:has(#s3:not([hidden])) .trk-box #ts,
     body.r-public:has(#s3:not([hidden])) #e3 {
         position: fixed;
-        top: calc(env(safe-area-inset-top) + 82px);
+        top: calc(env(safe-area-inset-top) + 94px);
+        /* a gap under the Going to / Distance card */
         left: 12px;
         right: 12px;
         z-index: 5;
@@ -6792,11 +6794,11 @@ body.r-operator .mp-note.mp-alert {
     }
 
     body.r-public:has(#s3:not([hidden])) .trk-map .leaflet-top {
-        top: calc(env(safe-area-inset-top) + 138px)
+        top: calc(env(safe-area-inset-top) + 168px)
     }
 }
 
-/* Track my ride: "Your location" button (icon in a light blue circle, then the text) */
+/* Track my ride: "Your location" button (just the icon, then the text; the icon turns orange while following) */
 .trk-act .trk-loc {
     display: inline-flex;
     align-items: center;
@@ -6812,8 +6814,8 @@ body.r-operator .mp-note.mp-alert {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: #d3f1fa;
-    color: #0b3c49
+    background: none;
+    color: var(--tx)
 }
 
 .trk-loc-ic svg {
@@ -6821,9 +6823,10 @@ body.r-operator .mp-note.mp-alert {
     height: 17px
 }
 
-/* following is shown by a stronger blue circle; the border stays the same as the Stop button */
+/* following is shown by an orange icon; the border stays the same as the Stop button */
 .trk-act .trk-loc.on .trk-loc-ic {
-    background: #9fdcf2
+    background: none;
+    color: #f26b1d
 }
 
 /* Dropdown lists: Track my ride / Cancel trip (destination) and Edit profile (barangay).
@@ -6950,5 +6953,74 @@ body.r-operator .mp-note.mp-alert {
     .trk-card select option:checked::before,
     .pf-form select option:checked::before {
         opacity: 1
+    }
+}
+
+/* Track my ride (live step, phones and tablets): the bottom bar is frosted glass, so the map shows through underneath it */
+@media (max-width:999px) {
+    body.r-public:has(#s3:not([hidden])) .btabs {
+        background: rgba(255, 255, 255, .8);
+        -webkit-backdrop-filter: blur(14px) saturate(1.2);
+        backdrop-filter: blur(14px) saturate(1.2)
+    }
+
+    body.r-public:has(#s3:not([hidden])) .trk-map .leaflet-bottom {
+        bottom: calc(66px + env(safe-area-inset-bottom))
+    }
+}
+
+/* Track my ride: the location status ("Finding your location...") is a white card with a pulsing radar dot; problems get a red mark */
+.trk-box #ts.alert {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid var(--ln);
+    color: var(--tx);
+    font-size: .92rem;
+    font-weight: 600;
+    line-height: 1.4
+}
+
+.trk-box #ts.alert::before {
+    content: "";
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #f26b1d 0 4.5px, transparent 5.5px), #fff0e5;
+    animation: trkradar 1.8s ease-out infinite
+}
+
+@keyframes trkradar {
+    0% {
+        box-shadow: 0 0 0 0 #f26b1d66
+    }
+
+    100% {
+        box-shadow: 0 0 0 15px #f26b1d00
+    }
+}
+
+.trk-box #ts.alert.bad {
+    align-items: flex-start;
+    border-color: #f4c9c4;
+    color: #7a271a;
+    font-size: .86rem;
+    font-weight: 500
+}
+
+.trk-box #ts.alert.bad::before {
+    width: 24px;
+    height: 24px;
+    margin-top: 1px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b42318' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7.5v5M12 16.2h.01'/%3E%3C/svg%3E") center/24px no-repeat;
+    animation: none
+}
+
+@media(prefers-reduced-motion:reduce) {
+    .trk-box #ts.alert::before {
+        animation: none
     }
 }
