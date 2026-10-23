@@ -25,11 +25,13 @@ setInterval(function () {
   var D = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     M = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   var short = window.matchMedia('(max-width:1399px)');
+  var noDay = document.body.classList.contains('r-operator');
   function tick() {
     var n = new Date(), h = n.getHours();
     // narrower screens (tablets) get a shorter date so the header still fits: "Wed, 21 Oct 2026"
-    d.textContent = short.matches ? D[n.getDay()].slice(0, 3) + ', ' + n.getDate() + ' ' + M[n.getMonth()].slice(0, 3) + ' ' + n.getFullYear()
-      : D[n.getDay()] + ', ' + n.getDate() + ' ' + M[n.getMonth()] + ' ' + n.getFullYear();
+    // the operator's header leaves out the day of the week: "24 Oct 2026"
+    var wd = noDay ? '' : (short.matches ? D[n.getDay()].slice(0, 3) : D[n.getDay()]) + ', ';
+    d.textContent = wd + n.getDate() + ' ' + (short.matches ? M[n.getMonth()].slice(0, 3) : M[n.getMonth()]) + ' ' + n.getFullYear();
     t.textContent = ((h % 12) || 12) + ':' + ('0' + n.getMinutes()).slice(-2) + ' ' + (h < 12 ? 'AM' : 'PM');
   }
   tick(); setInterval(tick, 1000);
