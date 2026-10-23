@@ -34,7 +34,6 @@ page_head('Track my ride', 'public');
 
     <!-- step 2 -->
     <section class="card trk-card" id="s2" hidden>
-        <h3>2. Where are you going?</h3>
         <div class="trk-found"><i class="dot"></i>
             <div><b id="fb"></b><span id="fc"></span></div>
         </div>

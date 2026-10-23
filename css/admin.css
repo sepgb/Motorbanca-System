@@ -6825,3 +6825,130 @@ body.r-operator .mp-note.mp-alert {
 .trk-act .trk-loc.on .trk-loc-ic {
     background: #9fdcf2
 }
+
+/* Dropdown lists: Track my ride / Cancel trip (destination) and Edit profile (barangay).
+   Modern Chrome / Edge get the fully styled list; other browsers get the basic option colors. */
+.trk-card select option,
+.pf-form select option {
+    font-weight: 600;
+    color: #1f1a17;
+    background: #fff
+}
+
+.trk-card select option:checked,
+.pf-form select option:checked {
+    background: #fff4ec;
+    color: #b4470a
+}
+
+@supports (appearance: base-select) {
+
+    .trk-card select,
+    .pf-form select,
+    .trk-card select::picker(select),
+    .pf-form select::picker(select) {
+        appearance: base-select
+    }
+
+    .trk-card select,
+    .pf-form select {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 0 16px;
+        background: #fff;
+        background-image: none
+    }
+
+    .trk-card select::picker-icon,
+    .pf-form select::picker-icon {
+        content: "";
+        width: 18px;
+        height: 18px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f26b1d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center/18px no-repeat;
+        transition: rotate .2s
+    }
+
+    .trk-card select:open::picker-icon,
+    .pf-form select:open::picker-icon {
+        rotate: 180deg
+    }
+
+    .pf-form.ro select::picker-icon {
+        display: none
+    }
+
+    .trk-card select::picker(select),
+    .pf-form select::picker(select) {
+        margin-top: 8px;
+        padding: 8px;
+        max-height: 330px;
+        border: 1px solid #efe7e0;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 24px 48px -16px #1f1a1747, 0 2px 6px #1f1a170f
+    }
+
+    .trk-card select option,
+    .pf-form select option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 46px;
+        margin-bottom: 2px;
+        padding: 0 14px;
+        border-radius: 12px;
+        font-size: .95rem;
+        font-weight: 600;
+        color: #1f1a17;
+        background: transparent;
+        cursor: pointer
+    }
+
+    .trk-card select option:last-child,
+    .pf-form select option:last-child {
+        margin-bottom: 0
+    }
+
+    /* a small pin in front of every place, and a check on the chosen one */
+    .trk-card select option::before,
+    .pf-form select option::before {
+        content: "";
+        flex: none;
+        width: 18px;
+        height: 18px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f26b1d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z'/%3E%3Ccircle cx='12' cy='9.5' r='2.5'/%3E%3C/svg%3E") center/18px no-repeat;
+        opacity: .4
+    }
+
+    .trk-card select option::checkmark,
+    .pf-form select option::checkmark {
+        content: "";
+        order: 3;
+        flex: none;
+        width: 18px;
+        height: 18px;
+        margin-left: auto;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f26b1d' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/18px no-repeat
+    }
+
+    .trk-card select option:hover,
+    .pf-form select option:hover,
+    .trk-card select option:focus-visible,
+    .pf-form select option:focus-visible {
+        background: #faf7f4;
+        outline: 0
+    }
+
+    .trk-card select option:checked,
+    .pf-form select option:checked {
+        background: #fff4ec;
+        color: #b4470a
+    }
+
+    .trk-card select option:checked::before,
+    .pf-form select option:checked::before {
+        opacity: 1
+    }
+}
