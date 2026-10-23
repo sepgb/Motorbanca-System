@@ -60,7 +60,6 @@ page_head('Track my ride', 'public');
             <button class="btn sm ghost" id="center" type="button">Show both</button>
             <button class="btn sm ghost" id="stop" type="button">Stop</button>
         </div>
-        <p class="muted trk-note">Your location is shown only on your own screen. It is not saved or sent to anyone.</p>
     </section>
 </div>
 <div class="mdl" id="cx-mdl" role="dialog" aria-modal="true" aria-labelledby="cx-t">

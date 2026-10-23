@@ -4,7 +4,7 @@
     var root = document.getElementById('trk'); if (!root) return;
     var $ = function (id) { return document.getElementById(id); };
     var s1 = $('s1'), s2 = $('s2'), s3 = $('s3'), KEY = 'trkState', TTL = 6 * 3600 * 1000;
-    var data = null, who = null, map, me, meAcc, dst, line, watch = null, dest = null, here = null, fitted = false, destName = '', hiAcc = true, route = [], stops = null, token = 0;
+    var data = null, who = null, map, me, meAcc, dst, line, watch = null, dest = null, here = null, fitted = false, moved = false, destName = '', hiAcc = true, route = [], stops = null, token = 0;
 
     if (!window.isSecureContext) { $('secgo').href = 'https://' + location.hostname + location.pathname; $('sec').hidden = false; }
     function show(el, msg) { el.textContent = msg; el.hidden = !msg; }
@@ -59,14 +59,19 @@
 
     // ---- 3: live map
     function startTrip(d) {
-        destName = d.name; save(3); fitted = false; here = null; hiAcc = true; route = []; token++; if (stops) stops.clearLayers();
+        destName = d.name; save(3); fitted = false; moved = false; here = null; hiAcc = true; route = []; token++; if (stops) stops.clearLayers();
         $('td').textContent = d.name + (d.pier ? ' pier' : ''); $('tk').textContent = '…'; show($('e3'), ''); $('retry').hidden = true;
         step(3); status('Finding your location…');
         if (!map) {
             map = L.map('map').setView([14.4647, 121.192], 12);   // Binangonan, until we know more
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+            // the map fills the screen on phones: keep Leaflet in step whenever the box changes size, so the tiles cover all of it
+            var resized = function () { map.invalidateSize(); if (!moved && here && dest) fitAll(); };   // re-frame both points once the map has its real size
+            if (window.ResizeObserver) new ResizeObserver(resized).observe($('map'));
+            window.addEventListener('resize', resized);
+            $('map').addEventListener('pointerdown', function () { moved = true; });   // the passenger is looking around: stop re-framing
         }
-        setTimeout(function () { map.invalidateSize(); }, 80);
+        [80, 300, 800].forEach(function (ms) { setTimeout(function () { map.invalidateSize(); if (!moved && here && dest) fitAll(); }, ms); });
         var set = function (pos) {
             dest = pos;
             if (!pos) { show($('e3'), 'The map spot for ' + d.name + ' is not available yet, so only your location is shown.'); $('tk').textContent = '—'; return; }
@@ -138,10 +143,18 @@
             var tot = 0; for (var k = 1; k < pth.length; k++) tot += km(pth[k - 1], pth[k]);
             $('tk').textContent = fmt(tot);
             if (line) line.setLatLngs(pth); else line = L.polyline(pth, { color: '#f26b1d', weight: 5, opacity: 1, lineJoin: 'round' }).addTo(map);
-            if (!fitted) { fitted = true; map.fitBounds(L.latLngBounds(pth).pad(.25)); }
+            if (!fitted) { fitted = true; fitAll(); }
         } else if (!fitted) { fitted = true; map.setView(here, 16); }
     }
-    $('center').addEventListener('click', function () { var p = path(); if (p.length > 1) map.fitBounds(L.latLngBounds(p).pad(.25)); else if (here) map.setView(here, 16); });
+    // frame your location and the destination together; on phones the cards and buttons float over the map, so keep both points clear of them
+    function fitAll() {
+        var p = path();
+        if (p.length > 1) {
+            var phone = window.matchMedia('(max-width:999px)').matches;
+            map.fitBounds(L.latLngBounds(p), phone ? { paddingTopLeft: [40, 170], paddingBottomRight: [40, 190], maxZoom: 17 } : { padding: [60, 60], maxZoom: 17 });
+        } else if (here) map.setView(here, 16);
+    }
+    $('center').addEventListener('click', function () { moved = false; fitAll(); });
     $('stop').addEventListener('click', function () {
         if (watch !== null) navigator.geolocation.clearWatch(watch); watch = null;
         if (me) { map.removeLayer(me); map.removeLayer(meAcc); me = meAcc = null; }
