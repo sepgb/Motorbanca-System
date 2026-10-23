@@ -7047,3 +7047,19 @@ body.r-operator .mp-note.mp-alert {
     line-height: 1.2;
     color: var(--mut)
 }
+
+/* Trip documents popup (Crew list, Manifest, MDSD, PDIC): the close button sits in the top right corner of the popup */
+.mdl-box:has(.pdfbtn) {
+    position: relative
+}
+
+.mdl-box:has(.pdfbtn) .mdl-head .x {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2
+}
+
+.mdl-box:has(.pdfbtn) .mdl-title {
+    padding-right: 44px
+}
