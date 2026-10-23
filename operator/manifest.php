@@ -111,8 +111,7 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
     <div class="reg-side">
       <?php if ($showForm): ?>
         <form method="post" class="card grid">
-          <h3>Add passenger</h3>
-          <label>Passenger name<input name="name" maxlength="80" autocomplete="off" required></label>
+          <label>Name<input name="name" maxlength="80" autocomplete="off" required></label>
           <label>Age<input name="age" type="number" inputmode="numeric" min="0" max="120" required></label>
           <label>Barangay<input name="barangay" maxlength="60" autocomplete="off" required></label>
           <button class="btn">+ Add passenger</button>
