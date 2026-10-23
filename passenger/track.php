@@ -57,7 +57,11 @@ page_head('Track my ride', 'public');
         <div class="alert" id="e3" hidden></div>
         <div class="trk-act">
             <button class="btn sm" id="retry" type="button" hidden>Try again</button>
-            <button class="btn sm ghost" id="center" type="button">Show both</button>
+            <button class="btn sm ghost trk-loc" id="center" type="button"><span class="trk-loc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="3" />
+                        <circle cx="12" cy="12" r="7" />
+                        <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+                    </svg></span>Your location</button>
             <button class="btn sm ghost" id="stop" type="button">Stop</button>
         </div>
     </section>

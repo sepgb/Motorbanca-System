@@ -4,7 +4,7 @@
     var root = document.getElementById('trk'); if (!root) return;
     var $ = function (id) { return document.getElementById(id); };
     var s1 = $('s1'), s2 = $('s2'), s3 = $('s3'), KEY = 'trkState', TTL = 6 * 3600 * 1000;
-    var data = null, who = null, map, me, meAcc, dst, line, watch = null, dest = null, here = null, fitted = false, moved = false, destName = '', hiAcc = true, route = [], stops = null, token = 0;
+    var data = null, who = null, map, me, meAcc, dst, line, watch = null, dest = null, here = null, fitted = false, moved = false, follow = false, destName = '', hiAcc = true, route = [], stops = null, token = 0;
 
     if (!window.isSecureContext) { $('secgo').href = 'https://' + location.hostname + location.pathname; $('sec').hidden = false; }
     function show(el, msg) { el.textContent = msg; el.hidden = !msg; }
@@ -59,19 +59,22 @@
 
     // ---- 3: live map
     function startTrip(d) {
-        destName = d.name; save(3); fitted = false; moved = false; here = null; hiAcc = true; route = []; token++; if (stops) stops.clearLayers();
+        destName = d.name; save(3); fitted = false; moved = false; follow = false; $('center').classList.remove('on'); here = null; hiAcc = true; route = []; token++; if (stops) stops.clearLayers();
         $('td').textContent = d.name + (d.pier ? ' pier' : ''); $('tk').textContent = '…'; show($('e3'), ''); $('retry').hidden = true;
         step(3); status('Finding your location…');
         if (!map) {
             map = L.map('map').setView([14.4647, 121.192], 12);   // Binangonan, until we know more
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
             // the map fills the screen on phones: keep Leaflet in step whenever the box changes size, so the tiles cover all of it
-            var resized = function () { map.invalidateSize(); if (!moved && here && dest) fitAll(); };   // re-frame both points once the map has its real size
+            var resized = function () { map.invalidateSize(); if (!moved && !follow && here && dest) fitAll(); };   // re-frame both points once the map has its real size
             if (window.ResizeObserver) new ResizeObserver(resized).observe($('map'));
             window.addEventListener('resize', resized);
-            $('map').addEventListener('pointerdown', function () { moved = true; });   // the passenger is looking around: stop re-framing
+            $('map').addEventListener('pointerdown', function (e) {   // the passenger is looking around: stop re-framing and following
+                if (e.target.closest && e.target.closest('.leaflet-control')) return;
+                moved = true; follow = false; $('center').classList.remove('on');
+            });
         }
-        [80, 300, 800].forEach(function (ms) { setTimeout(function () { map.invalidateSize(); if (!moved && here && dest) fitAll(); }, ms); });
+        [80, 300, 800].forEach(function (ms) { setTimeout(function () { map.invalidateSize(); if (!moved && !follow && here && dest) fitAll(); }, ms); });
         var set = function (pos) {
             dest = pos;
             if (!pos) { show($('e3'), 'The map spot for ' + d.name + ' is not available yet, so only your location is shown.'); $('tk').textContent = '—'; return; }
@@ -129,6 +132,7 @@
             meAcc = L.circle(here, { radius: p.coords.accuracy || 20, color: '#2563eb', weight: 1, fillOpacity: .12 }).addTo(map);
             me = L.circleMarker(here, { radius: 8, color: '#fff', weight: 3, fillColor: '#2563eb', fillOpacity: 1 }).addTo(map).bindTooltip('You');
         } else { me.setLatLng(here); meAcc.setLatLng(here).setRadius(p.coords.accuracy || 20); }
+        if (follow) map.panTo(here);   // "Your location" is on: the map stays on the passenger as they move
     }
     function path() {   // from you, along the cluster's barangays, to the destination
         var r = route.length ? route.slice() : (dest ? [dest] : []);
@@ -154,7 +158,11 @@
             map.fitBounds(L.latLngBounds(p), phone ? { paddingTopLeft: [40, 170], paddingBottomRight: [40, 190], maxZoom: 17 } : { padding: [60, 60], maxZoom: 17 });
         } else if (here) map.setView(here, 16);
     }
-    $('center').addEventListener('click', function () { moved = false; fitAll(); });
+    // "Your location": focus on the passenger and keep following until they move the map themselves
+    $('center').addEventListener('click', function () {
+        follow = true; moved = false; $('center').classList.add('on');
+        if (here) map.setView(here, 17);
+    });
     $('stop').addEventListener('click', function () {
         if (watch !== null) navigator.geolocation.clearWatch(watch); watch = null;
         if (me) { map.removeLayer(me); map.removeLayer(meAcc); me = meAcc = null; }
