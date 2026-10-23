@@ -7024,3 +7024,26 @@ body.r-operator .mp-note.mp-alert {
         animation: none
     }
 }
+
+/* Manifest details: each crew member's position sits under the name, smaller, with space between members */
+.mp-details .mp-cm {
+    margin: 0 0 12px
+}
+
+.mp-details .mp-cm:last-child {
+    margin-bottom: 0
+}
+
+.mp-details .mp-nm {
+    display: block;
+    line-height: 1.25
+}
+
+.mp-details .mp-cm small {
+    display: block;
+    margin-top: 1px;
+    font-size: .72rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--mut)
+}

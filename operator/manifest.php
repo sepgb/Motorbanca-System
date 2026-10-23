@@ -163,7 +163,7 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
             <dt>Date</dt>
             <dd><?= $td ? date('F j, Y', strtotime($td)) : '&mdash;' ?></dd>
             <dt>Pangalan ng tauhan</dt>
-            <dd><?php if ($tc && $tc['crew']) foreach ($tc['crew'] as $c) echo "<div>" . e($c['name']) . " <span class='muted'>&middot; " . ucwords(strtolower(e($c['position']))) . "</span></div>";
+            <dd><?php if ($tc && $tc['crew']) foreach ($tc['crew'] as $c) echo "<div class='mp-cm'><span class='mp-nm'>" . e($c['name']) . "</span><small>" . ucwords(strtolower(e($c['position']))) . "</small></div>";
                 else echo '&mdash;'; ?></dd>
           </dl>
         </div>
