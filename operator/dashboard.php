@@ -30,13 +30,12 @@ page_head('Home', 'operator');
     <?php else: ?>
       <a class="btn big" style="width:100%" href="<?= $idle ? 'crew.php' : 'manifest.php' ?>"><?= $idle ? 'New trip' : 'Open passenger list' ?></a>
     <?php endif; ?>
-    <?php if ($m['status'] === 'Inspection'): ?>
-      <div class="alert ok" style="margin:16px 0 0">Waiting for the PCG inspection. Your boat goes on the queue once it is approved.</div>
-    <?php endif; ?>
     <?php if ($m['status'] === 'Queued'):
       $etd = null;
       foreach (live_rows() as $r) if ($r['id'] == $m['id']) $etd = $r['etd'] ?? null; ?>
-      <div class="alert ok" style="margin:16px 0 0">Your boat is on the queue<?= $etd ? ' until <b>' . e($etd) . '</b>' : '' ?>.</div>
+      <div class="op-note ok"><span class="op-note-ic"><?= ico('<path d="M5 12.5l4.5 4.5L19 7.5"/>') ?></span>
+        <div><b>On the queue</b><span><?= $etd ? 'Your boat stays on the queue until <b>' . e($etd) . '</b>.' : 'Your boat is on the queue.' ?></span></div>
+      </div>
     <?php endif; ?>
   </section>
 </div>

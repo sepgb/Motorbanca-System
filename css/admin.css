@@ -7250,3 +7250,141 @@ body.r-operator .mp-note.mp-alert {
     border-bottom-color: #f26b1d;
     box-shadow: none
 }
+
+/* Operator Home: compact status note under the button, and two cards that keep the same size in every state */
+.op-note {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0 0;
+    padding: 10px 14px;
+    border: 1px solid #f6d5bd;
+    border-radius: 14px;
+    background: #fff7f0
+}
+
+.op-note>div {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0
+}
+
+.op-note b {
+    font-size: .88rem;
+    color: #b4470a
+}
+
+.op-note>div>span {
+    font-size: .78rem;
+    line-height: 1.35;
+    color: var(--mut)
+}
+
+.op-note>div>span b {
+    font-size: inherit;
+    color: var(--tx)
+}
+
+.op-note-ic {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffe6d3;
+    color: #b4470a
+}
+
+.op-note-ic .ico {
+    width: 17px;
+    height: 17px;
+    stroke-width: 2.2
+}
+
+.op-note.ok {
+    border-color: #cfe9d8;
+    background: #f1faf4
+}
+
+.op-note.ok b {
+    color: #15803d
+}
+
+.op-note.ok .op-note-ic {
+    background: #d6f0df;
+    color: #15803d
+}
+
+@media (min-width: 700px) {
+    .opgrid .card {
+        min-height: 238px
+    }
+}
+
+/* Operator Home: the status note is plain text with a small icon (no box), and the two cards are shorter */
+.op-note,
+.op-note.ok {
+    margin: 14px 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none
+}
+
+.op-note-ic {
+    width: 28px;
+    height: 28px
+}
+
+.op-note-ic .ico {
+    width: 15px;
+    height: 15px
+}
+
+@media (min-width: 700px) {
+    .opgrid .card {
+        min-height: 172px
+    }
+}
+
+/* Operator Passengers page: the status note is not a card any more. Plain text with an icon, a thin line below, and a quiet status on the right. */
+.mp-note {
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0 2px 16px;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--ln);
+    border-radius: 0;
+    box-shadow: none
+}
+
+.mp-note-ic .ico {
+    width: 22px;
+    height: 22px;
+    margin-top: 1px
+}
+
+.mp-note-tx b {
+    font-size: 1rem
+}
+
+.mp-note-tx span {
+    font-size: .88rem
+}
+
+.mp-note-chip {
+    align-self: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #b4470a;
+    font-size: .78rem
+}
+
+/* Operator Home: the two cards are only as tall as their text (the taller one sets the height for both) */
+.opgrid .card {
+    min-height: 0
+}
