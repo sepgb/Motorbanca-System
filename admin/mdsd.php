@@ -65,6 +65,7 @@ if ($qt) {
 $err = '';
 $q = (array)($_POST['q'] ?? []);
 $p = (array)($_POST['p'] ?? []);
+$r = (array)($_POST['r'] ?? []);   // PDIC remarks
 $ins = trim((string)($_POST['inspector'] ?? ''));
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ans = [];
@@ -76,6 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach (pdic_numbers() as $n) {
         $a = $p[$n] ?? '';
         if (in_array($a, ['yes', 'no'], true)) $pa[$n] = $a;
+    }
+    $pr = [];   // the remarks that were typed (kept short)
+    foreach (pdic_numbers() as $n) {
+        $t = trim(preg_replace('/\s+/', ' ', (string)($r[$n] ?? '')));
+        if ($t !== '') $pr[$n] = mb_substr($t, 0, 120);
     }
     if (count($ans) < count(mdsd_keys()) || count($pa) < count(pdic_numbers())) {
         $err = 'Please answer every item.';
@@ -91,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tid = (int)$t->fetchColumn();
         if ($tid) {   // the MDSD and PDIC are printed later from the "Departed" window or from Trip History
             mdsd_save($tid, $ans);
-            pdic_save($tid, $pa, $ins, $started);
+            pdic_save($tid, $pa, $ins, $started, $pr);
         }
         if ($ajax) md_json(['ok' => true, 'trip' => $tid]);
         header('Location: ' . $back);

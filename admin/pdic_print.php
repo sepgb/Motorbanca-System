@@ -21,12 +21,17 @@ if (!$d) {
 }
 $g = pdic_get($tid);
 $ans = $g['answers'] ?? [];
+$rem = $g['remarks'] ?? [];
 $ref = (string)($_GET['back'] ?? '');
 $back = strpos($ref, BASE . '/admin/') === 0 ? $ref : 'trips.php';
 if ($isOp) $back = BASE . '/operator/trips.php';
 function ck($ans, $n, $v)
 {
     return (($ans[$n] ?? '') === $v) ? "<span class='ck'></span>" : '';
+}
+function rm($rem, $n)
+{
+    return e($rem[$n] ?? '');
 }
 ?>
 <!DOCTYPE html>
@@ -386,7 +391,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8113</td>
                         <td class="yn"><?= ck($ans, 1, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 1, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 1) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 177</td>
@@ -395,7 +400,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8115</td>
                         <td class="yn"><?= ck($ans, 2, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 2, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 2) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 177</td>
@@ -404,7 +409,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8112</td>
                         <td class="yn"><?= ck($ans, 3, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 3, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 3) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 110</td>
@@ -413,7 +418,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8118</td>
                         <td class="yn"><?= ck($ans, 4, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 4, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 4) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 134</td>
@@ -422,7 +427,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8120</td>
                         <td class="yn"><?= ck($ans, 5, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 5, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 5) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 203</td>
@@ -431,7 +436,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8148<br>VS8104</td>
                         <td class="yn"><?= ck($ans, 6, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 6, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 6) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 148; MC 179</td>
@@ -440,7 +445,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8142</td>
                         <td class="yn"><?= ck($ans, 7, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 7, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 7) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 2007-04</td>
@@ -449,7 +454,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8165</td>
                         <td class="yn"><?= ck($ans, 8, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 8, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 8) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 90, MC ____ Sec III A.36</td>
@@ -458,7 +463,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8111</td>
                         <td class="yn"><?= ck($ans, 9, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 9, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 9) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">RA 9295, MC 2009-18</td>
@@ -467,7 +472,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8147</td>
                         <td class="yn"><?= ck($ans, 10, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 10, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 10) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">HPCG MC 08-12</td>
@@ -476,7 +481,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8144</td>
                         <td class="yn"><?= ck($ans, 11, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 11, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 11) ?></td>
                     </tr>
                 </tbody>
             </table>
@@ -520,7 +525,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS82404<br>VS82606<br>VS82603</td>
                         <td class="yn"><?= ck($ans, 12, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 12, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 12) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">HPCG MC 04-98, MC 180, MC 2009-13, MC 2009-18</td>
@@ -532,7 +537,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS82606</td>
                         <td class="yn"><?= ck($ans, 13, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 13, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 13) ?></td>
                     </tr>
                     <tr class="sec">
                         <td colspan="6">ADEQUATE/ ACCESSIBLE LIFEJACKETS</td>
@@ -544,7 +549,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS82602</td>
                         <td class="yn"><?= ck($ans, 14, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 14, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 14) ?></td>
                     </tr>
                     <tr class="sec">
                         <td colspan="6">SHIP STABILITY AND TRIM, CARGO SECURING / LASHING ASCERTAINED</td>
@@ -556,7 +561,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8926</td>
                         <td class="yn"><?= ck($ans, 15, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 15, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 15) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 114</td>
@@ -565,7 +570,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS81221</td>
                         <td class="yn"><?= ck($ans, 16, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 16, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 16) ?></td>
                     </tr>
                     <tr class="sec">
                         <td colspan="6">TOTAL NUMBER OF OFFICERS AND CREW MEETS MINIMUM SAFE MANNING REQUIREMENT</td>
@@ -577,7 +582,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8142</td>
                         <td class="yn"><?= ck($ans, 17, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 17, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 17) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 170</td>
@@ -586,7 +591,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8216</td>
                         <td class="yn"><?= ck($ans, 18, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 18, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 18) ?></td>
                     </tr>
                 </tbody>
             </table>
@@ -624,7 +629,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS82615</td>
                         <td class="yn"><?= ck($ans, 19, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 19, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 19) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">PCG MC 03-01</td>
@@ -632,7 +637,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS82614</td>
                         <td class="yn"><?= ck($ans, 20, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 20, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 20) ?></td>
                     </tr>
                     <tr class="sec">
                         <td colspan="6">UPKEEP OF EQUIPMENT AND RUNNING LIGHTS VERIFIED</td>
@@ -644,7 +649,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8745</td>
                         <td class="yn"><?= ck($ans, 21, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 21, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 21) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">PMMR 1997 Chapter X and XI</td>
@@ -653,7 +658,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS8746</td>
                         <td class="yn"><?= ck($ans, 22, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 22, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 22) ?></td>
                     </tr>
                     <tr class="sec">
                         <td colspan="6">ALL ENGINES IN OPERATING CONDITION</td>
@@ -665,7 +670,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS81516</td>
                         <td class="yn"><?= ck($ans, 23, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 23, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 23) ?></td>
                     </tr>
                     <tr class="sec">
                         <td colspan="6">RESPONSIBLE SHIPOWNER/CREW/TERMINAL CONTROL</td>
@@ -677,7 +682,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS82404</td>
                         <td class="yn"><?= ck($ans, 24, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 24, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 24) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 191</td>
@@ -686,7 +691,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS82412</td>
                         <td class="yn"><?= ck($ans, 25, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 25, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 25) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 134, MC ____ Sec III.A.24</td>
@@ -695,7 +700,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS82408</td>
                         <td class="yn"><?= ck($ans, 26, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 26, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 26) ?></td>
                     </tr>
                     <tr>
                         <td class="ref">MC 134, MC ____ Sec III.A.24</td>
@@ -704,7 +709,7 @@ function ck($ans, $n, $v)
                         <td class="cd">VS82613</td>
                         <td class="yn"><?= ck($ans, 27, 'yes') ?></td>
                         <td class="yn"><?= ck($ans, 27, 'no') ?></td>
-                        <td class="rm"></td>
+                        <td class="rm"><?= rm($rem, 27) ?></td>
                     </tr>
                 </tbody>
             </table>

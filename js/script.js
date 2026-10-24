@@ -167,6 +167,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     var d = new FormData();
     d.append('mid', mid); d.append('ajax', '1'); d.append('started', started); d.append('inspector', name);
     [mbody, pbody].forEach(function (b) { b.querySelectorAll('input[type=radio]:checked').forEach(function (i) { d.append(i.name, i.value); }); });
+    pbody.querySelectorAll('input.md-rm').forEach(function (i) { if (i.value.trim()) d.append(i.name, i.value); });   // PDIC remarks
     function fail(t) { show(perr, t); busy = false; pgo.disabled = false; pgo.textContent = 'Depart motorbanca'; }
     fetch(url, { method: 'POST', body: d, credentials: 'same-origin' })
       .then(function (x) { return x.json(); })

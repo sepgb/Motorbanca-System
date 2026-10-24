@@ -75,26 +75,32 @@ function pdic_table()
         db()->exec("CREATE TABLE IF NOT EXISTS trip_pdic (trip_id INT PRIMARY KEY, answers TEXT NOT NULL, inspector VARCHAR(100) NOT NULL, started DATETIME NULL, completed DATETIME NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE) ENGINE=InnoDB");
     } catch (PDOException $x) {
     }
+    try {   // the "Remarks" column of the form (one short note per item); older databases get the column here
+        if (!db()->query("SHOW COLUMNS FROM trip_pdic LIKE 'remarks'")->fetch()) db()->exec("ALTER TABLE trip_pdic ADD COLUMN remarks TEXT NULL");
+    } catch (PDOException $x) {
+    }
 }
 
-// Save the PDIC of a trip: answers [1 => 'yes', 2 => 'no', ...], the inspector's name, and when the inspection started
-function pdic_save($tid, $ans, $inspector, $started)
+// Save the PDIC of a trip: answers [1 => 'yes', 2 => 'no', ...], the inspector's name, when the inspection started,
+// and the remarks [3 => 'Expires next month', ...] (optional, only the items that have one)
+function pdic_save($tid, $ans, $inspector, $started, $remarks = [])
 {
     pdic_table();
-    db()->prepare("INSERT INTO trip_pdic (trip_id, answers, inspector, started, completed) VALUES (?, ?, ?, ?, NOW())
-        ON DUPLICATE KEY UPDATE answers=VALUES(answers), inspector=VALUES(inspector), started=VALUES(started), completed=VALUES(completed)")
-        ->execute([(int)$tid, json_encode($ans), $inspector, $started]);
+    db()->prepare("INSERT INTO trip_pdic (trip_id, answers, inspector, started, completed, remarks) VALUES (?, ?, ?, ?, NOW(), ?)
+        ON DUPLICATE KEY UPDATE answers=VALUES(answers), inspector=VALUES(inspector), started=VALUES(started), completed=VALUES(completed), remarks=VALUES(remarks)")
+        ->execute([(int)$tid, json_encode($ans), $inspector, $started, json_encode((object)$remarks)]);
 }
 
-// The saved PDIC of a trip, or [] if there is none: ['answers' => [...], 'inspector' => '', 'started' => '', 'completed' => '']
+// The saved PDIC of a trip, or [] if there is none: ['answers' => [...], 'remarks' => [...], 'inspector' => '', 'started' => '', 'completed' => '']
 function pdic_get($tid)
 {
     pdic_table();
-    $s = db()->prepare("SELECT answers, inspector, started, completed FROM trip_pdic WHERE trip_id=?");
+    $s = db()->prepare("SELECT answers, remarks, inspector, started, completed FROM trip_pdic WHERE trip_id=?");
     $s->execute([(int)$tid]);
     $r = $s->fetch();
     if (!$r) return [];
     $r['answers'] = json_decode($r['answers'], true) ?: [];
+    $r['remarks'] = json_decode((string)($r['remarks'] ?? ''), true) ?: [];
     return $r;
 }
 
@@ -133,8 +139,8 @@ function pdic_data($tid)
     ];
 }
 
-// The checklist rows of the modal / page, with a Yes / No choice each. $cur = answers already ticked.
-function pdic_rows($cur)
+// The checklist rows of the modal / page, with a Yes / No choice and an optional remark each. $cur = answers already ticked, $rem = remarks already typed.
+function pdic_rows($cur, $rem = [])
 {
     $h = '';
     foreach (pdic_sections() as $s) {
@@ -148,10 +154,11 @@ function pdic_rows($cur)
                 $t .= "</ul>";
             }
             if ($it['note'] !== '') $t .= "<span class='md-nt'>(" . e($it['note']) . ")</span>";
+            $rm = "<input class='md-rm' name='r[$k]' maxlength='120' placeholder='Remarks (optional)' autocomplete='off' aria-label='Remarks for item $k' value='" . e($rem[$k] ?? '') . "'>";
             $o = '';
             foreach (['yes' => 'Yes', 'no' => 'No'] as $val => $lab)
                 $o .= "<label class='md-o md-$val'><input type='radio' name='p[$k]' value='$val'" . (($cur[$k] ?? '') === $val ? ' checked' : '') . "><span>$lab</span></label>";
-            $h .= "<div class='md-q md-two' role='radiogroup' aria-labelledby='pd-$k'><div class='md-t' id='pd-$k'>$t</div><div class='md-opts'>$o</div></div>";
+            $h .= "<div class='md-q md-two' role='radiogroup' aria-labelledby='pd-$k'><div class='md-t' id='pd-$k'>$t</div><div class='md-ans'><div class='md-opts'>$o</div>$rm</div></div>";
         }
     }
     return $h;
