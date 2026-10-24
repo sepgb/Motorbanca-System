@@ -7193,3 +7193,26 @@ body.r-operator .mp-note.mp-alert {
         width: auto
     }
 }
+
+/* MDSD and PDIC answers: a thin "|" line between the choices; it stays visible when a choice is picked */
+.md-o+.md-o::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 16px;
+    width: 1px;
+    transform: translateY(-50%);
+    background: #d9cec4;
+    pointer-events: none
+}
+
+/* Space between the choices so the "|" line is always visible, also next to a picked (green / red / grey) choice */
+.md-opts {
+    gap: 8px
+}
+
+.md-o+.md-o::before {
+    left: -4px;
+    background: #cdbfb3
+}
