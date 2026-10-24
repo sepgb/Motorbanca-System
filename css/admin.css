@@ -7216,3 +7216,37 @@ body.r-operator .mp-note.mp-alert {
     left: -4px;
     background: #cdbfb3
 }
+
+/* PDIC: simpler answer area. A slim Yes / No switch with a quiet underlined remark field beneath it. */
+.md-ans {
+    gap: 4px
+}
+
+.md-ans .md-opts {
+    padding: 2px;
+    border-color: #ece3db
+}
+
+.md-ans .md-o span {
+    height: 28px
+}
+
+.md-rm {
+    height: 30px;
+    padding: 0 4px;
+    border: 0;
+    border-bottom: 1px solid #e6dcd3;
+    border-radius: 0;
+    background: transparent;
+    font-size: .8rem;
+    box-shadow: none
+}
+
+.md-rm::placeholder {
+    color: #b3a79d
+}
+
+.md-rm:focus {
+    border-bottom-color: #f26b1d;
+    box-shadow: none
+}
