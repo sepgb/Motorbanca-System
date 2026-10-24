@@ -73,7 +73,11 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   }
   function clearOnChange(m, body, out) {
     m.addEventListener('change', function (e) {
-      if (e.target.type === 'radio') { e.target.closest('.md-q').classList.remove('miss'); tally(body, out); }
+      if (e.target.type === 'radio') {
+        e.target.closest('.md-q').classList.remove('miss'); tally(body, out);
+        var er = m.querySelector('.md-err');   // once every item has an answer the warning goes away by itself
+        if (er && body.querySelectorAll('.md-q').length === body.querySelectorAll('.md-q input:checked').length) show(er, '');
+      }
     });
   }
 
@@ -102,7 +106,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     mbox.querySelector('form').addEventListener('submit', function (e) {
       e.preventDefault();
       var first = firstMissing(mbody);
-      if (first) { show(merr, 'Please answer every item with Yes, No or N/A.'); first.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+      if (first) { show(merr, 'Please answer every item'); first.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
       show(merr, ''); closeM(mbox); openM(pbox);   // on to the PDIC
     });
 
@@ -155,7 +159,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     var first = firstMissing(pbody), ins = pbody.querySelector('[name=inspector]'), name = ins.value.trim();
     ins.closest('.md-ins').classList.toggle('miss', !name);
     if (first || !name) {
-      show(perr, first ? 'Please answer every item with Yes or No.' : 'Please enter the name of the inspector.');
+      show(perr, first ? 'Please answer every item' : 'Please enter the name of the inspector.');
       (first || ins.closest('.md-ins')).scrollIntoView({ block: 'center', behavior: 'smooth' });
       return;
     }

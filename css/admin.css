@@ -7072,3 +7072,69 @@ body.r-operator .mp-note.mp-alert {
 .dt-sep {
     margin-left: 8px
 }
+
+/* MDSD / PDIC warning: a compact notice with an icon instead of a big pink bar */
+.md-box .md-err {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 24px 12px;
+    padding: 10px 14px;
+    border: 1px solid #f7c5bf;
+    border-radius: 12px;
+    background: #fff4f2;
+    color: #b42318;
+    font-size: .86rem;
+    font-weight: 600;
+    line-height: 1.35
+}
+
+.md-box .md-err[hidden] {
+    display: none
+}
+
+.md-box .md-err::before {
+    content: "!";
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #d92d20;
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 800;
+    line-height: 1
+}
+
+@media (max-width: 699px) {
+    .md-box .md-err {
+        margin: 10px 16px 12px
+    }
+}
+
+/* Unanswered MDSD / PDIC item: no red background, a red dot by the question and a red outline on the answer choices */
+.md-q.miss {
+    background: none;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 0
+}
+
+.md-q.miss .md-t::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 9px;
+    border-radius: 50%;
+    background: #d92d20;
+    vertical-align: middle
+}
+
+.md-q.miss .md-opts {
+    border-color: #f0a8a0;
+    box-shadow: 0 0 0 3px #d92d2014
+}
