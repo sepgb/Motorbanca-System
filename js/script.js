@@ -43,7 +43,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
 // Depart button: first a window to check the crew list and the manifest, then the MDSD checklist in a modal, then the PDIC (inspection checklist) in a third one.
 // The boat departs when the PCG submits the PDIC; a last window then offers to print the MDSD and the PDIC.
 (function () {
-  var rtrip = 0, rbox, rbody, rerr, rsub, rnext, mbox, pbox, dbox, mbody, pbody, merr, perr, mcount, pcount, msub, psub, pgo, url, mid, started, busy;
+  var step = 1, rtrip = 0, rbox, rbody, rerr, rsub, rnext, mbox, pbox, dbox, mbody, pbody, merr, perr, mcount, pcount, msub, psub, pgo, url, mid, started, busy;
   var PRINT = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg>';
 
   function make(html) {
@@ -57,6 +57,39 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   function openM(m) { void m.offsetWidth; m.classList.add('open'); }
   function closeM(m) { m.classList.remove('open'); }
   function show(el, t) { el.textContent = t || ''; el.hidden = !t; }
+
+  // ---- the answers are kept on this device whether the checklist is open or closed, so closing it never means starting over
+  function draftKey() { return 'batis_depart_' + mid; }
+  function readFields(body) {
+    var o = {};
+    body.querySelectorAll('input,select,textarea').forEach(function (i) {
+      if (!i.name) return;
+      if (i.type === 'radio' || i.type === 'checkbox') { if (i.checked) o[i.name] = i.value; }
+      else if (i.value) o[i.name] = i.value;
+    });
+    return o;
+  }
+  function writeFields(body, o) {
+    Object.keys(o).forEach(function (k) {
+      body.querySelectorAll('[name="' + k.replace(/"/g, '\"') + '"]').forEach(function (i) {
+        if (i.type === 'radio' || i.type === 'checkbox') i.checked = (i.value === o[k]); else i.value = o[k];
+      });
+    });
+  }
+  function saveDraft() {
+    if (!mbody || !mbody.firstChild) return;   // nothing loaded yet
+    try { localStorage.setItem(draftKey(), JSON.stringify({ trip: rtrip, step: step, m: readFields(mbody), p: readFields(pbody) })); } catch (x) { }
+  }
+  function loadDraft() {
+    try { var j = JSON.parse(localStorage.getItem(draftKey())); return j && j.trip === rtrip ? j : null; } catch (x) { return null; }   // a draft of an older trip is ignored
+  }
+  function clearDraft() { try { localStorage.removeItem(draftKey()); } catch (x) { } }
+  // go to step 1 (crew list and manifest), 2 (MDSD) or 3 (PDIC)
+  function goStep(n) {
+    [rbox, mbox, pbox].forEach(closeM);
+    openM(n === 3 ? pbox : n === 2 ? mbox : rbox);
+    step = n; saveDraft();
+  }
   function tally(body, out) {
     var all = body.querySelectorAll('.md-q');
     out.textContent = body.querySelectorAll('.md-q input:checked').length + ' of ' + all.length + ' answered';
@@ -92,41 +125,48 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       var tb = e.target.closest('.rv-tabs button');   // Crew list / Manifest tabs: the whole document is shown
       if (tb) { showDoc(tb.getAttribute('data-t')); return; }
       if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) closeM(rbox);
-      else if (e.target.classList.contains('md-next') && !rnext.disabled) { closeM(rbox); openM(mbox); }   // on to the MDSD
+      else if (e.target.classList.contains('md-next') && !rnext.disabled) goStep(2);   // on to the MDSD
     });
 
     // ---- step 2: MDSD
     mbox = make('<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Master\u2019s Declaration of Safe Departure</h3><p class="sub"></p></div>' +
       '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
       '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
-      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel">Cancel</button><button type="submit" class="btn sm md-next">Next</button></div></form></div>');
+      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-prev">Back</button><button type="submit" class="btn sm md-next">Next</button></div></form></div>');
     mbody = mbox.querySelector('.md-body'); merr = mbox.querySelector('.md-err'); mcount = mbox.querySelector('.md-count'); msub = mbox.querySelector('.sub');
     clearOnChange(mbox, mbody, mcount);
-    mbox.addEventListener('click', function (e) { if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) closeM(mbox); });   // no backdrop close: a half-filled checklist is not lost by a stray tap
+    mbox.addEventListener('click', function (e) {   // no backdrop close: a half-filled checklist is not lost by a stray tap
+      if (e.target.classList.contains('md-prev')) goStep(1);   // back to the crew list and manifest
+      else if (e.target.classList.contains('x')) { closeM(mbox); saveDraft(); }   // closing keeps the answers
+    });
     mbox.querySelector('form').addEventListener('submit', function (e) {
       e.preventDefault();
       var first = firstMissing(mbody);
       if (first) { show(merr, 'Please answer every item'); first.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
-      show(merr, ''); closeM(mbox); openM(pbox);   // on to the PDIC
+      show(merr, ''); goStep(3);   // on to the PDIC
     });
 
-    // ---- step 3: PDIC (no Cancel here: the only action is to depart the motorbanca; the arrow goes back to the MDSD)
+    // ---- step 3: PDIC: Back (to the MDSD) and Depart; the X closes the window and keeps the answers
     pbox = make('<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Pre-Departure Inspection Checklist</h3><p class="sub"></p></div>' +
-      '<div class="mdl-tools"><button type="button" class="x md-back" aria-label="Back to the MDSD">&lsaquo;</button></div></div>' +
+      '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
       '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
-      '<div class="md-foot"><span class="md-count"></span><button type="submit" class="btn sm md-go md-go-wide">Depart motorbanca</button></div></form></div>');
+      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-prev md-pair">Back</button><button type="submit" class="btn sm md-go md-go-wide md-pair">Depart motorbanca</button></div></form></div>');
     pbody = pbox.querySelector('.md-body'); perr = pbox.querySelector('.md-err'); pcount = pbox.querySelector('.md-count'); psub = pbox.querySelector('.sub'); pgo = pbox.querySelector('.md-go');
     clearOnChange(pbox, pbody, pcount);
-    pbox.addEventListener('click', function (e) { if (e.target.classList.contains('md-back')) { closeM(pbox); openM(mbox); } });
+    pbox.addEventListener('click', function (e) {
+      if (e.target.classList.contains('md-prev')) goStep(2);   // back to the MDSD
+      else if (e.target.classList.contains('x')) { closeM(pbox); saveDraft(); }   // closing keeps the answers
+    });
+    ['input', 'change'].forEach(function (ev) { mbox.addEventListener(ev, saveDraft); pbox.addEventListener(ev, saveDraft); });   // every answer is saved as it is given
     pbox.addEventListener('input', function (e) { if (e.target.name === 'inspector') e.target.closest('.md-ins').classList.remove('miss'); });
     pbox.querySelector('form').addEventListener('submit', submit);
 
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
       if (dbox && dbox.classList.contains('open')) location.reload();
-      else if (pbox.classList.contains('open')) { closeM(pbox); openM(mbox); }
+      else if (pbox.classList.contains('open')) goStep(2);
       else if (rbox.classList.contains('open')) closeM(rbox);
-      else if (mbox.classList.contains('open')) closeM(mbox);
+      else if (mbox.classList.contains('open')) { closeM(mbox); saveDraft(); }
     });
   }
 
@@ -177,7 +217,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
 
   // ---- step 4: the boat has departed: print the MDSD and the PDIC if wanted
   function done(trip) {
-    closeM(mbox); closeM(pbox);
+    clearDraft(); closeM(mbox); closeM(pbox);
     if (!trip) { location.reload(); return; }
     dbox = make('<div class="mdl-box wide md-done"><div class="mdl-head"><div class="mdl-title"><h3>Motorbanca departed</h3><p class="sub">Do you want to print the documents of this trip? You can also print them later from Trip History.</p></div></div>' +
       '<div class="mdl-body md-docs">' +
@@ -193,7 +233,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     url = f.action.replace(/depart\.php.*$/, 'mdsd.php');
     if (!mbox) build();
     busy = false; pgo.disabled = false; pgo.textContent = 'Depart motorbanca'; show(merr, ''); show(perr, '');
-    rtrip = 0; rsub.textContent = 'Loading\u2026'; rbody.innerHTML = ''; rnext.disabled = true; show(rerr, '');
+    step = 1; rtrip = 0; rsub.textContent = 'Loading\u2026'; rbody.innerHTML = ''; rnext.disabled = true; show(rerr, '');
     msub.textContent = ''; mbody.innerHTML = ''; pbody.innerHTML = ''; mcount.textContent = ''; pcount.textContent = '';
     openM(rbox);
     fetch(url + '?ajax=1&mid=' + encodeURIComponent(mid), { credentials: 'same-origin' })
@@ -208,7 +248,10 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
         mbody.innerHTML = d.html;   // built and escaped on the server
         pbody.innerHTML = d.pdic + '<div class="md-ins"><label for="pd-ins">Name of inspector</label><input id="pd-ins" name="inspector" type="text" maxlength="100" autocomplete="off"></div>';
         started = d.started;   // the inspection starts when the checklist is opened
+        var dr = loadDraft();   // the answers given before the window was closed
+        if (dr) { writeFields(mbody, dr.m || {}); writeFields(pbody, dr.p || {}); }
         tally(mbody, mcount); tally(pbody, pcount);
+        if (dr && dr.step > 1) goStep(dr.step);   // carry on where the PCG stopped
       })
       .catch(function () { rsub.textContent = ''; show(rerr, 'Could not load the checklist.'); });
   }

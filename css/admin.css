@@ -7185,3 +7185,11 @@ body.r-operator .mp-note.mp-alert {
         width: 100%
     }
 }
+
+/* PDIC step: Back and Depart sit side by side, also on phones */
+@media (max-width:699px) {
+    .r-admin .md-foot .btn.md-pair {
+        flex: 1 1 0;
+        width: auto
+    }
+}
