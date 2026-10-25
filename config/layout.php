@@ -105,8 +105,7 @@ function page_foot($role = 'public')
     $b = BASE;
     echo "</main>";
     if ($role === 'operator') {
-        ann_live_html('operator');   // live pop-up for a new announcement
-        appr_live_html();            // live pop-up + chime when the PCG approves this boat
+        ann_live_html('operator');   // live pop-up for a new announcement, and for the PCG approving this boat (with a chime)
     } elseif ($role === 'public') ann_live_html('passenger');
     if ($role === 'public' && basename($_SERVER['PHP_SELF']) === 'index.php') {
         require_once __DIR__ . '/profile.php';

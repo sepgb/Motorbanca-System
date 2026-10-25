@@ -157,13 +157,14 @@ if (!function_exists('ann_latest')) {
     function ann_latest()
     {
         susp_ensure();
+        $appr = (($_SESSION['role'] ?? '') === 'operator') ? appr_state() : null;   // operators: did the PCG just approve my boat?
         try {
             $a = db()->query("SELECT id, kind, title, body FROM announcements ORDER BY id DESC LIMIT 1")->fetch();
             $ids = array_map('intval', db()->query("SELECT id FROM announcements ORDER BY id DESC LIMIT 50")->fetchAll(PDO::FETCH_COLUMN));
         } catch (PDOException $x) {
             return null;
         }
-        return $a ? ['id' => (int)$a['id'], 'kind' => isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info', 'title' => $a['title'], 'body' => $a['body'], 'ids' => $ids] : null;
+        return ['id' => $a ? (int)$a['id'] : 0, 'kind' => $a && isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info', 'title' => $a['title'] ?? '', 'body' => $a['body'] ?? '', 'ids' => $ids, 'appr' => $appr];
     }
     // $who is 'operator' or 'passenger' (the folder of the page that opens when the pop-up is tapped).
     // Also keeps the red unread count on the notification icon: unread = announcements this device has not opened yet.
@@ -174,29 +175,78 @@ if (!function_exists('ann_latest')) {
         $ids = json_encode($now ? $now['ids'] : []);
         $kinds = json_encode(ANN_KINDS);
         $api = e(BASE . '/api/live.php?v=ann');
-        if (basename($_SERVER['PHP_SELF'] ?? '') !== 'announcements.php') {   // no pop-up on the list itself
+        $onList = basename($_SERVER['PHP_SELF'] ?? '') === 'announcements.php';   // no announcement pop-up on the list itself
+        $goAppr = e(BASE . '/operator/manifest.php');
+        if (!$onList || $who === 'operator') {
             $go = e(BASE . '/' . $who . '/announcements.php');
             echo "<div class='ann-pop' id='ann-pop' role='alert' hidden><a class='ap-main' href='$go'>" .
                 "<span class='ap-ic'><svg viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10.3 21a1.9 1.9 0 0 0 3.4 0'/></svg></span>" .
                 "<span class='ap-tx'><b class='ap-t'></b><span class='ap-msg'></span><small class='ap-go'>Tap to read more</small></span></a>" .
                 "<button type='button' class='ap-x' aria-label='Dismiss'>&times;</button></div>";
         }
+        $onListJs = $onList ? 'true' : 'false';
+        $isOpJs = $who === 'operator' ? 'true' : 'false';
         echo <<<JS
 <script>
 (function () {
-    var p = document.getElementById('ann-pop'), last = $base, kinds = $kinds, ids = $ids;
+    var p = document.getElementById('ann-pop'), last = $base, kinds = $kinds, ids = $ids, onList = $onListJs, isOp = $isOpJs, goAnn = p ? p.querySelector('.ap-main').getAttribute('href') : '', goAppr = '$goAppr', ac = null, tmr = null;
     function hide() {
         p.classList.remove('show');
         setTimeout(function () { if (!p.classList.contains('show')) p.hidden = true; }, 400);
     }
     function show(a) {
+        clearTimeout(tmr);
         p.className = 'ann-pop k-' + a.kind;
+        p.querySelector('.ap-main').setAttribute('href', goAnn);
+        p.querySelector('.ap-go').textContent = 'Tap to read more';
         p.querySelector('.ap-t').textContent = a.title;
         p.querySelector('.ap-msg').textContent = a.body || '';
         p.hidden = false;
         void p.offsetWidth;
         p.classList.add('show');
     }
+    // Operator: the PCG approved this boat. Same pop-up, in green, with a chime. It is not an announcement and is not added to the notifications.
+    function unlock() {   // browsers only allow sound after a tap: do it on the first one (iPad / iPhone Safari need touchend or click)
+        try { var C = window.AudioContext || window.webkitAudioContext; if (!C) return; ac = ac || new C(); if (ac.state === 'suspended') ac.resume(); } catch (e) {}
+    }
+    function chime() {
+        try {
+            unlock();
+            if (ac) {
+                var t = ac.currentTime;
+                [[880, 0], [1318.5, 0.18]].forEach(function (n) {
+                    var o = ac.createOscillator(), g = ac.createGain();
+                    o.type = 'sine'; o.frequency.value = n[0];
+                    g.gain.setValueAtTime(0.0001, t + n[1]);
+                    g.gain.exponentialRampToValueAtTime(0.3, t + n[1] + 0.02);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 1);
+                    o.connect(g); g.connect(ac.destination);
+                    o.start(t + n[1]); o.stop(t + n[1] + 1.05);
+                });
+            }
+        } catch (e) {}
+        try { if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) {}
+    }
+    function approved(s) {
+        if (!p || !s || !s.token) return;
+        var key = 'batis_appr_' + s.mid, seen = '';
+        try { seen = localStorage.getItem(key) || ''; } catch (e) {}
+        if (String(s.token) === seen) return;               // this approval was already announced
+        try { localStorage.setItem(key, String(s.token)); } catch (e) {}
+        if (s.age > 900) return;                            // only approvals from the last 15 minutes
+        clearTimeout(tmr);
+        p.className = 'ann-pop k-ok';
+        p.querySelector('.ap-main').setAttribute('href', goAppr);
+        p.querySelector('.ap-go').textContent = 'Tap to add passengers';
+        p.querySelector('.ap-t').textContent = 'Request approved';
+        p.querySelector('.ap-msg').textContent = 'The PCG approved your boat. It is now on the queue.';
+        p.hidden = false;
+        void p.offsetWidth;
+        p.classList.add('show');
+        chime();
+        tmr = setTimeout(hide, 15000);
+    }
+    if (isOp) ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, unlock, {passive: true}); });
     // red count on the notification icon: announcements this device has not opened yet (9+ above nine)
     function render() {
         var R = [];
@@ -215,13 +265,15 @@ if (!function_exists('ann_latest')) {
         fetch('$api', {cache: 'no-store', credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (a) {
             ids = a && a.ids ? a.ids : [];
             render();
-            if (p && a && a.id > last) { last = a.id; show(a); }
+            if (p && a && a.id > last) { last = a.id; if (!onList) show(a); }
+            if (isOp && a) approved(a.appr);
         }).catch(function () {});
     }
     if (p) p.querySelector('.ap-x').addEventListener('click', hide);
     render();
     setInterval(render, 1000);   // picks up a notification being opened on this page
-    setInterval(check, 10000);
+    setInterval(check, 5000);
+    check();
     document.addEventListener('visibilitychange', check);
     window.addEventListener('pageshow', check);   // tablets: coming back to the page
     window.addEventListener('focus', check);
@@ -270,83 +322,5 @@ if (!function_exists('appr_state')) {
         $r = $s->fetch();
         if (!$r || $r['status'] !== 'Queued' || !$r['tk']) return ['mid' => $mid, 'token' => 0];
         return ['mid' => $mid, 'token' => (int)$r['tk'], 'age' => (int)$r['age']];   // token = the moment the boat went on the queue
-    }
-    function appr_live_html()
-    {
-        $api = e(BASE . '/api/live.php?v=appr');
-        $go = e(BASE . '/operator/manifest.php');
-        $html = <<<'HTML'
-<div class="ann-pop k-ok" id="appr-pop" role="alert" hidden><a class="ap-main" href="__GO__"><span class="ap-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.8 2.8L16 9.5"/></svg></span><span class="ap-tx"><b class="ap-t">Request approved</b><span class="ap-msg">The PCG approved your boat. It is now on the queue.</span><small class="ap-go">Tap to add passengers</small></span></a><button type="button" class="ap-x" aria-label="Dismiss">&times;</button></div>
-<script>
-(function () {
-    var p = document.getElementById('appr-pop'), api = '__API__', ac = null, timer = null;
-    if (!p) return;
-    // browsers only allow sound after the first tap or key press on the page: unlock it then, so the chime can play by itself later
-    function unlock() {
-        try {
-            var C = window.AudioContext || window.webkitAudioContext;
-            if (!C) return;
-            ac = ac || new C();
-            if (ac.state === 'suspended') ac.resume();
-        } catch (e) {}
-    }
-    // iPad / iPhone Safari only unlock sound on touchend or click, so listen for those too
-    ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, unlock, {passive: true}); });
-    function chime() {   // two soft notes, no sound file needed
-        try {
-            unlock();
-            if (ac) {
-                var t = ac.currentTime;
-                [[880, 0], [1318.5, 0.18]].forEach(function (n) {
-                    var o = ac.createOscillator(), g = ac.createGain();
-                    o.type = 'sine';
-                    o.frequency.value = n[0];
-                    g.gain.setValueAtTime(0.0001, t + n[1]);
-                    g.gain.exponentialRampToValueAtTime(0.3, t + n[1] + 0.02);
-                    g.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 1);
-                    o.connect(g);
-                    g.connect(ac.destination);
-                    o.start(t + n[1]);
-                    o.stop(t + n[1] + 1.05);
-                });
-            }
-        } catch (e) {}
-        try { if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) {}
-    }
-    function hide() {
-        clearTimeout(timer);
-        p.classList.remove('show');
-        setTimeout(function () { if (!p.classList.contains('show')) p.hidden = true; }, 400);
-    }
-    function show() {
-        p.hidden = false;
-        void p.offsetWidth;
-        p.classList.add('show');
-        chime();
-        clearTimeout(timer);
-        timer = setTimeout(hide, 15000);
-    }
-    function check() {
-        fetch(api, {cache: 'no-store', credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (s) {
-            if (!s || !s.token) return;
-            var key = 'batis_appr_' + s.mid, seen = '';
-            try { seen = localStorage.getItem(key) || ''; } catch (e) {}
-            if (String(s.token) === seen) return;   // this approval was already announced
-            try { localStorage.setItem(key, String(s.token)); } catch (e) {}
-            if (s.age <= 900) show();               // approved in the last 15 minutes
-        }).catch(function () {});
-    }
-    p.querySelector('.ap-x').addEventListener('click', hide);
-    p.querySelector('.ap-main').addEventListener('click', hide);
-    check();
-    setInterval(check, 5000);
-    document.addEventListener('visibilitychange', check);
-    window.addEventListener('pageshow', check);   // tablets: coming back to the page
-    window.addEventListener('focus', check);
-    window.addEventListener('online', check);
-})();
-</script>
-HTML;
-        echo str_replace(['__GO__', '__API__'], [$go, $api], $html);
     }
 }

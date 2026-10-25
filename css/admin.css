@@ -7441,3 +7441,19 @@ body.r-operator .main>h1:has(+ .mpage) {
 .mp-note {
     padding: 12px 2px 14px
 }
+
+/* Operator Passengers page: only the corner radius changes, everything is nearly square */
+body.r-operator .mpage .card,
+body.r-operator .mpage .tablewrap,
+body.r-operator .mpage .qrc-box,
+body.r-operator .mpage .alert,
+body.r-operator .mpage .mp-note {
+    border-radius: 4px
+}
+
+body.r-operator .mpage input,
+body.r-operator .mpage .btn,
+body.r-operator .mpage .mp-count .bar,
+body.r-operator .mpage .mp-count .bar>* {
+    border-radius: 4px
+}
