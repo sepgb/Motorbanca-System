@@ -7457,3 +7457,13 @@ body.r-operator .mpage .mp-count .bar,
 body.r-operator .mpage .mp-count .bar>* {
     border-radius: 4px
 }
+
+/* Live queue cards (admin, operator and passenger): nearly square corners */
+.cluster,
+.r-admin .cluster,
+.insp,
+.r-admin .insp,
+.mb,
+.r-admin .mb {
+    border-radius: 4px
+}
