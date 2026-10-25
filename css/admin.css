@@ -7432,3 +7432,12 @@ body.r-operator .mp-note.mp-alert {
     flex-direction: column;
     justify-content: center
 }
+
+/* Operator Passengers page, for inspection: even spacing above and below the status note */
+body.r-operator .main>h1:has(+ .mpage) {
+    margin-bottom: 6px !important
+}
+
+.mp-note {
+    padding: 12px 2px 14px
+}

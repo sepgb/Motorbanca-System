@@ -57,7 +57,7 @@ page_head('Passengers', 'operator');
 [$tg, $tcls] = op_tag($m);
 ?>
 <h1><?= e($m['motorbanca_name']) ?></h1>
-<div class="optag <?= $tcls ?>" style="margin:2px 0 14px"><?= $tg ?></div>
+<?php if ($m['status'] !== 'Inspection'): ?><div class="optag <?= $tcls ?>" style="margin:2px 0 14px"><?= $tg ?></div><?php endif; ?>
 <?php if (!$trip && !$err && ($m['status'] === 'Departed' || next_trip_at($m['id']))): $wait = next_trip_at($m['id']); ?>
   <div class="card dep-card">
     <div class="dep-ic"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
