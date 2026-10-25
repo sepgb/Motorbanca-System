@@ -7467,3 +7467,65 @@ body.r-operator .mpage .mp-count .bar>* {
 .r-admin .mb {
     border-radius: 4px
 }
+
+/* Track my ride: nearly square card, and a cleaner error notice (icon, bold title, short explanation) */
+.trk-card,
+.r-admin .trk-card {
+    border-radius: 4px
+}
+
+.trk-card .alert.bad {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 12px;
+    row-gap: 2px;
+    align-items: start;
+    padding: 12px 14px;
+    border: 1px solid #f7c5bf;
+    border-radius: 4px;
+    background: #fff4f2;
+    color: #b42318;
+    font-size: .86rem;
+    line-height: 1.4
+}
+
+.trk-card .alert.bad[hidden] {
+    display: none
+}
+
+.trk-card .alert.bad::before {
+    content: "!";
+    grid-row: 1 / span 2;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border-radius: 50%;
+    background: #d92d20;
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 800;
+    line-height: 1
+}
+
+.trk-card .alert.bad b {
+    grid-column: 2;
+    font-size: .92rem;
+    color: #b42318
+}
+
+.trk-card .alert.bad span {
+    grid-column: 2;
+    color: #8a4b45
+}
+
+/* Track my ride: a little corner radius on the card and on the notice */
+.trk-card,
+.r-admin .trk-card {
+    border-radius: 12px
+}
+
+.trk-card .alert.bad {
+    border-radius: 10px
+}
