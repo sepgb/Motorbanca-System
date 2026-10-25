@@ -7529,3 +7529,13 @@ body.r-operator .mpage .mp-count .bar>* {
 .trk-card .alert.bad {
     border-radius: 10px
 }
+
+/* a notice with only a title: the icon lines up with it */
+.trk-card .alert.bad:not(:has(span)) {
+    align-items: center
+}
+
+.trk-card .alert.bad:not(:has(span))::before {
+    grid-row: 1;
+    margin-top: 0
+}

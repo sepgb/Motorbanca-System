@@ -13,7 +13,7 @@
         el.textContent = '';
         var b = document.createElement('b'), t = document.createElement('span');
         b.textContent = title; t.textContent = text;
-        el.appendChild(b); el.appendChild(t); el.hidden = false;
+        el.appendChild(b); if (text) el.appendChild(t); el.hidden = false;
     }
     function step(n) { s1.hidden = n !== 1; s2.hidden = n !== 2; s3.hidden = n !== 3; window.scrollTo(0, 0); }
     function save(st) { try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), who: who, dest: destName, step: st })); } catch (x) { } }
@@ -39,7 +39,7 @@
         check(w).then(function (j) {
             b.disabled = false; b.textContent = 'Check';
             if (!j.ok) return show($('e1'), j.error || 'Something went wrong. Try again.');
-            if (!j.found) return note($('e1'), 'We could not find you on a boat that is on the queue', 'Check that your name, age and barangay are spelled the same as the operator typed them, or ask the operator to add you.');
+            if (!j.found) return note($('e1'), 'We could not find you on a boat that is on the queue', '');
             who = w; destName = ''; fillStep2(j); save(2); step(2);
         }).catch(function () { b.disabled = false; b.textContent = 'Check'; show($('e1'), 'Could not reach the server. Check your connection and try again.'); });
     });
