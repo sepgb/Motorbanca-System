@@ -7388,3 +7388,31 @@ body.r-operator .mp-note.mp-alert {
 .opgrid .card {
     min-height: 0
 }
+
+/* Operator Home: tighter cards, less padding and less space between the lines */
+.opgrid .card {
+    padding: 14px 20px
+}
+
+.opgrid .card h3 {
+    margin-bottom: 6px
+}
+
+.opgrid .count {
+    margin-top: 6px;
+    font-size: 1.45rem
+}
+
+.opgrid .bar {
+    margin: 6px 0
+}
+
+.opgrid .card p.muted {
+    margin-top: 4px !important;
+    margin-bottom: 0;
+    line-height: 1.35
+}
+
+.opgrid .card .btn {
+    margin-top: 10px
+}
