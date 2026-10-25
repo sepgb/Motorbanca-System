@@ -212,7 +212,6 @@ if (!function_exists('ann_latest')) {
         });
     }
     function check() {
-        if (document.hidden) return;
         fetch('$api', {cache: 'no-store', credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (a) {
             ids = a && a.ids ? a.ids : [];
             render();
@@ -224,6 +223,9 @@ if (!function_exists('ann_latest')) {
     setInterval(render, 1000);   // picks up a notification being opened on this page
     setInterval(check, 10000);
     document.addEventListener('visibilitychange', check);
+    window.addEventListener('pageshow', check);   // tablets: coming back to the page
+    window.addEventListener('focus', check);
+    window.addEventListener('online', check);
 })();
 </script>
 JS;
@@ -288,7 +290,8 @@ if (!function_exists('appr_state')) {
             if (ac.state === 'suspended') ac.resume();
         } catch (e) {}
     }
-    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, unlock, {passive: true}); });
+    // iPad / iPhone Safari only unlock sound on touchend or click, so listen for those too
+    ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, unlock, {passive: true}); });
     function chime() {   // two soft notes, no sound file needed
         try {
             unlock();
@@ -324,7 +327,6 @@ if (!function_exists('appr_state')) {
         timer = setTimeout(hide, 15000);
     }
     function check() {
-        if (document.hidden) return;
         fetch(api, {cache: 'no-store', credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (s) {
             if (!s || !s.token) return;
             var key = 'batis_appr_' + s.mid, seen = '';
@@ -339,6 +341,9 @@ if (!function_exists('appr_state')) {
     check();
     setInterval(check, 5000);
     document.addEventListener('visibilitychange', check);
+    window.addEventListener('pageshow', check);   // tablets: coming back to the page
+    window.addEventListener('focus', check);
+    window.addEventListener('online', check);
 })();
 </script>
 HTML;
