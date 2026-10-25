@@ -6914,17 +6914,7 @@ body.r-operator .mp-note.mp-alert {
         margin-bottom: 0
     }
 
-    /* a small pin in front of every place, and a check on the chosen one */
-    .trk-card select option::before,
-    .pf-form select option::before {
-        content: "";
-        flex: none;
-        width: 18px;
-        height: 18px;
-        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f26b1d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z'/%3E%3Ccircle cx='12' cy='9.5' r='2.5'/%3E%3C/svg%3E") center/18px no-repeat;
-        opacity: .4
-    }
-
+    /* a check on the chosen one (no icon in front of the places) */
     .trk-card select option::checkmark,
     .pf-form select option::checkmark {
         content: "";
@@ -6950,10 +6940,6 @@ body.r-operator .mp-note.mp-alert {
         color: #b4470a
     }
 
-    .trk-card select option:checked::before,
-    .pf-form select option:checked::before {
-        opacity: 1
-    }
 }
 
 /* Track my ride (live step, phones and tablets): the bottom bar is frosted glass, so the map shows through underneath it */
@@ -7561,4 +7547,47 @@ body.r-operator .mpage .mp-count .bar>* {
 .trk-card .alert.bad,
 .trk-card .alert.bad b {
     line-height: 1
+}
+
+/* Dropdown options redesign (Track my ride, Cancel trip, Edit profile): clean rows, thin dividers, the chosen one marked with a left bar and a check */
+@supports (appearance: base-select) {
+
+    .trk-card select::picker(select),
+    .pf-form select::picker(select) {
+        padding: 6px;
+        border-radius: 14px
+    }
+
+    .trk-card select option,
+    .pf-form select option {
+        position: relative;
+        min-height: 48px;
+        margin-bottom: 0;
+        padding: 0 16px 0 18px;
+        border-radius: 8px;
+        border-bottom: 1px solid #f4ede7;
+        font-size: .96rem
+    }
+
+    .trk-card select option:last-child,
+    .pf-form select option:last-child {
+        border-bottom: 0
+    }
+
+    .trk-card select option:checked,
+    .pf-form select option:checked {
+        font-weight: 700
+    }
+
+    .trk-card select option:checked::after,
+    .pf-form select option:checked::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 10px;
+        bottom: 10px;
+        width: 3px;
+        border-radius: 3px;
+        background: #f26b1d
+    }
 }
