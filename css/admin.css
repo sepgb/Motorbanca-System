@@ -7416,3 +7416,11 @@ body.r-operator .mp-note.mp-alert {
 .opgrid .card .btn {
     margin-top: 10px
 }
+
+/* Operator Home: "passengers on board" sits right next to the live count */
+.count .cnt-lbl {
+    margin-left: 8px;
+    font-size: .88rem;
+    font-weight: 500;
+    color: var(--mut)
+}

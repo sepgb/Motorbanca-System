@@ -16,11 +16,11 @@ function badge($s)
     [$i, $c] = $m[$s] ?? ['⚪', 'gray'];
     return "<span class='badge $c'>$i " . strtoupper(e($s)) . "</span>";
 }
-function count_html($p, $c)
+function count_html($p, $c, $label = '')
 {
     $full = $p >= $c;
     $w = $c ? min(100, round($p / $c * 100)) : 0;
-    return "<div class='count" . ($full ? ' full' : '') . "'><b>$p</b><span>/ $c</span>" .
+    return "<div class='count" . ($full ? ' full' : '') . "'><b>$p</b><span>/ $c</span>" . ($label !== '' ? "<small class='cnt-lbl'>$label</small>" : '') .
         "</div><div class='bar'><i style='width:$w%'></i></div>";
 }
 // Passengers shown for a boat = those on its latest (non-cancelled) trip.
@@ -209,8 +209,7 @@ function op_tag($m)
 function op_card($m)
 {
     [$tag, $cls, $pos] = op_tag($m);
-    echo "<div class='optag $cls'>$tag</div>" . count_html($m['pax'], $m['capacity']) .
-        "<p class='muted'>passengers on board</p>";
+    echo "<div class='optag $cls'>$tag</div>" . count_html($m['pax'], $m['capacity'], 'passengers on board');
     if (($pos !== null && $pos > 0) || $tag === 'FOR INSPECTION') echo "<p class='muted' style='margin-top:10px'>You can add passengers once you are ON QUEUE.</p>";
 }
 // The "Inspection" status is added to the two status columns the first time a boat needs it (no manual SQL).
@@ -331,7 +330,7 @@ function mb_card($r, $pos, $tag, $admin = false)
         ($tag ? "<div style='margin-top:1px;line-height:1.2;font-size:.72rem;font-weight:800;letter-spacing:.06em;color:" . ($tag === 'DEPARTED' ? 'var(--depc,#12468f)' : 'var(--tagc,#15803d)') . "'>$tag</div>" : '') .
         "</div></div>" .
         ($wait ? "<p class='muted' style='font-size:1rem'>✅ Available · capacity " . (int)$r['capacity'] . "</p>"
-            : count_html($r['pax'], $r['capacity']) . "<p class='muted'>passengers on board</p>") .
+            : count_html($r['pax'], $r['capacity'], 'passengers on board')) .
         ($r['status'] === 'Departed' ? cd_html($r['left_s']) : '') .
         "</article>";
 }
