@@ -19,7 +19,6 @@ page_head('Track my ride', 'public');
     <div class="alert trk-sec" id="sec" hidden><b>Location needs a secure page.</b> This page was opened with plain http, so the browser will block your location. <a id="secgo" href="#">Open the secure (https) page</a>. If your browser warns about the certificate, tap Advanced, then Proceed.</div>
     <!-- step 1 -->
     <form class="card trk-card<?= $pf ? ' trk-lock' : '' ?>" id="s1" autocomplete="off">
-        <h3>1. Find my boat</h3>
         <p class="muted"><?= $pf ? 'Your details come from your <a href="profile.php">Profile</a>.' : 'Enter your details exactly as they were given to the boat operator, or <a href="profile.php">set up your Profile</a> to fill this in automatically.' ?></p>
         <label>Full name<input name="name" maxlength="80" required<?= $pf ? ' readonly tabindex="-1"' : '' ?> value="<?= e($pf['full_name'] ?? '') ?>"></label>
         <div class="trk-row">
