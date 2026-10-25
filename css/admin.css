@@ -7539,3 +7539,26 @@ body.r-operator .mpage .mp-count .bar>* {
     grid-row: 1;
     margin-top: 0
 }
+
+/* the notice title is regular weight */
+.trk-card .alert.bad b {
+    font-weight: 500
+}
+
+/* Track my ride notice: no border, no background, tight line spacing */
+.trk-card .alert.bad {
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    line-height: .8
+}
+
+.trk-card .alert.bad b {
+    line-height: .8
+}
+
+/* Track my ride notice: line spacing 1 */
+.trk-card .alert.bad,
+.trk-card .alert.bad b {
+    line-height: 1
+}
