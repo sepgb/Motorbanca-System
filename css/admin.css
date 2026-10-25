@@ -7424,3 +7424,11 @@ body.r-operator .mp-note.mp-alert {
     font-weight: 500;
     color: var(--mut)
 }
+
+/* Live queue cards: the boat's name, status, count and bar sit in the middle (up and down) of the space above the departure line; still left aligned */
+.r-admin .cluster>.mb:not(.empty) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center
+}
