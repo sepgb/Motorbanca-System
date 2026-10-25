@@ -11,6 +11,9 @@ elseif ($v === 'susp' && $role === 'admin') susp_notice_html();
 elseif ($v === 'ann') {
     header('Content-Type: application/json');
     echo json_encode(ann_latest());
+} elseif ($v === 'appr' && $role === 'operator') {
+    header('Content-Type: application/json');
+    echo json_encode(appr_state());
 } elseif ($v === 'op' && $role === 'operator') {
     $m = my_mb();
     if ($m) op_card($m);

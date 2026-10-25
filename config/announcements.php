@@ -255,3 +255,93 @@ if (!function_exists('ann_seen_mark')) {
         return "<a class='ann-strip k-" . e($a['kind']) . "' href='" . e($url) . "'><b>" . e($a['title']) . "</b><span>View " . (strpos($_SERVER['PHP_SELF'] ?? '', '/passenger/') !== false ? 'notification' : 'announcement') . " &rsaquo;</span></a>";
     }
 }
+
+// ---- Live "request approved" pop-up for the operator: the PCG approved the boat, it is now on the queue.
+//      Same pop-up look as the announcements, with a chime, and it is NOT added to the notifications list. ----
+if (!function_exists('appr_state')) {
+    function appr_state()
+    {
+        $mid = (int)($_SESSION['mid'] ?? 0);
+        if (!$mid) return ['mid' => 0, 'token' => 0];
+        $s = db()->prepare("SELECT status, UNIX_TIMESTAMP(queued_at) tk, TIMESTAMPDIFF(SECOND, queued_at, NOW()) age FROM motorbancas WHERE id=?");
+        $s->execute([$mid]);
+        $r = $s->fetch();
+        if (!$r || $r['status'] !== 'Queued' || !$r['tk']) return ['mid' => $mid, 'token' => 0];
+        return ['mid' => $mid, 'token' => (int)$r['tk'], 'age' => (int)$r['age']];   // token = the moment the boat went on the queue
+    }
+    function appr_live_html()
+    {
+        $api = e(BASE . '/api/live.php?v=appr');
+        $go = e(BASE . '/operator/manifest.php');
+        $html = <<<'HTML'
+<div class="ann-pop k-ok" id="appr-pop" role="alert" hidden><a class="ap-main" href="__GO__"><span class="ap-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.8 2.8L16 9.5"/></svg></span><span class="ap-tx"><b class="ap-t">Request approved</b><span class="ap-msg">The PCG approved your boat. It is now on the queue.</span><small class="ap-go">Tap to add passengers</small></span></a><button type="button" class="ap-x" aria-label="Dismiss">&times;</button></div>
+<script>
+(function () {
+    var p = document.getElementById('appr-pop'), api = '__API__', ac = null, timer = null;
+    if (!p) return;
+    // browsers only allow sound after the first tap or key press on the page: unlock it then, so the chime can play by itself later
+    function unlock() {
+        try {
+            var C = window.AudioContext || window.webkitAudioContext;
+            if (!C) return;
+            ac = ac || new C();
+            if (ac.state === 'suspended') ac.resume();
+        } catch (e) {}
+    }
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, unlock, {passive: true}); });
+    function chime() {   // two soft notes, no sound file needed
+        try {
+            unlock();
+            if (ac) {
+                var t = ac.currentTime;
+                [[880, 0], [1318.5, 0.18]].forEach(function (n) {
+                    var o = ac.createOscillator(), g = ac.createGain();
+                    o.type = 'sine';
+                    o.frequency.value = n[0];
+                    g.gain.setValueAtTime(0.0001, t + n[1]);
+                    g.gain.exponentialRampToValueAtTime(0.3, t + n[1] + 0.02);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 1);
+                    o.connect(g);
+                    g.connect(ac.destination);
+                    o.start(t + n[1]);
+                    o.stop(t + n[1] + 1.05);
+                });
+            }
+        } catch (e) {}
+        try { if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) {}
+    }
+    function hide() {
+        clearTimeout(timer);
+        p.classList.remove('show');
+        setTimeout(function () { if (!p.classList.contains('show')) p.hidden = true; }, 400);
+    }
+    function show() {
+        p.hidden = false;
+        void p.offsetWidth;
+        p.classList.add('show');
+        chime();
+        clearTimeout(timer);
+        timer = setTimeout(hide, 15000);
+    }
+    function check() {
+        if (document.hidden) return;
+        fetch(api, {cache: 'no-store', credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (s) {
+            if (!s || !s.token) return;
+            var key = 'batis_appr_' + s.mid, seen = '';
+            try { seen = localStorage.getItem(key) || ''; } catch (e) {}
+            if (String(s.token) === seen) return;   // this approval was already announced
+            try { localStorage.setItem(key, String(s.token)); } catch (e) {}
+            if (s.age <= 900) show();               // approved in the last 15 minutes
+        }).catch(function () {});
+    }
+    p.querySelector('.ap-x').addEventListener('click', hide);
+    p.querySelector('.ap-main').addEventListener('click', hide);
+    check();
+    setInterval(check, 5000);
+    document.addEventListener('visibilitychange', check);
+})();
+</script>
+HTML;
+        echo str_replace(['__GO__', '__API__'], [$go, $api], $html);
+    }
+}

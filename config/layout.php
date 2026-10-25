@@ -104,8 +104,10 @@ function page_foot($role = 'public')
 {
     $b = BASE;
     echo "</main>";
-    if ($role === 'operator') ann_live_html('operator');   // live pop-up for a new announcement
-    elseif ($role === 'public') ann_live_html('passenger');
+    if ($role === 'operator') {
+        ann_live_html('operator');   // live pop-up for a new announcement
+        appr_live_html();            // live pop-up + chime when the PCG approves this boat
+    } elseif ($role === 'public') ann_live_html('passenger');
     if ($role === 'public' && basename($_SERVER['PHP_SELF']) === 'index.php') {
         require_once __DIR__ . '/profile.php';
         $hasP = pax_profile() !== null;
