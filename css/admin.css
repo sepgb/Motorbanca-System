@@ -4903,8 +4903,19 @@ body.r-operator .mp-alert {
     width: auto;
     min-height: 0;
     height: 36px;
-    padding: 0 24px;
-    font-size: .85rem
+    padding: 0 20px;
+    font-size: .85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px
+}
+
+.pf-form.ro .pf-act .btn .ico {
+    flex: none;
+    width: 15px;
+    height: 15px;
+    stroke-width: 2
 }
 
 /* desktop top menu (admin and operator): an icon in front of each label */
@@ -7643,4 +7654,26 @@ body.r-operator .mpage .mp-count .bar>* {
 .trk-card .trk-btns #cancel:focus-visible {
     outline: 3px solid #f26b1d;
     outline-offset: 2px
+}
+
+/* Passenger side: buttons are flat, the same as the buttons inside the modals (no raised gradient, no inner highlight or dark edge) */
+body.r-public .btn:not(.ghost):not(.mdl .btn) {
+    background: var(--o);
+    box-shadow: 0 8px 18px -8px #f26b1daa
+}
+
+body.r-public .btn:not(.ghost):not(.mdl .btn):hover {
+    box-shadow: 0 8px 18px -8px #f26b1daa
+}
+
+body.r-public .btn:not(.ghost):not(.mdl .btn):active {
+    transform: none;
+    filter: brightness(.96);
+    box-shadow: 0 8px 18px -8px #f26b1daa
+}
+
+body.r-public .btn.ghost:not(.mdl .btn),
+body.r-public .btn.ghost:not(.mdl .btn):active {
+    transform: none;
+    box-shadow: none
 }

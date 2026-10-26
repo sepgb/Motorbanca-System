@@ -49,7 +49,7 @@ page_head($editTitle ? 'Edit Profile' : 'Profile', 'public');
                     <?php foreach ($brgys as $b): ?><option<?= ($p['barangay'] ?? '') === $b ? ' selected' : '' ?>><?= e($b) ?></option><?php endforeach; ?>
                 </select></div>
         </div>
-        <div class="pf-act"><?php if ($view): ?><a class="btn" href="profile.php?edit=1">Edit</a><?php else: ?><?php if (pax_profile()): ?><a class="btn ghost" href="profile.php">Cancel</a><?php endif; ?><button class="btn">Save</button><?php endif; ?></div>
+        <div class="pf-act"><?php if ($view): ?><a class="btn" href="profile.php?edit=1"><?= ico('<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/>') ?><span>Edit</span></a><?php else: ?><?php if (pax_profile()): ?><a class="btn ghost" href="profile.php">Cancel</a><?php endif; ?><button class="btn">Save</button><?php endif; ?></div>
     </form>
 </section>
 <script>
