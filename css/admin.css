@@ -4897,10 +4897,14 @@ body.r-operator .mp-alert {
     padding-right: 14px
 }
 
-/* Edit (after saving) is as wide as the Save button next to Cancel: half the row, on the right */
+/* Edit (after saving) is a small button on the right */
 .pf-form.ro .pf-act .btn {
-    flex: 0 0 calc(50% - 5px);
-    width: auto
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 0;
+    height: 36px;
+    padding: 0 24px;
+    font-size: .85rem
 }
 
 /* desktop top menu (admin and operator): an icon in front of each label */
@@ -7593,6 +7597,7 @@ body.r-operator .mpage .mp-count .bar>* {
 }
 
 /* Track my ride, step 2: "Cancel trip" (left) and "Share my location" (right) on one row, 50 / 50.
+   Only the layout and the text size are set here: the Share button keeps its normal look.
    When Cancel is not shown, Share fills the row. Cancel looks like the plain buttons in the popups. */
 .trk-card .trk-btns {
     display: flex;
@@ -7604,24 +7609,26 @@ body.r-operator .mpage .mp-count .bar>* {
     flex: 1 1 0;
     width: auto;
     min-width: 0;
-    margin: 0;
-    padding-left: 12px;
-    padding-right: 12px;
-    border: 1px solid transparent
-        /* same border on both, so the two buttons are exactly the same width */
+    min-height: 0;
+    height: 38px;
+    /* shorter buttons */
+    white-space: nowrap;
+    font-size: .82rem;
+    /* smaller text, so both labels stay on one line */
+    letter-spacing: 0;
+    padding-left: 8px;
+    padding-right: 8px
 }
 
 .trk-card .trk-btns #cancel {
     order: -1;
-    height: 46px;
-    min-height: 0;
-    border: 1px solid var(--ln);
+    border: 0;
     border-radius: 999px;
     background: #fff;
     color: var(--tx);
-    font-size: .92rem;
     font-weight: 600;
-    box-shadow: none;
+    box-shadow: inset 0 0 0 1px var(--ln);
+    /* the thin border, drawn inside so both buttons are exactly the same width */
     filter: none;
     transform: none;
     transition: background .15s
@@ -7629,7 +7636,7 @@ body.r-operator .mpage .mp-count .bar>* {
 
 .trk-card .trk-btns #cancel:hover {
     background: #fbf7f3;
-    box-shadow: none;
+    box-shadow: inset 0 0 0 1px var(--ln);
     transform: none
 }
 
