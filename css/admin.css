@@ -7677,3 +7677,21 @@ body.r-public .btn.ghost:not(.mdl .btn):active {
     transform: none;
     box-shadow: none
 }
+
+/* Edit profile: Save and Cancel are small and on the right, the same size as the Edit button */
+.pf-form .pf-act {
+    justify-content: flex-end
+}
+
+.pf-form .pf-act .btn {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 0;
+    height: 36px;
+    padding: 0 20px;
+    font-size: .85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px
+}
