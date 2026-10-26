@@ -7592,7 +7592,8 @@ body.r-operator .mpage .mp-count .bar>* {
     }
 }
 
-/* Track my ride, step 2: "Share my location" and "Cancel trip" sit on one row (Share is wider; alone, Share fills the row) */
+/* Track my ride, step 2: "Cancel trip" (left) and "Share my location" (right) on one row, 50 / 50.
+   When Cancel is not shown, Share fills the row. Cancel looks like the plain buttons in the popups. */
 .trk-card .trk-btns {
     display: flex;
     gap: 10px;
@@ -7605,9 +7606,34 @@ body.r-operator .mpage .mp-count .bar>* {
     min-width: 0;
     margin: 0;
     padding-left: 12px;
-    padding-right: 12px
+    padding-right: 12px;
+    border: 1px solid transparent
+        /* same border on both, so the two buttons are exactly the same width */
 }
 
-.trk-card .trk-btns #go {
-    flex: 2 1 0
+.trk-card .trk-btns #cancel {
+    order: -1;
+    height: 46px;
+    min-height: 0;
+    border: 1px solid var(--ln);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--tx);
+    font-size: .92rem;
+    font-weight: 600;
+    box-shadow: none;
+    filter: none;
+    transform: none;
+    transition: background .15s
+}
+
+.trk-card .trk-btns #cancel:hover {
+    background: #fbf7f3;
+    box-shadow: none;
+    transform: none
+}
+
+.trk-card .trk-btns #cancel:focus-visible {
+    outline: 3px solid #f26b1d;
+    outline-offset: 2px
 }
