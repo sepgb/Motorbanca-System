@@ -7695,3 +7695,16 @@ body.r-public .btn.ghost:not(.mdl .btn):active {
     justify-content: center;
     gap: 7px
 }
+
+/* Edit profile: Edit, Save and Cancel have the same width */
+.pf-form .pf-act .btn,
+.pf-form.ro .pf-act .btn {
+    flex: 0 0 104px;
+    width: 104px;
+    padding: 0
+}
+
+/* Passenger side: orange buttons get a thin darker-orange border so they read as buttons */
+body.r-public .btn:not(.ghost) {
+    border: 1px solid #d4570e
+}
