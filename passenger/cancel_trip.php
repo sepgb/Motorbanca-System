@@ -38,8 +38,8 @@ page_head('Track my ride', 'public');
         </div>
         <label>Destination barangay<select id="dest"></select></label>
         <div class="alert bad" id="e2" hidden></div>
-        <button class="btn" id="go">Share my location</button>
         <button class="btn ghost trk-cancel" id="cancel" type="button" hidden>Cancel trip</button>
+        <button class="btn" id="go">Share my location</button>
         <button class="trk-link" id="back1" type="button">Not you? Go back</button>
     </section>
 
