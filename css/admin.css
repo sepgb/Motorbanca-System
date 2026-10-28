@@ -7805,354 +7805,84 @@ body.r-public .btn:not(.mdl .btn) {
     gap: 7px
 }
 
-/* Passenger side buttons: lighter outline, no extra inner ring (less border) */
-body.r-public .btn:not(.ghost):not(.mdl .btn),
-body.r-public .mdl .btn:not(.ghost) {
-    border: 1px solid #e0620f;
-    box-shadow: inset 0 9px 10px -7px #ffffff80, inset 0 -7px 8px -6px #7a2d0540, 0 1px 2px #1f1a1726
-}
+/* Passenger on phones: a small "taste" pass. Pages and lists settle in one by one, taps feel physical,
+   titles are tighter. Nothing inside the live-refreshing boards is animated (they re-draw every few seconds). */
+@keyframes pxrise {
+    from {
+        opacity: 0;
+        transform: translateY(14px)
+    }
 
-body.r-public .btn:not(.ghost):not(.mdl .btn):hover,
-body.r-public .mdl .btn:not(.ghost):hover {
-    box-shadow: inset 0 9px 10px -7px #ffffff99, inset 0 -7px 8px -6px #7a2d0540, 0 2px 4px #1f1a1730
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn):active,
-body.r-public .mdl .btn:not(.ghost):active {
-    box-shadow: inset 0 5px 8px -6px #ffffff66, inset 0 -3px 6px -4px #7a2d0540, 0 1px 1px #1f1a1726
-}
-
-body.r-public .btn.ghost:not(.mdl .btn),
-body.r-public .mdl .btn.ghost {
-    border: 1px solid #ece8e4;
-    box-shadow: inset 0 -8px 8px -7px #1f1a1721, 0 1px 3px #1f1a1714
-}
-
-body.r-public .btn.ghost:not(.mdl .btn):hover,
-body.r-public .mdl .btn.ghost:hover {
-    border-color: #ded8d2;
-    box-shadow: inset 0 -8px 8px -7px #1f1a1729, 0 1px 4px #1f1a171c
-}
-
-body.r-public .btn.ghost:not(.mdl .btn):active,
-body.r-public .mdl .btn.ghost:active {
-    box-shadow: inset 0 3px 6px -3px #1f1a1730
-}
-
-/* Passenger side buttons, redesigned: main buttons are solid orange with an arrow on the right, secondary buttons are plain white with a thin border. No other icons. */
-body.r-public .btn:not(.ghost):not(.mdl .btn),
-body.r-public .mdl .btn:not(.ghost),
-body.r-public .btn.ghost:not(.mdl .btn),
-body.r-public .mdl .btn.ghost {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border-radius: 12px;
-    font-weight: 700;
-    letter-spacing: .01em;
-    text-shadow: none;
-    transition: transform .15s, box-shadow .15s, background-color .15s, border-color .15s
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn),
-body.r-public .mdl .btn:not(.ghost) {
-    background: linear-gradient(180deg, #f5762a, #f06614);
-    border: 0;
-    color: #fff;
-    box-shadow: inset 0 1px 0 #ffffff4d, 0 8px 16px -8px #f26b1db3
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn)::after,
-body.r-public .mdl .btn:not(.ghost)::after {
-    content: "";
-    flex: none;
-    width: 16px;
-    height: 16px;
-    background: currentColor;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center/contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center/contain no-repeat;
-    transition: transform .15s
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn):hover,
-body.r-public .mdl .btn:not(.ghost):hover {
-    transform: translateY(-1px);
-    background: linear-gradient(180deg, #f87d33, #f26b1d);
-    box-shadow: inset 0 1px 0 #ffffff59, 0 12px 20px -9px #f26b1dc7
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn):hover::after,
-body.r-public .mdl .btn:not(.ghost):hover::after {
-    transform: translateX(3px)
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn):active,
-body.r-public .mdl .btn:not(.ghost):active {
-    transform: translateY(0);
-    filter: none;
-    background: #ea6418;
-    box-shadow: inset 0 2px 4px #7a2d0540
-}
-
-body.r-public .btn.ghost:not(.mdl .btn),
-body.r-public .mdl .btn.ghost {
-    background: #fff;
-    border: 1px solid #e6e0da;
-    color: #1f1a17;
-    box-shadow: none
-}
-
-body.r-public .btn.ghost:not(.mdl .btn):hover,
-body.r-public .mdl .btn.ghost:hover {
-    transform: none;
-    background: #faf7f4;
-    border-color: #d9d1c9;
-    box-shadow: none
-}
-
-body.r-public .btn.ghost:not(.mdl .btn):active,
-body.r-public .mdl .btn.ghost:active {
-    transform: none;
-    background: #f4efe9;
-    box-shadow: none
-}
-
-/* Passenger side buttons, new design: tactile buttons with a solid bottom edge that presses down when tapped. No arrows. Only Edit and Save carry an icon. */
-body.r-public .btn:not(.ghost):not(.mdl .btn)::after,
-body.r-public .mdl .btn:not(.ghost)::after {
-    content: none;
-    display: none
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn),
-body.r-public .mdl .btn:not(.ghost),
-body.r-public .btn.ghost:not(.mdl .btn),
-body.r-public .mdl .btn.ghost {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 46px;
-    border-radius: 14px;
-    font-weight: 700;
-    letter-spacing: .01em;
-    text-shadow: none;
-    filter: none;
-    transform: none;
-    transition: transform .08s, box-shadow .08s, background-color .15s
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn),
-body.r-public .mdl .btn:not(.ghost) {
-    background: #f26b1d;
-    border: 0;
-    color: #fff;
-    box-shadow: 0 3px 0 #c4500c
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn):hover,
-body.r-public .mdl .btn:not(.ghost):hover {
-    background: #f57024;
-    box-shadow: 0 3px 0 #c4500c
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn):active,
-body.r-public .mdl .btn:not(.ghost):active {
-    background: #f26b1d;
-    transform: translateY(3px);
-    box-shadow: 0 0 0 #c4500c
-}
-
-body.r-public .btn.ghost:not(.mdl .btn),
-body.r-public .mdl .btn.ghost {
-    background: #fff;
-    border: 1.5px solid #e6e0da;
-    color: #1f1a17;
-    box-shadow: 0 3px 0 #e6e0da
-}
-
-body.r-public .btn.ghost:not(.mdl .btn):hover,
-body.r-public .mdl .btn.ghost:hover {
-    background: #fffaf6;
-    border-color: #e6e0da;
-    box-shadow: 0 3px 0 #e6e0da
-}
-
-body.r-public .btn.ghost:not(.mdl .btn):active,
-body.r-public .mdl .btn.ghost:active {
-    background: #fff;
-    transform: translateY(3px);
-    box-shadow: 0 0 0 #e6e0da
-}
-
-/* small buttons */
-body.r-public .btn.sm {
-    min-height: 40px
-}
-
-/* Edit and Save: the icon sits in front of the text */
-.pf-form .pf-act .btn .ico {
-    flex: none;
-    width: 16px;
-    height: 16px;
-    stroke-width: 2.2
-}
-
-/* Passenger side buttons, high-end redesign: full pills, hairline rings instead of borders, soft diffused shadows, spring-like press (scale .98), and the nested "button in button" icon where a button carries an icon (Edit, Save). */
-body.r-public .btn:not(.ghost):not(.mdl .btn),
-body.r-public .mdl .btn:not(.ghost),
-body.r-public .btn.ghost:not(.mdl .btn),
-body.r-public .mdl .btn.ghost {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    min-height: 48px;
-    padding: 0 24px;
-    border: 0;
-    border-radius: 999px;
-    font-weight: 600;
-    letter-spacing: .005em;
-    text-shadow: none;
-    filter: none;
-    transform: translateZ(0);
-    transition: transform .5s cubic-bezier(.32, .72, 0, 1), box-shadow .5s cubic-bezier(.32, .72, 0, 1), background-color .4s cubic-bezier(.32, .72, 0, 1)
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn),
-body.r-public .mdl .btn:not(.ghost) {
-    background: linear-gradient(180deg, #f4792c, #f06614);
-    color: #fff;
-    box-shadow: inset 0 1px 1px #ffffff47, 0 0 0 1px #b848082e, 0 12px 26px -12px #f26b1d99
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn):hover,
-body.r-public .mdl .btn:not(.ghost):hover {
-    transform: translateY(-1px);
-    background: linear-gradient(180deg, #f67f33, #f26b1d);
-    box-shadow: inset 0 1px 1px #ffffff52, 0 0 0 1px #b848083d, 0 16px 30px -12px #f26b1db3
-}
-
-body.r-public .btn:not(.ghost):not(.mdl .btn):active,
-body.r-public .mdl .btn:not(.ghost):active {
-    transform: scale(.98);
-    background: linear-gradient(180deg, #f4792c, #f06614);
-    box-shadow: inset 0 1px 1px #ffffff3d, 0 0 0 1px #b848083d, 0 6px 14px -8px #f26b1d99
-}
-
-body.r-public .btn.ghost:not(.mdl .btn),
-body.r-public .mdl .btn.ghost {
-    background: #fff;
-    color: #1f1a17;
-    box-shadow: inset 0 1px 1px #fff, 0 0 0 1px #1f1a1712, 0 8px 20px -12px #1f1a1738
-}
-
-body.r-public .btn.ghost:not(.mdl .btn):hover,
-body.r-public .mdl .btn.ghost:hover {
-    transform: translateY(-1px);
-    background: #fffdfb;
-    box-shadow: inset 0 1px 1px #fff, 0 0 0 1px #1f1a1720, 0 12px 24px -12px #1f1a1747
-}
-
-body.r-public .btn.ghost:not(.mdl .btn):active,
-body.r-public .mdl .btn.ghost:active {
-    transform: scale(.98);
-    background: #fff;
-    box-shadow: inset 0 1px 1px #fff, 0 0 0 1px #1f1a1720, 0 4px 10px -8px #1f1a1738
-}
-
-body.r-public .btn.sm {
-    min-height: 42px;
-    padding: 0 20px
-}
-
-/* the icon lives in its own small circle, flush with the right edge of the button */
-.btn-ic {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: 30px;
-    height: 30px;
-    margin-right: 0;
-    border-radius: 50%;
-    background: #ffffff2e;
-    transition: transform .5s cubic-bezier(.32, .72, 0, 1)
-}
-
-.btn-ic .ico {
-    width: 15px;
-    height: 15px;
-    stroke-width: 1.8
-}
-
-.btn:hover .btn-ic {
-    transform: translate(2px, -1px) scale(1.06)
-}
-
-.pf-form .pf-act .btn,
-.pf-form.ro .pf-act .btn {
-    flex: 0 0 auto;
-    width: auto;
-    min-width: 126px;
-    padding: 0 24px
-}
-
-.pf-form .pf-act .btn:has(.btn-ic) {
-    padding-right: 9px
-}
-
-.pf-form .pf-act .btn.ghost {
-    flex: 0 0 auto;
-    width: auto;
-    min-width: 96px
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-    body.r-public .btn,
-    .btn-ic {
-        transition: none
+    to {
+        opacity: 1;
+        transform: none
     }
 }
 
-/* Passenger side buttons: smaller */
-body.r-public .btn:not(.ghost):not(.mdl .btn),
-body.r-public .mdl .btn:not(.ghost),
-body.r-public .btn.ghost:not(.mdl .btn),
-body.r-public .mdl .btn.ghost {
-    min-height: 40px;
-    padding: 0 18px;
-    gap: 8px;
-    font-size: .86rem
+@media (max-width:999px) {
+    body.r-public .main>h1 {
+        letter-spacing: -.03em;
+        line-height: 1.05
+    }
+
+    /* tactile press on buttons and rows */
+    body.r-public .btn:not(.mdl .btn):active {
+        transform: scale(.97)
+    }
+
+    body.r-public .fx-row:active,
+    body.r-public .main>.ann:active {
+        background: #fff7f0
+    }
 }
 
-body.r-public .btn.sm {
-    min-height: 36px;
-    padding: 0 16px;
-    font-size: .82rem
-}
+@media (max-width:999px) and (prefers-reduced-motion:no-preference) {
 
-.btn-ic {
-    width: 24px;
-    height: 24px
-}
+    body.r-public .main>h1,
+    body.r-public .main>.card,
+    body.r-public .main>.trk,
+    body.r-public .main>section,
+    body.r-public .main>.fx .fx-head,
+    body.r-public .fx-row,
+    body.r-public .main>.ann,
+    body.r-public .main>h2.ann-sec {
+        animation: pxrise .55s cubic-bezier(.2, .8, .2, 1) both
+    }
 
-.btn-ic .ico {
-    width: 13px;
-    height: 13px
-}
+    body.r-public .main>.card,
+    body.r-public .main>.trk,
+    body.r-public .main>section {
+        animation-delay: .06s
+    }
 
-.pf-form .pf-act .btn,
-.pf-form.ro .pf-act .btn {
-    min-width: 104px;
-    padding: 0 18px
-}
+    /* lists: a short cascade (the first ten items) */
+    body.r-public .fx-row:nth-child(2),
+    body.r-public .main>.ann:nth-of-type(1) {
+        animation-delay: .08s
+    }
 
-.pf-form .pf-act .btn:has(.btn-ic) {
-    padding-right: 8px
-}
+    body.r-public .fx-row:nth-child(3),
+    body.r-public .main>.ann:nth-of-type(2) {
+        animation-delay: .14s
+    }
 
-.pf-form .pf-act .btn.ghost {
-    min-width: 84px
+    body.r-public .fx-row:nth-child(4),
+    body.r-public .main>.ann:nth-of-type(3) {
+        animation-delay: .2s
+    }
+
+    body.r-public .fx-row:nth-child(5),
+    body.r-public .main>.ann:nth-of-type(4) {
+        animation-delay: .26s
+    }
+
+    body.r-public .fx-row:nth-child(6),
+    body.r-public .main>.ann:nth-of-type(5) {
+        animation-delay: .32s
+    }
+
+    body.r-public .fx-row:nth-child(n+7),
+    body.r-public .main>.ann:nth-of-type(n+6) {
+        animation-delay: .38s
+    }
 }
