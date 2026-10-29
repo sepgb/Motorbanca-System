@@ -7886,3 +7886,131 @@ body.r-public .btn:not(.mdl .btn) {
         animation-delay: .38s
     }
 }
+
+/* Passenger buttons: flat, solid, the way the big ride and wallet apps draw them.
+   Main = solid orange with white text. Ghost = soft warm grey fill with dark text, no outline. Pressed = a darker fill and a tiny shrink.
+   No gradients, no gloss, no glow. Sizes stay as set above (38px, small text). */
+body.r-public .btn,
+body.r-public .mdl-act button {
+    border: 0 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    filter: none !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .12s ease, background-color .12s ease !important
+}
+
+body.r-public .btn:not(.ghost),
+body.r-public .mdl-act .go {
+    background: #f26b1d !important;
+    color: #fff !important
+}
+
+body.r-public .btn.ghost,
+body.r-public .mdl-act .no {
+    background: #f1ece7 !important;
+    color: #1f1a17 !important
+}
+
+body.r-public .mdl-act .go.red {
+    background: #e5372b !important
+}
+
+body.r-public .btn:not(.ghost):active,
+body.r-public .mdl-act .go:active {
+    background: #d95a0f !important;
+    transform: scale(.98)
+}
+
+body.r-public .mdl-act .go.red:active {
+    background: #c42b20 !important
+}
+
+body.r-public .btn.ghost:active,
+body.r-public .mdl-act .no:active {
+    background: #e6dfd8 !important;
+    transform: scale(.98)
+}
+
+body.r-public .btn:disabled,
+body.r-public .mdl-act button:disabled {
+    background: #ece6e0 !important;
+    color: #a39a91 !important;
+    transform: none
+}
+
+body.r-public .btn:focus-visible,
+body.r-public .mdl-act button:focus-visible {
+    outline: 3px solid #f26b1d55;
+    outline-offset: 2px
+}
+
+/* the map "Your location" icon follows the button text colour */
+body.r-public .trk-loc .trk-loc-ic {
+    color: currentColor
+}
+
+/* Passenger bottom bar: icon with its name under it, five equal tabs (Home, Track, Fare, Alert, Profile).
+   The open page is orange (its icon softly filled); the others are a quiet warm grey. */
+body.r-public .btabs.btabs-lbl {
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 0;
+    padding: 9px 4px calc(7px + env(safe-area-inset-bottom))
+}
+
+body.r-public .btabs-lbl a {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    color: #b8afa6;
+    text-decoration: none;
+    transition: color .2s
+}
+
+body.r-public .btabs-lbl a i {
+    display: grid;
+    place-items: center;
+    width: auto;
+    height: auto;
+    background: none;
+    border-radius: 0
+}
+
+body.r-public .btabs-lbl a .ico {
+    width: 25px;
+    height: 25px;
+    stroke-width: 1.8;
+    transition: transform .2s, fill-opacity .2s
+}
+
+body.r-public .btabs-lbl a span {
+    font-size: .66rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: .01em
+}
+
+body.r-public .btabs-lbl a.on {
+    color: #f26b1d
+}
+
+body.r-public .btabs-lbl a.on span {
+    font-weight: 700
+}
+
+body.r-public .btabs-lbl a.on .ico {
+    fill: currentColor;
+    fill-opacity: .16
+}
+
+body.r-public .btabs-lbl a.on::after {
+    display: none
+}

@@ -93,9 +93,10 @@ JS;
         echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'>" . "<svg viewBox='0 0 40 40' width='40' height='40' fill='none' stroke='#f26b1d' stroke-width='5' stroke-linecap='round'><circle cx='20' cy='20' r='15' stroke-dasharray='19 12.42' transform='rotate(-80 20 20)'/></svg>" . "<span>BATIS<small>Banca Tracking and Information System</small></span></a><nav class='pills'>";
         foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on'" : '') . ">$l</a>";
         echo "</nav><div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span><span class='dt-sep'>-</span></span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header>";
-        // phone bar: icons only (the name stays as aria-label), Live Queue in the middle and bigger
-        echo "<nav class='btabs btabs-pub' aria-label='Main'>";
-        foreach (['fares.php', 'track.php', 'index.php', 'announcements.php', 'profile.php'] as $f) echo "<a href='$b/passenger/$f' aria-label='" . e($plinks[$f]) . "'" . ($f === 'index.php' ? " data-q='1'" : '') . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i></a>";
+        // phone bar: icon with its name under it, in this order: Home, Track, Fare, Alert, Profile (the open page is orange, the others soft grey)
+        $plab = ['index.php' => 'Home', 'track.php' => 'Track', 'fares.php' => 'Fare', 'announcements.php' => 'Alert', 'profile.php' => 'Profile'];
+        echo "<nav class='btabs btabs-pub btabs-lbl' aria-label='Main'>";
+        foreach (['index.php', 'track.php', 'fares.php', 'announcements.php', 'profile.php'] as $f) echo "<a href='$b/passenger/$f' aria-label='" . e($plinks[$f]) . "'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($ptab[$f]) . "</i><span>" . $plab[$f] . "</span></a>";
         echo "</nav><main class='main'>";
         if ($me === 'index.php') echo "<h1>" . (($h = (int)date('G')) < 12 ? 'Good morning' : ($h < 18 ? 'Good afternoon' : 'Good evening')) . ", " . e(pax_first_name()) . "</h1><p class='lead'>Here is what is happening at the port right now.</p><h2 class='pub-h2'><button type='button' class='scan-btn' id='scan-open' aria-label='Scan QR code' title='Scan QR code'>" . ico('<path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2M7 12h10"/>') . "</button><i class='dot'></i>Live queue</h2>";
     }
