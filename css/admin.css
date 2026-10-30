@@ -8084,3 +8084,29 @@ body.r-public .trk-card .trk-btns .btn {
     font-size: .8rem;
     white-space: nowrap
 }
+
+/* Track my ride (live map): the two buttons over the map look clearly different.
+   "Your location" = white with dark text and an orange icon; "Stop" = solid red. */
+body.r-public:has(#s3:not([hidden])) .trk-act #center {
+    background: #fff !important;
+    color: #1f1a17 !important;
+    box-shadow: 0 2px 10px #1f1a1733 !important
+}
+
+body.r-public:has(#s3:not([hidden])) .trk-act #center .trk-loc-ic {
+    color: #f26b1d
+}
+
+body.r-public:has(#s3:not([hidden])) .trk-act #center:active {
+    background: #f4f0ec !important
+}
+
+body.r-public:has(#s3:not([hidden])) .trk-act #stop {
+    background: #e5372b !important;
+    color: #fff !important;
+    box-shadow: 0 2px 10px #b4231866 !important
+}
+
+body.r-public:has(#s3:not([hidden])) .trk-act #stop:active {
+    background: #c42b20 !important
+}
