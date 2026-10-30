@@ -1,4 +1,3 @@
-/* Admin theme: warm orange, soft cards, pill navigation. Loaded only on admin pages. */
 html {
     font-size: 14.5px
 }
@@ -85,7 +84,6 @@ body.r-admin {
     }
 }
 
-/* header */
 .atop {
     display: flex;
     align-items: center;
@@ -153,7 +151,6 @@ body.r-admin {
     box-shadow: 0 6px 14px -4px #f26b1d99
 }
 
-/* sliding highlight (positioned by script.js); falls back to the plain active pill without JS */
 .pill-bg {
     display: none;
     position: absolute;
@@ -300,14 +297,12 @@ body.nav-open .pills {
     }
 }
 
-/* sticky on desktop only */
 @media(max-width:699px) {
     .atop .logo {
         display: none
     }
 }
 
-/* no logo on phones */
 @media(min-width:1000px) {
     .pills {
         display: flex
@@ -343,7 +338,6 @@ body.nav-open .pills {
     }
 }
 
-/* cluster cards keep the same size whatever is inside them (empty, on queue, departed) */
 .clusters {
     display: grid;
     gap: 16px;
@@ -382,7 +376,6 @@ body.nav-open .pills {
     text-align: center
 }
 
-/* cards */
 .r-admin .card,
 .r-admin .stat,
 .r-admin .cluster,
@@ -570,7 +563,6 @@ body.nav-open .pills {
     background: repeating-linear-gradient(135deg, #d92d20 0 6px, #ef5a4c 6px 12px)
 }
 
-/* cluster footer: next trip (left) + Depart (right) */
 .r-admin .next {
     width: fit-content;
     margin: 0 20px 12px;
@@ -679,7 +671,6 @@ body.nav-open .pills {
     outline-offset: 3px
 }
 
-/* buttons, forms, tables */
 .r-admin .btn {
     background: var(--o);
     border-radius: 999px;
@@ -789,7 +780,6 @@ body.nav-open .pills {
     }
 }
 
-/* Register page: list on the left, narrow form on the right */
 .reg {
     display: grid;
     gap: 20px;
@@ -833,7 +823,6 @@ body.nav-open .pills {
     }
 }
 
-/* smooth motion for cards and forms */
 .r-admin input,
 .r-admin select {
     transition: border-color .2s, box-shadow .2s
@@ -898,7 +887,6 @@ body.nav-open .pills {
     }
 }
 
-/* confirmation modal (Depart) */
 .mdl {
     position: fixed;
     inset: 0;
@@ -1010,7 +998,6 @@ body.nav-open .pills {
     }
 }
 
-/* Trip history: clickable rows + passenger modal */
 .trip-row {
     cursor: pointer;
     user-select: none
@@ -1078,7 +1065,6 @@ body.nav-open .pills {
     color: var(--mut)
 }
 
-/* barangays line on cluster cards + fixed M/B prefix in the register form */
 .r-admin .brgy {
     background: #fbf7f3;
     border-bottom: 1px solid #f4ede7;
@@ -1122,7 +1108,6 @@ body.nav-open .pills {
     border-radius: 0 13px 13px 0
 }
 
-/* Register page: edit modal + clickable rows */
 .mb-row {
     cursor: pointer;
     user-select: none
@@ -1165,7 +1150,6 @@ body.nav-open .pills {
     color: var(--mut)
 }
 
-/* Registered list: fixed column widths; long values are cut with an ellipsis (full value on hover) */
 .regtbl {
     table-layout: fixed;
     width: 100%;
@@ -1219,7 +1203,6 @@ body.nav-open .pills {
     padding: 3px 8px
 }
 
-/* styled hint for double-clickable rows (replaces the plain browser tooltip) */
 .rtip {
     position: fixed;
     z-index: 1300;
@@ -1287,7 +1270,6 @@ body.nav-open .pills {
     }
 }
 
-/* cluster header: title + barangays share the same mild warm background, with a tighter gap between them */
 .r-admin .cluster h2 {
     background: #fbf7f3;
     padding: 16px 20px 6px
@@ -1314,12 +1296,10 @@ body.nav-open .pills {
     border-color: var(--ln)
 }
 
-/* an empty cluster keeps the height a boat card would take, so cards look the same with or without a boat on queue */
 .r-admin .mb.empty {
     min-height: 190px
 }
 
-/* Philippine Coast Guard logo in the header */
 .logo img {
     width: 44px;
     height: 44px;
@@ -1330,9 +1310,6 @@ body.nav-open .pills {
     box-shadow: 0 0 12px 1px rgba(255, 79, 0, .4)
 }
 
-/* glow in the logo's own orange (#ff4f00) */
-
-/* bottom tab bar (phones and tablets) */
 .btabs {
     display: none
 }
@@ -1357,7 +1334,7 @@ body.nav-open .pills {
         display: none
     }
 
-    /* nothing left in it on phones/tablets: the bottom bar has the nav + log out */
+
     .r-admin .main {
         padding-top: max(14px, env(safe-area-inset-top));
         padding-bottom: 104px
@@ -1445,7 +1422,6 @@ body.nav-open .pills {
     outline-color: #dc2626
 }
 
-/* operator pages */
 .opgrid {
     display: grid;
     gap: 16px;
@@ -1502,7 +1478,6 @@ body.nav-open .pills {
     overflow-x: auto
 }
 
-/* crew list form + manifest details */
 .crewform {
     max-width: 680px
 }
@@ -1699,7 +1674,6 @@ body.nav-open .pills {
     line-height: 1
 }
 
-/* PCG inspection list + Approve button (same shape as Depart) */
 .insp {
     grid-column: 1/-1;
     background: #fff;
@@ -1819,7 +1793,6 @@ body.nav-open .pills {
     outline-offset: 3px
 }
 
-/* Passengers page, top to bottom: passengers on board, notice, Add passenger + Manifest details, then the passenger list */
 .mpage {
     display: flex;
     flex-direction: column;
@@ -1926,7 +1899,6 @@ body.nav-open .pills {
     margin: 0 !important
 }
 
-/* Passengers page, desktop: Add passenger on the left (tall); passengers on board + Manifest details stacked on the right with the same total height; list full width below */
 @media(min-width:1000px) {
     .r-operator .main {
         padding-top: 22px
@@ -1991,7 +1963,6 @@ body.nav-open .pills {
     }
 }
 
-/* Operator trip history: Year > Month > Week > Day */
 .thx {
     margin-top: 18px;
     display: flex;
@@ -2135,7 +2106,6 @@ body.nav-open .pills {
     }
 }
 
-/* departed state */
 .dep-card {
     max-width: 560px;
     margin: 8px auto 0 !important;
@@ -2202,7 +2172,6 @@ body.nav-open .pills {
     min-width: 200px
 }
 
-/* public passenger board: same look as the admin queue, with a small header and no nav */
 .stafflink {
     display: inline-flex;
     align-items: center;
@@ -2250,7 +2219,6 @@ body.nav-open .pills {
     }
 }
 
-/* phones: exactly like the admin queue (no header); staff login moves to the bottom */
 .pub-staff {
     display: none
 }
@@ -2282,7 +2250,6 @@ body.nav-open .pills {
     }
 }
 
-/* public board: works whatever the page file contains */
 .pub-h1 {
     display: flex;
     align-items: center;
@@ -2322,7 +2289,6 @@ body.nav-open .pills {
     flex-direction: column
 }
 
-/* public board: breathing room around the page on phones */
 @media(max-width:999px) {
     body.r-public .main {
         padding: max(28px, env(safe-area-inset-top)) 20px 44px !important
@@ -2365,7 +2331,6 @@ body.nav-open .pills {
     }
 }
 
-/* years side by side, same width, centred */
 .thx {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2396,7 +2361,6 @@ body.nav-open .pills {
     font-size: .9rem
 }
 
-/* trip history: full width, years side by side */
 .thx {
     max-width: none !important;
     margin: 0 !important
@@ -2411,7 +2375,6 @@ body.nav-open .pills {
     touch-action: manipulation
 }
 
-/* header badge (admin and operator) */
 .lg-badge {
     width: 42px;
     height: 42px;
@@ -2451,7 +2414,6 @@ body.nav-open .pills {
     filter: drop-shadow(0 0 6px rgba(242, 107, 29, .35))
 }
 
-/* passenger board: greeting and its line sit closer together */
 body.r-public .main>h1 {
     margin: 0 0 2px !important;
     line-height: 1.15 !important
@@ -2462,7 +2424,6 @@ body.r-public .main>.lead {
     line-height: 1.3 !important
 }
 
-/* passenger nav: same pills (desktop) and bottom tab bar (phones) as admin / operator */
 @media(max-width:999px) {
     body.r-public .main {
         padding-bottom: 104px !important
@@ -2479,7 +2440,6 @@ body.r-public .main>.lead {
     box-shadow: none
 }
 
-/* fares page */
 .fare-list {
     padding: 6px 20px 10px
 }
@@ -2531,7 +2491,6 @@ body.r-public .main>.lead {
     padding-bottom: 14px !important
 }
 
-/* header logo ring spins forever */
 @keyframes ringspin {
     to {
         transform: rotate(360deg)
@@ -2549,7 +2508,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* nav icon animation */
 @keyframes tabpop {
     0% {
         transform: scale(.6) rotate(-12deg)
@@ -2589,7 +2547,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* track my ride */
 .trk {
     max-width: 560px;
     display: flex;
@@ -2731,7 +2688,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* the hidden attribute must win over the display rules above (one step at a time) */
 .trk [hidden] {
     display: none !important
 }
@@ -2742,7 +2698,6 @@ body.r-public .main>.lead {
     text-decoration: underline
 }
 
-/* distance + map in one card */
 .trk-box {
     padding: 0 !important;
     overflow: hidden;
@@ -2767,7 +2722,6 @@ body.r-public .main>.lead {
     border-top: 1px solid #f4ede7
 }
 
-/* Announcements */
 .ann-tpl {
     display: flex;
     flex-wrap: wrap;
@@ -2931,7 +2885,6 @@ body.r-public .main>.lead {
     font-size: .82rem
 }
 
-/* Announcements: desktop layout (phones keep the stacked layout) */
 .ann-d,
 .ann-seg,
 .ann-cnt {
@@ -3223,7 +3176,6 @@ body.r-public .main>.lead {
     color: #b42318
 }
 
-/* Passenger profile */
 .prof {
     max-width: 640px;
     padding: 0
@@ -3383,7 +3335,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* Passenger profile */
 .pf {
     max-width: 640px;
     padding: 24px 26px
@@ -3586,7 +3537,6 @@ body.r-public .main>.lead {
     -webkit-text-fill-color: #8a7f77
 }
 
-/* QR join / scan */
 .pub-top {
     display: flex;
     align-items: flex-start;
@@ -3794,7 +3744,6 @@ body.r-public .main>.lead {
     box-sizing: border-box
 }
 
-/* Live Queue row: scan icon at the right end of the row (phones/tablets only) */
 .scan-btn {
     flex: none;
     order: 3;
@@ -3830,7 +3779,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* passenger phones/tablets: a little space above the page */
 @media (max-width:999px) {
     body.r-public .main {
         padding-top: max(14px, env(safe-area-inset-top)) !important
@@ -3860,7 +3808,6 @@ body.r-public .main>.lead {
     margin-top: 12px
 }
 
-/* Operator Passengers (desktop): Add passenger | passengers count + QR code, then Manifest details beside the passenger list */
 @media (min-width:1000px) {
     .mpage {
         grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
@@ -3910,7 +3857,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* Track Ride map stays under the nav */
 .trk-map,
 .leaflet-container {
     position: relative;
@@ -3926,7 +3872,6 @@ body.r-public .main>.lead {
     z-index: 1100
 }
 
-/* Fares: open board, no cards */
 .fx {
     margin-top: 6px;
     max-width: 860px
@@ -4011,7 +3956,7 @@ body.r-public .main>.lead {
 
 @media (max-width:699px) {
 
-    /* phone: open board, no cards. Each cluster is a heading, then one easy-to-read line per fare (label left, price right) */
+
     .fx-head {
         display: none
     }
@@ -4032,7 +3977,7 @@ body.r-public .main>.lead {
     }
 
     .fx-c i {
-        /* the number is part of the "CLUSTER N" label below, so it is hidden visually and kept for screen readers */
+
         position: absolute;
         width: 1px;
         height: 1px;
@@ -4098,7 +4043,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* destination dropdown: same arrow as the profile barangay dropdown */
 .trk-card select {
     -webkit-appearance: none;
     appearance: none;
@@ -4109,7 +4053,6 @@ body.r-public .main>.lead {
     background-size: 18px
 }
 
-/* Remove passenger (operator manifest) + Cancel trip (passenger Track Ride) */
 .rm-col {
     width: 1%
 }
@@ -4163,7 +4106,7 @@ body.r-public .main>.lead {
 
 @media (max-width:699px) {
 
-    /* phone: tighter table so the Remove button always fits on screen */
+
     .mpage .tablewrap td,
     .mpage .tablewrap th {
         padding: 12px 8px
@@ -4204,7 +4147,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* Passenger phone bar: icons only, no pill behind the active tab (the icon just turns orange), Live Queue in the middle and a bit bigger */
 @media (max-width:999px) {
     .btabs-pub {
         align-items: flex-end;
@@ -4213,7 +4155,7 @@ body.r-public .main>.lead {
         padding-top: 6px
     }
 
-    /* no icon animation or press effect */
+
     .btabs-pub a,
     .btabs-pub i,
     .btabs-pub .ico {
@@ -4278,15 +4220,10 @@ body.r-public .main>.lead {
     }
 }
 
-
-
-/* notification cards: thinner colored left border */
 .ann {
     border-left-width: 3px
 }
 
-
-/* operator phone: no page subtitle */
 @media (max-width:999px) {
     body.r-operator .main>.lead {
         display: none
@@ -4297,7 +4234,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* passenger profile: open layout, no card box */
 .r-admin .card.pf,
 .card.pf {
     background: none;
@@ -4325,7 +4261,6 @@ body.r-public .main>.lead {
     padding: 16px 2px
 }
 
-/* passenger profile: Edit is a button at the bottom right, after the barangay */
 .card.pf .pf-head h2 {
     padding-right: 0
 }
@@ -4355,7 +4290,6 @@ body.r-public .main>.lead {
     margin: 0
 }
 
-/* active tab: small orange dot under the icon (passenger and operator phone bars) */
 @media (max-width:999px) {
     .btabs-pub a {
         position: relative
@@ -4378,7 +4312,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* notifications (passenger and operator): open list, no card boxes. The admin timeline keeps its own look. */
 .main>.ann {
     background: none;
     border-top: 0;
@@ -4394,7 +4327,6 @@ body.r-public .main>.lead {
     margin: 0 0 14px
 }
 
-/* thin line between notifications (none after the last one) */
 .main>.ann {
     position: relative
 }
@@ -4413,7 +4345,6 @@ body.r-public .main>.lead {
     display: none
 }
 
-/* MDSD checklist (PCG, on Depart): a modal with one row per question, Yes / No / N/A as a small segmented choice */
 .mdl-box.wide.md-box {
     max-width: 760px;
     display: flex;
@@ -4550,7 +4481,6 @@ body.r-public .main>.lead {
 .r-admin .md-foot .md-go,
 .r-admin .md-foot .md-next {
     border: 1px solid transparent
-        /* same outline as Cancel so both buttons are exactly the same size */
 }
 
 .md-count {
@@ -4568,7 +4498,6 @@ body.r-public .main>.lead {
     font-size: .85rem
 }
 
-/* the same checklist as a plain page (fallback) */
 .md-sum {
     margin: 0 0 10px;
     color: #8c8279
@@ -4644,7 +4573,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* PDIC rows, inspector name, "departed" window */
 .md-t .md-nt {
     display: block;
     margin-top: 2px;
@@ -4755,7 +4683,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* Buttons (not the ones inside modals): a raised look. A light edge on top, a darker edge at the bottom, a thin outline and a soft glow in the button's own color. */
 .r-admin .btn:not(.ghost):not(.mdl .btn) {
     background: linear-gradient(180deg, #ff8f45, #f26b1d);
     box-shadow: inset 0 1px 0 #ffffff59, inset 0 -2px 0 #0003, 0 1px 2px #0006, 0 8px 24px -6px #f26b1d99
@@ -4785,7 +4712,6 @@ body.r-public .main>.lead {
     box-shadow: inset 0 1px 0 #fff, inset 0 -2px 0 #b4231814, 0 1px 2px #1f1a1726, 0 6px 16px -8px #b4231855
 }
 
-/* Depart (queue board): the same raised look in green */
 .depart {
     background: linear-gradient(180deg, #2fb766, #15803d);
     box-shadow: inset 0 1px 0 #ffffff59, inset 0 -2px 0 #0003, 0 1px 2px #0006, 0 8px 24px -6px #15803d99
@@ -4800,7 +4726,6 @@ body.r-public .main>.lead {
     box-shadow: inset 0 1px 0 #ffffff33, inset 0 -1px 0 #0003, 0 1px 2px #0006, 0 4px 12px -6px #15803d99
 }
 
-/* Page titles: big bold system font (like the title of a phone app), with room above and below. A title with a subtitle right under it keeps them close. */
 .r-admin .main>h1,
 body.r-public .main>h1 {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -4830,7 +4755,6 @@ body.r-public .main>h1:has(+ .lead) {
     }
 }
 
-/* announcements page (admin): no subtitle under the title on phones; the title then gets its normal gap below */
 @media (max-width:999px) {
     .ann-lead {
         display: none
@@ -4841,12 +4765,10 @@ body.r-public .main>h1:has(+ .lead) {
     }
 }
 
-/* bottom nav icons: thinner line */
 .btabs-pub .ico {
     stroke-width: 1.8
 }
 
-/* operator Passengers page (all screens): the M/B name and its status tag sit almost touching; the notice box fits its text */
 body.r-operator .main>h1:has(+ .optag) {
     margin-bottom: 0 !important
 }
@@ -4860,8 +4782,6 @@ body.r-operator .mp-alert {
     max-width: 100%
 }
 
-/* phone bottom bar (passenger, operator, admin): the space you see between two icons is the same as the space from the screen edge to the first / last icon.
-   Each tab box is 52px wide with a 24px icon in it, so the side padding is the 14px of empty room around an icon. */
 @media (max-width:999px) {
     .btabs.btabs-pub {
         justify-content: space-evenly;
@@ -4882,7 +4802,6 @@ body.r-operator .mp-alert {
     }
 }
 
-/* passenger profile: after saving, the same form layout stays; the fields are locked and the button says Edit */
 .pf-form.ro input,
 .pf-form.ro select {
     background-color: #fbf7f3;
@@ -4897,7 +4816,6 @@ body.r-operator .mp-alert {
     padding-right: 14px
 }
 
-/* Edit (after saving) is a small button on the right */
 .pf-form.ro .pf-act .btn {
     flex: 0 0 auto;
     width: auto;
@@ -4918,7 +4836,6 @@ body.r-operator .mp-alert {
     stroke-width: 2
 }
 
-/* desktop top menu (admin and operator): an icon in front of each label */
 .pills a {
     display: inline-flex;
     align-items: center;
@@ -4932,8 +4849,6 @@ body.r-operator .mp-alert {
     stroke-width: 2
 }
 
-/* Trip history on desktop (admin and operator): one table with Year / Month / Day filters.
-   Phones and tablets keep the Year > Month > Week > Day list. */
 .th-desk {
     display: none
 }
@@ -5017,7 +4932,6 @@ body.r-operator .mp-alert {
     text-align: center
 }
 
-/* history filters: styled dropdown list (modern Chrome / Edge get a fully styled list, other browsers get the basic option colors) */
 .thf select option {
     font-weight: 600;
     color: #1f1a17;
@@ -5093,7 +5007,6 @@ body.r-operator .mp-alert {
     }
 }
 
-/* Clear button: same look as the Cancel button in the modals (plain white pill, no shadow, soft hover) */
 .r-admin .thf #f-clear {
     width: auto;
     height: 40px;
@@ -5129,12 +5042,10 @@ body.r-operator .mp-alert {
     outline-offset: 2px
 }
 
-/* operator Trip History: the Passengers column header also shows on phones (there is no action column any more) */
 .r-operator .th-t th:last-child {
     display: table-cell
 }
 
-/* operator Trip History: rows open the trip popup; on phones the title and X are on top, the 4 downloads sit in a 2 x 2 grid */
 .r-operator .th-row[data-trip] {
     cursor: pointer
 }
@@ -5179,7 +5090,6 @@ body.r-operator .mp-alert {
     }
 }
 
-/* operator Trip History popup: the passenger table runs edge to edge (its header background reaches both sides of the popup) */
 #tr-mdl .mdl-body {
     padding: 0
 }
@@ -5199,7 +5109,6 @@ body.r-operator .mp-alert {
     padding-right: 24px
 }
 
-/* confirmation popups (download, log out, delete, cancel ...): just the green / red icon, no tinted box, and tight spacing above and below it */
 .mdl-ic,
 .mdl-ic.red {
     width: auto;
@@ -5218,7 +5127,6 @@ body.r-operator .mp-alert {
     padding-top: 22px
 }
 
-/* Remove button in the passenger list: same look as the red button in the popups */
 .r-admin .rm-btn {
     border: 0;
     background: linear-gradient(135deg, #ef4444, #dc2626);
@@ -5244,7 +5152,6 @@ body.r-operator .mp-alert {
     outline-offset: 2px
 }
 
-/* the BATIS name in the top-left corner: same serif font and wide spacing as the login page */
 .r-admin .logo span {
     font-family: "Newsreader", Georgia, "Times New Roman", serif;
     font-weight: 700;
@@ -5253,7 +5160,6 @@ body.r-operator .mp-alert {
     line-height: .92
 }
 
-/* small grey line under the BATIS name (wide screens only, so it never crowds the menu and the date) */
 .r-admin .logo span small {
     display: none;
     font: 500 10.7px/1.05 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
@@ -5276,7 +5182,6 @@ body.r-operator .mp-alert {
     }
 }
 
-/* page title (H1), its subtitle and the top menu: Bricolage Grotesque. Everything else keeps Plus Jakarta Sans. */
 .r-admin .main>h1,
 body.r-public .main>h1 {
     font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
@@ -5298,9 +5203,6 @@ body.r-public .main>.lead {
     letter-spacing: -.005em
 }
 
-/* Admin side only (not operator or passenger).
-   Nav stays as it is: BATIS name (Newsreader), top menu, page title and subtitle (Bricolage Grotesque),
-   header date chip (Plus Jakarta Sans). Everything in the page contents uses Figtree. */
 body.r-admin:not(.r-operator):not(.r-public) .atop {
     font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
 }
@@ -5315,7 +5217,6 @@ body.r-admin:not(.r-operator):not(.r-public) .mdl *:not(code):not(pre):not(kbd):
     font-family: "Figtree", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
 }
 
-/* Admin side only: page title (H1) and its subtitle use Sora. The top menu and BATIS name are not touched. */
 body.r-admin:not(.r-operator):not(.r-public) .main h1,
 body.r-admin:not(.r-operator):not(.r-public) .main .lead {
     font-family: "Sora", "Figtree", system-ui, sans-serif
@@ -5331,7 +5232,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main .lead {
     letter-spacing: -.01em
 }
 
-/* Admin phones: smaller page title, since Sora runs wider than the old font */
 @media (max-width:699px) {
     body.r-admin:not(.r-operator):not(.r-public) .main>h1 {
         font-size: 25px;
@@ -5339,7 +5239,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main .lead {
     }
 }
 
-/* Admin side only: space above every page title, and above the Live queue heading on the dashboard */
 body.r-admin:not(.r-operator):not(.r-public) .main>h1 {
     margin-top: 14px !important
 }
@@ -5348,14 +5247,12 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
     margin-top: 30px !important
 }
 
-/* Admin phones and tablets (no top header there): page title pulled up a little closer to the top */
 @media (max-width:999px) {
     body.r-admin:not(.r-operator):not(.r-public) .main>h1 {
         margin-top: 0 !important
     }
 }
 
-/* Announcements: restyled "New announcement" card (desktop). Same palette, softer and tidier. */
 @media (min-width:1000px) {
     .ann-compose {
         padding: 30px 34px 32px;
@@ -5375,7 +5272,7 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
         grid-column: 1 / -1
     }
 
-    /* templates panel */
+
     .ann-tpl {
         border-right: 0;
         padding: 14px;
@@ -5431,7 +5328,7 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
         color: var(--mut)
     }
 
-    /* form */
+
     #annf label {
         display: block;
         margin: 18px 0 8px;
@@ -5541,7 +5438,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
     }
 }
 
-/* Announcements: the same restyled "New announcement" card on phones and tablets (stacked layout) */
 @media (max-width:999px) {
     .ann-compose {
         padding: 18px 16px 20px;
@@ -5771,7 +5667,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
     }
 }
 
-/* Announcements: note under the template buttons. Same look on desktop and mobile; green when the template is a Resumption of travel. */
 #annf #a-actn {
     padding: 14px 20px;
     border-radius: 16px;
@@ -5784,7 +5679,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
     color: #14663a
 }
 
-/* Announcements on phones and tablets: no Type picker (the template sets it), templates show only their title */
 @media (max-width:999px) {
 
     #annf>label:first-of-type,
@@ -5811,7 +5705,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
     }
 }
 
-/* Admin posted announcements use the notification rows (like passenger and operator), with a small delete button at the bottom right */
 .main>.ann.ann-adm {
     position: relative
 }
@@ -5851,7 +5744,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
     height: 17px
 }
 
-/* Passenger and operator: page title (H1) and subtitle use the same Sora style as admin, and the same smaller title size on phones */
 body.r-operator .main>h1,
 body.r-public .main>h1,
 body.r-operator .main>.lead,
@@ -5879,7 +5771,6 @@ body.r-public .main>.lead {
     }
 }
 
-/* Passenger and operator: page contents use Figtree like admin. Nav, title and subtitle keep their own fonts. */
 body.r-operator .main,
 body.r-public .main,
 body.r-operator .mdl,
@@ -5894,7 +5785,6 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     font-family: "Figtree", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif
 }
 
-/* Depart: first window shows the whole Crew List and Manifest forms (Crew list / Manifest tabs) */
 .rv-tabs {
     display: inline-flex;
     gap: 2px;
@@ -5942,14 +5832,12 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     transform-origin: 0 0
 }
 
-/* Crew List and Manifest window: narrower on desktop (the MDSD and PDIC windows keep their width) */
 @media (min-width:1000px) {
     .mdl-box.wide.md-rv {
         max-width: 560px
     }
 }
 
-/* Crew List and Manifest window on phones: the same footer buttons as the MDSD window (Cancel and Continue side by side, equal width) */
 @media (max-width:999px) {
     .md-rv .md-count {
         display: none
@@ -5967,7 +5855,6 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     }
 }
 
-/* Approve (For inspection): the same raised look as the Depart button, in orange */
 .approve {
     background: linear-gradient(180deg, #ff9250, #f26b1d);
     box-shadow: inset 0 1px 0 #ffffff59, inset 0 -2px 0 #0003, 0 1px 2px #0006, 0 8px 24px -6px #f26b1d99
@@ -5982,19 +5869,16 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     box-shadow: inset 0 1px 0 #ffffff33, inset 0 -1px 0 #0003, 0 1px 2px #0006, 0 4px 12px -6px #f26b1d99
 }
 
-/* Live queue cards: larger M/B name */
 .r-admin .mb .mb-top h3 {
     font-size: 1.2rem;
     line-height: 1.2
 }
 
-/* Trip history filter: the Week list stays greyed out until a month is chosen */
 .thf select:disabled {
     opacity: .5;
     cursor: not-allowed
 }
 
-/* Trip history filter: label sits closer to its list */
 .thf label {
     gap: 2px
 }
@@ -6003,13 +5887,11 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     margin-top: 0
 }
 
-/* Admin queue: notice while travel is suspended and boats are still on queue */
 .susp-note {
     grid-column: 1 / -1;
     margin: 0 0 16px
 }
 
-/* Pop-up for a new announcement (operator and passenger pages): slides in, bell rings, soft pulse */
 .ann-pop {
     position: fixed;
     top: max(14px, env(safe-area-inset-top));
@@ -6219,7 +6101,6 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     }
 }
 
-/* Announcement pop-up: smaller bell icon */
 .ap-ic {
     width: 34px;
     height: 34px
@@ -6230,7 +6111,6 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     height: 16px
 }
 
-/* Red unread count on the notification icon (operator and passenger navigation): a small near-circle on the top right corner of the icon, overlapping it */
 .has-nb {
     position: relative;
     overflow: visible
@@ -6276,7 +6156,6 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     right: 2px
 }
 
-/* Passenger and operator: no alert type label. The alert icon and the title take the color of the alert type. */
 body.r-operator .ann-tag,
 body.r-public .ann-tag,
 .ann-pop .ap-tag {
@@ -6339,7 +6218,6 @@ body.r-public .ann-m.unread.k-info h3::before {
     color: #1d4ed8
 }
 
-/* Operator on tablets (iPad): the BATIS subtitle and the date show in the header, like on a computer */
 @media (min-width:700px) and (max-width:1439px) {
     body.r-operator .logo span small {
         display: block;
@@ -6360,12 +6238,10 @@ body.r-public .ann-m.unread.k-info h3::before {
     }
 }
 
-/* The new-announcement pop-up sits above the header and the bottom bar (it was hidden behind them on tablets) */
 .ann-pop {
     z-index: 1150
 }
 
-/* Smaller unread count on the notification icon */
 .nbadge {
     top: -5px;
     right: -7px;
@@ -6381,7 +6257,6 @@ body.r-public .ann-m.unread.k-info h3::before {
     right: 3px
 }
 
-/* Passenger on phones: the unread count is a round badge on the top right corner of the bell, overlapping the icon */
 body.r-public .btabs .nbadge {
     top: -3px;
     right: -4px;
@@ -6397,7 +6272,6 @@ body.r-public .btabs .nbadge {
     font-weight: 800
 }
 
-/* operator Passengers page, no active trip: the message sits in the very middle of the screen, with no box */
 body.r-operator .mp-empty {
     position: fixed;
     left: 0;
@@ -6413,7 +6287,6 @@ body.r-operator .mp-empty {
     pointer-events: none
 }
 
-/* operator Home: the M/B name and the "Cluster · Owner" line, and "Boat status" and its status tag, sit as close as on the Passengers page */
 @media (min-width:1000px) {
     body.r-operator .main>h1:has(+ .lead) {
         margin-bottom: 0 !important
@@ -6433,7 +6306,6 @@ body.r-operator .opgrid [data-live]>.optag:first-child {
     margin-top: 0
 }
 
-/* New trip (Crew list): one card across the full width, details on the left and crew on the right, small buttons at the bottom right */
 .crewform.crew2 {
     max-width: none;
     padding: 26px 28px
@@ -6494,7 +6366,6 @@ body.r-operator .opgrid [data-live]>.optag:first-child {
     }
 }
 
-/* operator: the unread count is a small round badge (smaller number, no white ring); the passenger badge has no white ring either */
 body.r-operator .nbadge {
     top: -4px;
     right: -5px;
@@ -6515,8 +6386,6 @@ body.r-operator .btabs .nbadge {
     font-size: .42rem
 }
 
-/* Operator Passengers page: status notice (for inspection / next trip / departed).
-   It keeps the .mp-alert grid area, so it sits in the full-width row at the top, above the count, like the old alert. */
 .mp-note {
     display: flex;
     align-items: center;
@@ -6570,7 +6439,6 @@ body.r-operator .mp-note.mp-alert {
     color: var(--mut)
 }
 
-/* "Waiting ..." chip with three pulsing dots, on the right */
 .mp-note-chip {
     flex: none;
     display: inline-flex;
@@ -6631,12 +6499,10 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* Top menu: icon closer to its label */
 .pills a {
     gap: 4px
 }
 
-/* Passenger phones/tablets: the scan button floats at the bottom right, just above the bottom bar (dark, so it does not repeat the orange Home button) */
 @media (max-width:999px) {
     body.r-public .scan-btn {
         position: fixed;
@@ -6686,7 +6552,6 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* Passenger scan button: small "Scan trip" label next to the icon */
 @media (max-width:999px) {
     body.r-public .scan-btn {
         display: flex;
@@ -6716,13 +6581,11 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* Scan trip QR window: tighter line spacing on the subtitle */
 .scn-box>p {
     line-height: 1.3;
     margin-top: 4px
 }
 
-/* Passenger phones/tablets, Track my ride (live step): the map fills the screen, the texts and buttons float over it */
 @media (max-width:999px) {
     body.r-public:has(#s3:not([hidden])) {
         overflow: hidden
@@ -6747,7 +6610,7 @@ body.r-operator .mp-note.mp-alert {
     body.r-public:has(#s3:not([hidden])) .trk-box .trk-map {
         position: fixed;
         inset: 0;
-        /* the map runs all the way down, underneath the bottom bar */
+
         z-index: 0;
         width: auto;
         height: auto;
@@ -6773,7 +6636,7 @@ body.r-operator .mp-note.mp-alert {
     body.r-public:has(#s3:not([hidden])) #e3 {
         position: fixed;
         top: calc(env(safe-area-inset-top) + 94px);
-        /* a gap under the Going to / Distance card */
+
         left: 12px;
         right: 12px;
         z-index: 5;
@@ -6813,7 +6676,6 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* Track my ride: "Your location" button (just the icon, then the text; the icon turns orange while following) */
 .trk-act .trk-loc {
     display: inline-flex;
     align-items: center;
@@ -6838,14 +6700,11 @@ body.r-operator .mp-note.mp-alert {
     height: 17px
 }
 
-/* following is shown by an orange icon; the border stays the same as the Stop button */
 .trk-act .trk-loc.on .trk-loc-ic {
     background: none;
     color: #f26b1d
 }
 
-/* Dropdown lists: Track my ride / Cancel trip (destination) and Edit profile (barangay).
-   Modern Chrome / Edge get the fully styled list; other browsers get the basic option colors. */
 .trk-card select option,
 .pf-form select option {
     font-weight: 600;
@@ -6929,7 +6788,7 @@ body.r-operator .mp-note.mp-alert {
         margin-bottom: 0
     }
 
-    /* a check on the chosen one (no icon in front of the places) */
+
     .trk-card select option::checkmark,
     .pf-form select option::checkmark {
         content: "";
@@ -6957,7 +6816,6 @@ body.r-operator .mp-note.mp-alert {
 
 }
 
-/* Track my ride (live step, phones and tablets): the bottom bar is frosted glass, so the map shows through underneath it */
 @media (max-width:999px) {
     body.r-public:has(#s3:not([hidden])) .btabs {
         background: rgba(255, 255, 255, .8);
@@ -6970,7 +6828,6 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* Track my ride: the location status ("Finding your location...") is a white card with a pulsing radar dot; problems get a red mark */
 .trk-box #ts.alert {
     display: flex;
     align-items: center;
@@ -7026,7 +6883,6 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* Manifest details: each crew member's position sits under the name, smaller, with space between members */
 .mp-details .mp-cm {
     margin: 0 0 12px
 }
@@ -7049,7 +6905,6 @@ body.r-operator .mp-note.mp-alert {
     color: var(--mut)
 }
 
-/* Trip documents popup (Crew list, Manifest, MDSD, PDIC): the close button sits in the top right corner of the popup */
 .mdl-box:has(.pdfbtn) {
     position: relative
 }
@@ -7065,7 +6920,6 @@ body.r-operator .mp-note.mp-alert {
     padding-right: 44px
 }
 
-/* Header date chip: the same space on both sides of the dash (date - time) */
 .datechip {
     gap: 8px
 }
@@ -7074,7 +6928,6 @@ body.r-operator .mp-note.mp-alert {
     margin-left: 8px
 }
 
-/* MDSD / PDIC warning: a compact notice with an icon instead of a big pink bar */
 .md-box .md-err {
     display: flex;
     align-items: center;
@@ -7115,7 +6968,6 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* Unanswered MDSD / PDIC item: no red background, a red dot by the question and a red outline on the answer choices */
 .md-q.miss {
     background: none;
     margin: 0;
@@ -7140,7 +6992,6 @@ body.r-operator .mp-note.mp-alert {
     box-shadow: 0 0 0 3px #d92d2014
 }
 
-/* PDIC: Yes / No with the optional remark right under it (printed in the Remarks column); both have the same width */
 .md-ans {
     flex: none;
     display: flex;
@@ -7187,7 +7038,6 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* PDIC step: Back and Depart sit side by side, also on phones */
 @media (max-width:699px) {
     .r-admin .md-foot .btn.md-pair {
         flex: 1 1 0;
@@ -7195,7 +7045,6 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* MDSD and PDIC answers: a thin "|" line between the choices; it stays visible when a choice is picked */
 .md-o+.md-o::before {
     content: "";
     position: absolute;
@@ -7208,7 +7057,6 @@ body.r-operator .mp-note.mp-alert {
     pointer-events: none
 }
 
-/* Space between the choices so the "|" line is always visible, also next to a picked (green / red / grey) choice */
 .md-opts {
     gap: 8px
 }
@@ -7218,7 +7066,6 @@ body.r-operator .mp-note.mp-alert {
     background: #cdbfb3
 }
 
-/* PDIC: simpler answer area. A slim Yes / No switch with a quiet underlined remark field beneath it. */
 .md-ans {
     gap: 4px
 }
@@ -7252,7 +7099,6 @@ body.r-operator .mp-note.mp-alert {
     box-shadow: none
 }
 
-/* Operator Home: compact status note under the button, and two cards that keep the same size in every state */
 .op-note {
     display: flex;
     align-items: center;
@@ -7324,7 +7170,6 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* Operator Home: the status note is plain text with a small icon (no box), and the two cards are shorter */
 .op-note,
 .op-note.ok {
     margin: 14px 0 0;
@@ -7350,7 +7195,6 @@ body.r-operator .mp-note.mp-alert {
     }
 }
 
-/* Operator Passengers page: the status note is not a card any more. Plain text with an icon, a thin line below, and a quiet status on the right. */
 .mp-note {
     align-items: flex-start;
     gap: 12px;
@@ -7385,12 +7229,10 @@ body.r-operator .mp-note.mp-alert {
     font-size: .78rem
 }
 
-/* Operator Home: the two cards are only as tall as their text (the taller one sets the height for both) */
 .opgrid .card {
     min-height: 0
 }
 
-/* Operator Home: tighter cards, less padding and less space between the lines */
 .opgrid .card {
     padding: 14px 20px
 }
@@ -7418,7 +7260,6 @@ body.r-operator .mp-note.mp-alert {
     margin-top: 10px
 }
 
-/* Operator Home: "passengers on board" sits right next to the live count */
 .count .cnt-lbl {
     margin-left: 8px;
     font-size: .88rem;
@@ -7426,7 +7267,6 @@ body.r-operator .mp-note.mp-alert {
     color: var(--mut)
 }
 
-/* Live queue cards: the boat's name, status, count and bar sit in the middle (up and down) of the space above the departure line; still left aligned */
 .r-admin .cluster>.mb:not(.empty) {
     flex: 1;
     display: flex;
@@ -7434,7 +7274,6 @@ body.r-operator .mp-note.mp-alert {
     justify-content: center
 }
 
-/* Operator Passengers page, for inspection: even spacing above and below the status note */
 body.r-operator .main>h1:has(+ .mpage) {
     margin-bottom: 6px !important
 }
@@ -7443,7 +7282,6 @@ body.r-operator .main>h1:has(+ .mpage) {
     padding: 12px 2px 14px
 }
 
-/* Operator Passengers page: only the corner radius changes, everything is nearly square */
 body.r-operator .mpage .card,
 body.r-operator .mpage .tablewrap,
 body.r-operator .mpage .qrc-box,
@@ -7459,7 +7297,6 @@ body.r-operator .mpage .mp-count .bar>* {
     border-radius: 4px
 }
 
-/* Live queue cards (admin, operator and passenger): nearly square corners */
 .cluster,
 .r-admin .cluster,
 .insp,
@@ -7469,7 +7306,6 @@ body.r-operator .mpage .mp-count .bar>* {
     border-radius: 4px
 }
 
-/* Track my ride: nearly square card, and a cleaner error notice (icon, bold title, short explanation) */
 .trk-card,
 .r-admin .trk-card {
     border-radius: 4px
@@ -7521,7 +7357,6 @@ body.r-operator .mpage .mp-count .bar>* {
     color: #8a4b45
 }
 
-/* Track my ride: a little corner radius on the card and on the notice */
 .trk-card,
 .r-admin .trk-card {
     border-radius: 12px
@@ -7531,7 +7366,6 @@ body.r-operator .mpage .mp-count .bar>* {
     border-radius: 10px
 }
 
-/* a notice with only a title: the icon lines up with it */
 .trk-card .alert.bad:not(:has(span)) {
     align-items: center
 }
@@ -7541,12 +7375,10 @@ body.r-operator .mpage .mp-count .bar>* {
     margin-top: 0
 }
 
-/* the notice title is regular weight */
 .trk-card .alert.bad b {
     font-weight: 500
 }
 
-/* Track my ride notice: no border, no background, tight line spacing */
 .trk-card .alert.bad {
     padding: 4px 0;
     border: 0;
@@ -7558,13 +7390,11 @@ body.r-operator .mpage .mp-count .bar>* {
     line-height: .8
 }
 
-/* Track my ride notice: line spacing 1 */
 .trk-card .alert.bad,
 .trk-card .alert.bad b {
     line-height: 1
 }
 
-/* Dropdown options redesign (Track my ride, Cancel trip, Edit profile): clean rows, thin dividers, the chosen one marked with a left bar and a check */
 @supports (appearance: base-select) {
 
     .trk-card select::picker(select),
@@ -7607,9 +7437,6 @@ body.r-operator .mpage .mp-count .bar>* {
     }
 }
 
-/* Track my ride, step 2: "Cancel trip" (left) and "Share my location" (right) on one row, 50 / 50.
-   Only the layout and the text size are set here: the Share button keeps its normal look.
-   When Cancel is not shown, Share fills the row. Cancel uses the same ghost button as everywhere else. */
 .trk-card .trk-btns {
     display: flex;
     gap: 10px;
@@ -7622,16 +7449,15 @@ body.r-operator .mpage .mp-count .bar>* {
     min-width: 0;
     min-height: 0;
     height: 38px;
-    /* shorter buttons */
+
     white-space: nowrap;
     font-size: .82rem;
-    /* smaller text, so both labels stay on one line */
+
     letter-spacing: 0;
     padding-left: 8px;
     padding-right: 8px
 }
 
-/* Passenger side: buttons are flat, the same as the buttons inside the modals (no raised gradient, no inner highlight or dark edge) */
 body.r-public .btn:not(.ghost):not(.mdl .btn) {
     background: var(--o);
     box-shadow: 0 8px 18px -8px #f26b1daa
@@ -7653,7 +7479,6 @@ body.r-public .btn.ghost:not(.mdl .btn):active {
     box-shadow: none
 }
 
-/* Edit profile: Save and Cancel are small and on the right, the same size as the Edit button */
 .pf-form .pf-act {
     justify-content: flex-end
 }
@@ -7671,7 +7496,6 @@ body.r-public .btn.ghost:not(.mdl .btn):active {
     gap: 7px
 }
 
-/* Edit profile: Edit, Save and Cancel have the same width */
 .pf-form .pf-act .btn,
 .pf-form.ro .pf-act .btn {
     flex: 0 0 104px;
@@ -7679,17 +7503,14 @@ body.r-public .btn.ghost:not(.mdl .btn):active {
     padding: 0
 }
 
-/* Passenger side: orange buttons get a thin darker-orange border so they read as buttons */
 body.r-public .btn:not(.ghost) {
     border: 1px solid #d4570e
 }
 
-/* Passenger side: smaller corner radius on the buttons (no longer pills) */
 body.r-public .btn {
     border-radius: 10px
 }
 
-/* Passenger side buttons: soft glass look (thin outline, a faint inner ring, a gentle glow inside) with a modest corner radius */
 body.r-public .btn {
     border-radius: 10px
 }
@@ -7724,7 +7545,6 @@ body.r-public .btn.ghost:active {
     box-shadow: inset 0 0 0 1px #fff, inset 0 2px 5px #1f1a1717
 }
 
-/* Edit profile: Cancel is narrower than the main button, and the main button carries an icon */
 .pf-form .pf-act .btn,
 .pf-form.ro .pf-act .btn {
     flex: 0 0 112px;
@@ -7743,7 +7563,6 @@ body.r-public .btn.ghost:active {
     stroke-width: 2.2
 }
 
-/* Passenger side buttons, like the reference: a soft glass look. A thin darker outline, a faint inner ring, a blurred glow along the top edge and a gentle shade along the bottom edge. (Selectors match the stronger earlier rules so this one wins.) */
 body.r-public .btn:not(.ghost):not(.mdl .btn),
 body.r-public .mdl .btn:not(.ghost) {
     background: #f26b1d;
@@ -7788,8 +7607,6 @@ body.r-public .mdl .btn.ghost:active {
     box-shadow: inset 0 0 0 2px #fff, inset 0 3px 6px -3px #1f1a1733
 }
 
-/* Passenger pages: every button outside the popups has the same size and text (the glass look above is shared by all of them):
-   same height, same text size and weight, text centered. Widths stay as each screen needs them. */
 body.r-public .btn:not(.mdl .btn) {
     height: 38px;
     min-height: 0;
@@ -7805,8 +7622,6 @@ body.r-public .btn:not(.mdl .btn) {
     gap: 7px
 }
 
-/* Passenger on phones: a small "taste" pass. Pages and lists settle in one by one, taps feel physical,
-   titles are tighter. Nothing inside the live-refreshing boards is animated (they re-draw every few seconds). */
 @keyframes pxrise {
     from {
         opacity: 0;
@@ -7835,7 +7650,7 @@ body.r-public .btn:not(.mdl .btn) {
         line-height: 1.05
     }
 
-    /* tactile press on buttons and rows */
+
     body.r-public .btn:not(.mdl .btn):active {
         transform: scale(.97)
     }
@@ -7848,7 +7663,7 @@ body.r-public .btn:not(.mdl .btn) {
 
 @media (max-width:999px) and (prefers-reduced-motion:no-preference) {
 
-    /* small items rise a little */
+
     body.r-public .main>h1,
     body.r-public .main>.fx .fx-head,
     body.r-public .fx-row,
@@ -7857,15 +7672,14 @@ body.r-public .btn:not(.mdl .btn) {
         animation: pxrise .55s cubic-bezier(.2, .8, .2, 1) both
     }
 
-    /* big containers only fade: any move / transform on them would turn them into the "box" that pins a
-       position:fixed child inside it (the full-screen map and the popups), so they must never get one */
+
     body.r-public .main>.card,
     body.r-public .main>.trk,
     body.r-public .main>section {
         animation: pxfade .5s ease-out .06s both
     }
 
-    /* lists: a short cascade (the first ten items) */
+
     body.r-public .fx-row:nth-child(2),
     body.r-public .main>.ann:nth-of-type(1) {
         animation-delay: .08s
@@ -7897,9 +7711,6 @@ body.r-public .btn:not(.mdl .btn) {
     }
 }
 
-/* Passenger buttons: flat, solid, the way the big ride and wallet apps draw them.
-   Main = solid orange with white text. Ghost = soft warm grey fill with dark text, no outline. Pressed = a darker fill and a tiny shrink.
-   No gradients, no gloss, no glow. Sizes stay as set above (38px, small text). */
 body.r-public .btn,
 body.r-public .mdl-act button {
     border: 0 !important;
@@ -7957,13 +7768,10 @@ body.r-public .mdl-act button:focus-visible {
     outline-offset: 2px
 }
 
-/* the map "Your location" icon follows the button text colour */
 body.r-public .trk-loc .trk-loc-ic {
     color: currentColor
 }
 
-/* Passenger bottom bar: icon with its name under it, five equal tabs (Home, Track, Fare, Alert, Profile).
-   The open page shows the solid version of its icon, in dark; the others are the outline version in a quiet warm grey. */
 body.r-public .btabs.btabs-lbl {
     justify-content: space-around;
     align-items: flex-start;
@@ -8000,7 +7808,6 @@ body.r-public .btabs-lbl a .ico {
     transition: transform .2s, fill-opacity .2s
 }
 
-/* thin outline icons (set on the shapes too, so a line weight written inside an icon cannot override it) */
 body.r-public .btabs-lbl a .ico,
 body.r-public .btabs-lbl a .ico * {
     stroke-width: 1.5
@@ -8021,7 +7828,6 @@ body.r-public .btabs-lbl a.on span {
     font-weight: 700
 }
 
-/* each icon has an outline (other pages) and a solid (open page) drawing; they share one svg */
 body.r-public .btabs-lbl a .f {
     display: none
 }
@@ -8038,7 +7844,6 @@ body.r-public .btabs-lbl a.on::after {
     display: none
 }
 
-/* Operator Home icon: outline when the page is not open, solid when it is (like the passenger bar) */
 body.r-operator .pills a .f,
 body.r-operator .btabs a .f {
     display: none
@@ -8054,7 +7859,6 @@ body.r-operator .btabs a.on .o {
     display: none
 }
 
-/* Passenger buttons: text only, centered, with even padding left and right */
 body.r-public .btn,
 body.r-public .mdl .btn {
     gap: 0;
@@ -8077,7 +7881,6 @@ body.r-public .btn.sm {
     padding-right: 0
 }
 
-/* Track my ride: Cancel trip (left) and Share my location (right) always fit on one row */
 body.r-public .trk-card .trk-btns .btn {
     padding-left: 6px !important;
     padding-right: 6px !important;
@@ -8085,8 +7888,6 @@ body.r-public .trk-card .trk-btns .btn {
     white-space: nowrap
 }
 
-/* Track my ride (live map): the two buttons over the map look clearly different.
-   "Your location" = white with dark text and an orange icon; "Stop" = solid red. */
 body.r-public:has(#s3:not([hidden])) .trk-act #center {
     background: #fff !important;
     color: #1f1a17 !important;
@@ -8109,4 +7910,52 @@ body.r-public:has(#s3:not([hidden])) .trk-act #stop {
 
 body.r-public:has(#s3:not([hidden])) .trk-act #stop:active {
     background: #c42b20 !important
+}
+
+.trk-card .trk-found {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid #f6d5bd;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #fff4ea, #ffe3cd);
+    box-shadow: none
+}
+
+.trk-card .trk-found .dot {
+    display: none
+}
+
+.trk-card .trk-found::before {
+    content: "";
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z'/%3E%3Ccircle cx='12' cy='9.5' r='2.5'/%3E%3C/svg%3E") center/22px no-repeat, linear-gradient(180deg, #f67f33, #ee6416);
+    box-shadow: none
+}
+
+.trk-card .trk-found b {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    line-height: 1.2;
+    color: #1f1a17
+}
+
+.trk-card .trk-found span {
+    display: block;
+    margin-top: 3px;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    color: #8a6a55;
+    font-size: .85rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.2
 }
