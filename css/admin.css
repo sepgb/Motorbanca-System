@@ -8038,3 +8038,26 @@ body.r-operator .pills a.on .o,
 body.r-operator .btabs a.on .o {
     display: none
 }
+
+/* Passenger buttons: text only, centered, with even padding left and right */
+body.r-public .btn,
+body.r-public .mdl .btn {
+    gap: 0;
+    padding-left: 22px;
+    padding-right: 22px;
+    line-height: 1;
+    text-align: center;
+    letter-spacing: 0
+}
+
+body.r-public .btn.sm {
+    padding-left: 18px;
+    padding-right: 18px
+}
+
+.pf-form .pf-act .btn,
+.pf-form.ro .pf-act .btn,
+.pf-form .pf-act .btn:has(.btn-ic) {
+    padding-left: 0;
+    padding-right: 0
+}
