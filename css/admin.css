@@ -7953,7 +7953,7 @@ body.r-public .trk-loc .trk-loc-ic {
 }
 
 /* Passenger bottom bar: icon with its name under it, five equal tabs (Home, Track, Fare, Alert, Profile).
-   The open page is a little bolder and dark; the others are a quiet warm grey. */
+   The open page shows the solid version of its icon, in dark; the others are the outline version in a quiet warm grey. */
 body.r-public .btabs.btabs-lbl {
     justify-content: space-around;
     align-items: flex-start;
@@ -8006,12 +8006,35 @@ body.r-public .btabs-lbl a.on span {
     font-weight: 700
 }
 
-body.r-public .btabs-lbl a.on .ico {
-    stroke-width: 2.1;
-    fill: currentColor;
-    fill-opacity: .08
+/* each icon has an outline (other pages) and a solid (open page) drawing; they share one svg */
+body.r-public .btabs-lbl a .f {
+    display: none
+}
+
+body.r-public .btabs-lbl a.on .f {
+    display: inline
+}
+
+body.r-public .btabs-lbl a.on .o {
+    display: none
 }
 
 body.r-public .btabs-lbl a.on::after {
+    display: none
+}
+
+/* Operator Home icon: outline when the page is not open, solid when it is (like the passenger bar) */
+body.r-operator .pills a .f,
+body.r-operator .btabs a .f {
+    display: none
+}
+
+body.r-operator .pills a.on .f,
+body.r-operator .btabs a.on .f {
+    display: inline
+}
+
+body.r-operator .pills a.on .o,
+body.r-operator .btabs a.on .o {
     display: none
 }
