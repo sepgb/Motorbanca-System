@@ -7953,7 +7953,7 @@ body.r-public .trk-loc .trk-loc-ic {
 }
 
 /* Passenger bottom bar: icon with its name under it, five equal tabs (Home, Track, Fare, Alert, Profile).
-   The open page is bolder and dark (heavier icon line, heavier name); the others are a quiet warm grey. */
+   The open page is a little bolder and dark; the others are a quiet warm grey. */
 body.r-public .btabs.btabs-lbl {
     justify-content: space-around;
     align-items: flex-start;
@@ -8003,13 +8003,13 @@ body.r-public .btabs-lbl a.on {
 }
 
 body.r-public .btabs-lbl a.on span {
-    font-weight: 800
+    font-weight: 700
 }
 
 body.r-public .btabs-lbl a.on .ico {
-    stroke-width: 2.5;
+    stroke-width: 2.1;
     fill: currentColor;
-    fill-opacity: .12
+    fill-opacity: .08
 }
 
 body.r-public .btabs-lbl a.on::after {
