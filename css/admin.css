@@ -7997,8 +7997,13 @@ body.r-public .btabs-lbl a i {
 body.r-public .btabs-lbl a .ico {
     width: 25px;
     height: 25px;
-    stroke-width: 1.8;
     transition: transform .2s, fill-opacity .2s
+}
+
+/* thin outline icons (set on the shapes too, so a line weight written inside an icon cannot override it) */
+body.r-public .btabs-lbl a .ico,
+body.r-public .btabs-lbl a .ico * {
+    stroke-width: 1.5
 }
 
 body.r-public .btabs-lbl a span {
