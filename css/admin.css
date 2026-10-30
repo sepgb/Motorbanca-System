@@ -8061,3 +8061,11 @@ body.r-public .btn.sm {
     padding-left: 0;
     padding-right: 0
 }
+
+/* Track my ride: Cancel trip (left) and Share my location (right) always fit on one row */
+body.r-public .trk-card .trk-btns .btn {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    font-size: .8rem;
+    white-space: nowrap
+}

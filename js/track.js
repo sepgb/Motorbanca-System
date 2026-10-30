@@ -25,7 +25,7 @@
         return fetch(root.dataset.api, { method: 'POST', body: f }).then(function (r) { return r.json(); });
     }
     function fillStep2(j, pick) {
-        data = j; $('fb').textContent = 'You are on ' + j.boat; $('fc').textContent = j.cluster; $('cancel').hidden = !j.scanned;   // Cancel trip only for people who joined by scanning
+        data = j; $('fb').textContent = 'You are on ' + j.boat; $('fc').textContent = j.cluster; $('cancel').hidden = false;   // Cancel trip is shown to everyone; only people who joined by scanning can really cancel (the others are told to ask the operator)
         var sel = $('dest'); sel.innerHTML = '';
         j.barangays.forEach(function (x, i) { var o = document.createElement('option'); o.value = i; o.textContent = x.name; if (pick && x.name === pick) o.selected = true; sel.appendChild(o); });
         show($('e2'), '');
@@ -180,7 +180,10 @@
     // ---- cancel trip: takes this passenger off the boat's list (only offered to passengers who joined by scanning the QR code)
     var cm = $('cx-mdl');
     function cxClose() { cm.classList.remove('open'); }
-    $('cancel').addEventListener('click', function () { cm.classList.add('open'); cm.querySelector('.no').focus(); });
+    $('cancel').addEventListener('click', function () {
+        if (!data || !data.scanned) return show($('e2'), 'You did not join by scanning the QR code. Please ask the operator to remove you from the passenger list.');
+        show($('e2'), ''); cm.classList.add('open'); cm.querySelector('.no').focus();
+    });
     cm.querySelector('.no').addEventListener('click', cxClose);
     cm.addEventListener('click', function (e) { if (e.target === cm) cxClose(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cxClose(); });
