@@ -6641,7 +6641,7 @@ body.r-operator .mp-note.mp-alert {
     body.r-public .scan-btn {
         position: fixed;
         right: 12px;
-        bottom: calc(74px + env(safe-area-inset-bottom));
+        bottom: calc(82px + env(safe-area-inset-bottom));
         z-index: 40;
         order: 0;
         margin: 0;
@@ -6786,7 +6786,7 @@ body.r-operator .mp-note.mp-alert {
         position: fixed;
         left: 12px;
         right: 12px;
-        bottom: calc(66px + env(safe-area-inset-bottom) + 28px);
+        bottom: calc(74px + env(safe-area-inset-bottom) + 28px);
         z-index: 5
     }
 
@@ -6799,7 +6799,7 @@ body.r-operator .mp-note.mp-alert {
         position: fixed;
         left: 12px;
         right: 12px;
-        bottom: calc(66px + env(safe-area-inset-bottom) + 28px + 56px);
+        bottom: calc(74px + env(safe-area-inset-bottom) + 28px + 56px);
         z-index: 5;
         margin: 0;
         padding: 6px 12px;
@@ -6966,7 +6966,7 @@ body.r-operator .mp-note.mp-alert {
     }
 
     body.r-public:has(#s3:not([hidden])) .trk-map .leaflet-bottom {
-        bottom: calc(66px + env(safe-area-inset-bottom))
+        bottom: calc(74px + env(safe-area-inset-bottom))
     }
 }
 
@@ -7958,7 +7958,7 @@ body.r-public .btabs.btabs-lbl {
     justify-content: space-around;
     align-items: flex-start;
     gap: 0;
-    padding: 9px 4px calc(7px + env(safe-area-inset-bottom))
+    padding: 13px 4px calc(11px + env(safe-area-inset-bottom))
 }
 
 body.r-public .btabs-lbl a {
