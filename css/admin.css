@@ -7819,6 +7819,16 @@ body.r-public .btn:not(.mdl .btn) {
     }
 }
 
+@keyframes pxfade {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
 @media (max-width:999px) {
     body.r-public .main>h1 {
         letter-spacing: -.03em;
@@ -7838,10 +7848,8 @@ body.r-public .btn:not(.mdl .btn) {
 
 @media (max-width:999px) and (prefers-reduced-motion:no-preference) {
 
+    /* small items rise a little */
     body.r-public .main>h1,
-    body.r-public .main>.card,
-    body.r-public .main>.trk,
-    body.r-public .main>section,
     body.r-public .main>.fx .fx-head,
     body.r-public .fx-row,
     body.r-public .main>.ann,
@@ -7849,10 +7857,12 @@ body.r-public .btn:not(.mdl .btn) {
         animation: pxrise .55s cubic-bezier(.2, .8, .2, 1) both
     }
 
+    /* big containers only fade: any move / transform on them would turn them into the "box" that pins a
+       position:fixed child inside it (the full-screen map and the popups), so they must never get one */
     body.r-public .main>.card,
     body.r-public .main>.trk,
     body.r-public .main>section {
-        animation-delay: .06s
+        animation: pxfade .5s ease-out .06s both
     }
 
     /* lists: a short cascade (the first ten items) */
