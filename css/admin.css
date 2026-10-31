@@ -1334,7 +1334,6 @@ body.nav-open .pills {
         display: none
     }
 
-
     .r-admin .main {
         padding-top: max(14px, env(safe-area-inset-top));
         padding-bottom: 104px
@@ -3956,7 +3955,6 @@ body.r-public .main>.lead {
 
 @media (max-width:699px) {
 
-
     .fx-head {
         display: none
     }
@@ -4106,7 +4104,6 @@ body.r-public .main>.lead {
 
 @media (max-width:699px) {
 
-
     .mpage .tablewrap td,
     .mpage .tablewrap th {
         padding: 12px 8px
@@ -4154,7 +4151,6 @@ body.r-public .main>.lead {
         gap: 2px;
         padding-top: 6px
     }
-
 
     .btabs-pub a,
     .btabs-pub i,
@@ -5272,7 +5268,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
         grid-column: 1 / -1
     }
 
-
     .ann-tpl {
         border-right: 0;
         padding: 14px;
@@ -5327,7 +5322,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
     .ann-chip .ann-d {
         color: var(--mut)
     }
-
 
     #annf label {
         display: block;
@@ -6788,7 +6782,6 @@ body.r-operator .mp-note.mp-alert {
         margin-bottom: 0
     }
 
-
     .trk-card select option::checkmark,
     .pf-form select option::checkmark {
         content: "";
@@ -6829,9 +6822,11 @@ body.r-operator .mp-note.mp-alert {
 }
 
 .trk-box #ts.alert {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
-    gap: 14px;
+    column-gap: 14px;
+    row-gap: 0;
     padding: 12px 16px;
     background: #fff;
     border: 1px solid var(--ln);
@@ -6862,7 +6857,7 @@ body.r-operator .mp-note.mp-alert {
 }
 
 .trk-box #ts.alert.bad {
-    align-items: flex-start;
+    align-items: start;
     border-color: #f4c9c4;
     color: #7a271a;
     font-size: .86rem;
@@ -7650,7 +7645,6 @@ body.r-public .btn:not(.mdl .btn) {
         line-height: 1.05
     }
 
-
     body.r-public .btn:not(.mdl .btn):active {
         transform: scale(.97)
     }
@@ -7663,7 +7657,6 @@ body.r-public .btn:not(.mdl .btn) {
 
 @media (max-width:999px) and (prefers-reduced-motion:no-preference) {
 
-
     body.r-public .main>h1,
     body.r-public .main>.fx .fx-head,
     body.r-public .fx-row,
@@ -7672,13 +7665,11 @@ body.r-public .btn:not(.mdl .btn) {
         animation: pxrise .55s cubic-bezier(.2, .8, .2, 1) both
     }
 
-
     body.r-public .main>.card,
     body.r-public .main>.trk,
     body.r-public .main>section {
         animation: pxfade .5s ease-out .06s both
     }
-
 
     body.r-public .fx-row:nth-child(2),
     body.r-public .main>.ann:nth-of-type(1) {
@@ -7999,9 +7990,23 @@ body.r-public:has(#s3:not([hidden])) .trk-act #center:active {
 .trk-card #ts .btn,
 .trk-box #ts .btn {
     grid-column: 2;
+    grid-row: 2;
     justify-self: end;
+    align-self: end;
+    width: auto;
     margin-top: 10px;
     min-height: 36px
+}
+
+.trk-box #ts #tst {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0
+}
+
+.trk-box #ts.alert::before {
+    grid-column: 1;
+    grid-row: 1
 }
 
 .trk-box #ts:not(.bad) .btn {
