@@ -1,5 +1,3 @@
-// Track my ride: check the manifest, choose a destination barangay, follow the live location on a map.
-// The page remembers where you are (on this device only), so a refresh does not start over.
 (function () {
     var root = document.getElementById('trk'); if (!root) return;
     var $ = function (id) { return document.getElementById(id); };
@@ -8,7 +6,6 @@
 
     if (!window.isSecureContext) { $('secgo').href = 'https://' + location.hostname + location.pathname; $('sec').hidden = false; }
     function show(el, msg) { el.textContent = msg; el.hidden = !msg; }
-    // a notice with a bold title and a short explanation under it
     function note(el, title, text) {
         el.textContent = '';
         var b = document.createElement('b'), t = document.createElement('span');
@@ -25,13 +22,12 @@
         return fetch(root.dataset.api, { method: 'POST', body: f }).then(function (r) { return r.json(); });
     }
     function fillStep2(j, pick) {
-        data = j; $('fb').textContent = 'You are on ' + j.boat; $('fc').textContent = j.cluster; $('cancel').hidden = false;   // Cancel trip is shown to everyone; only people who joined by scanning can really cancel (the others are told to ask the operator)
+        data = j; $('fb').textContent = 'You are on ' + j.boat; $('fc').textContent = j.cluster; $('cancel').hidden = false;
         var sel = $('dest'); sel.innerHTML = '';
         j.barangays.forEach(function (x, i) { var o = document.createElement('option'); o.value = i; o.textContent = x.name; if (pick && x.name === pick) o.selected = true; sel.appendChild(o); });
         show($('e2'), '');
     }
 
-    // ---- 1: check the manifest
     s1.addEventListener('submit', function (ev) {
         ev.preventDefault(); show($('e1'), ''); show($('ok1'), '');
         var b = $('b1'); b.disabled = true; b.textContent = 'Checking…';
@@ -45,7 +41,6 @@
     });
     $('back1').addEventListener('click', function () { clear(); step(1); });
 
-    // ---- 2: pick destination, ask for location (the tap lets the browser show its permission question)
     $('go').addEventListener('click', function () {
         show($('e2'), '');
         if (!window.isSecureContext || !navigator.geolocation) return show($('e2'), 'Your browser only shares location on a secure (https) page. Use the https link at the top of this page.');
@@ -62,21 +57,19 @@
         return 2 * R * Math.asin(Math.sqrt(h));
     }
     function fmt(d) { return d < 1 ? Math.round(d * 1000) + ' m' : d.toFixed(1) + ' km'; }
-    function status(msg, bad) { var t = $('ts'); t.textContent = msg; t.hidden = !msg; t.className = 'alert' + (bad ? ' bad' : ''); }
+    function status(msg, bad) { var t = $('ts'); $('tst').textContent = msg; t.hidden = !msg; t.className = 'alert' + (bad ? ' bad' : ''); }
 
-    // ---- 3: live map
     function startTrip(d) {
         destName = d.name; save(3); fitted = false; moved = false; follow = false; $('center').classList.remove('on'); here = null; hiAcc = true; route = []; token++; if (stops) stops.clearLayers();
         $('td').textContent = d.name + (d.pier ? ' pier' : ''); $('tk').textContent = '…'; show($('e3'), ''); $('retry').hidden = true;
         step(3); status('Finding your location…');
         if (!map) {
-            map = L.map('map').setView([14.4647, 121.192], 12);   // Binangonan, until we know more
+            map = L.map('map').setView([14.4647, 121.192], 12);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
-            // the map fills the screen on phones: keep Leaflet in step whenever the box changes size, so the tiles cover all of it
-            var resized = function () { map.invalidateSize(); if (!moved && !follow && here && dest) fitAll(); };   // re-frame both points once the map has its real size
+            var resized = function () { map.invalidateSize(); if (!moved && !follow && here && dest) fitAll(); };
             if (window.ResizeObserver) new ResizeObserver(resized).observe($('map'));
             window.addEventListener('resize', resized);
-            $('map').addEventListener('pointerdown', function (e) {   // the passenger is looking around: stop re-framing and following
+            $('map').addEventListener('pointerdown', function (e) {
                 if (e.target.closest && e.target.closest('.leaflet-control')) return;
                 moved = true; follow = false; $('center').classList.remove('on');
             });
@@ -94,7 +87,6 @@
         buildRoute(d);
         begin();
     }
-    // The route only runs through the barangays of this cluster, in the order they are listed, up to the chosen destination.
     function cached(name) { try { return (JSON.parse(localStorage.getItem('trkGeo')) || {})[name] || null; } catch (x) { return null; } }
     function remember(name, pos) { try { var o = JSON.parse(localStorage.getItem('trkGeo')) || {}; o[name] = pos; localStorage.setItem('trkGeo', JSON.stringify(o)); } catch (x) { } }
     function where(b) {
@@ -123,9 +115,9 @@
             { enableHighAccuracy: hiAcc, maximumAge: hiAcc ? 0 : 15000, timeout: hiAcc ? 25000 : 20000 });
     }
     function onErr(err) {
-        if (err.code === 1) {   // refused
+        if (err.code === 1) {
             status('Location is blocked for this page. Tap the lock icon in the address bar, allow Location, then tap Try again.', true);
-        } else if (hiAcc) {     // GPS is slow or unavailable: use the quicker network location instead
+        } else if (hiAcc) {
             hiAcc = false; status('Still looking for your location…'); return begin();
         } else {
             status(err.code === 2 ? 'Your phone could not work out where you are. Turn on Location (GPS) in the phone settings, then tap Try again.' : 'Finding your location is taking too long. Move near a window or outdoors, then tap Try again.', true);
@@ -139,9 +131,9 @@
             meAcc = L.circle(here, { radius: p.coords.accuracy || 20, color: '#2563eb', weight: 1, fillOpacity: .12 }).addTo(map);
             me = L.circleMarker(here, { radius: 8, color: '#fff', weight: 3, fillColor: '#2563eb', fillOpacity: 1 }).addTo(map).bindTooltip('You');
         } else { me.setLatLng(here); meAcc.setLatLng(here).setRadius(p.coords.accuracy || 20); }
-        if (follow) map.panTo(here);   // "Your location" is on: the map stays on the passenger as they move
+        if (follow) map.panTo(here);
     }
-    function path() {   // from you, along the cluster's barangays, to the destination
+    function path() {
         var r = route.length ? route.slice() : (dest ? [dest] : []);
         if (!here || !r.length) return [];
         var n = 0; r.forEach(function (p, k) { if (km(here, p) < km(here, r[n])) n = k; });
@@ -157,7 +149,6 @@
             if (!fitted) { fitted = true; fitAll(); }
         } else if (!fitted) { fitted = true; map.setView(here, 16); }
     }
-    // frame your location and the destination together; on phones the cards and buttons float over the map, so keep both points clear of them
     function fitAll() {
         var p = path();
         if (p.length > 1) {
@@ -165,7 +156,6 @@
             map.fitBounds(L.latLngBounds(p), phone ? { paddingTopLeft: [40, 170], paddingBottomRight: [40, 190], maxZoom: 17 } : { padding: [60, 60], maxZoom: 17 });
         } else if (here) map.setView(here, 16);
     }
-    // "Your location": focus on the passenger and keep following until they move the map themselves
     $('center').addEventListener('click', function () {
         follow = true; moved = false; $('center').classList.add('on');
         if (here) map.setView(here, 17);
@@ -177,7 +167,6 @@
         here = dest = null; route = []; token++; if (stops) stops.clearLayers(); destName = ''; save(2); step(2);
     });
 
-    // ---- cancel trip: takes this passenger off the boat's list (only offered to passengers who joined by scanning the QR code)
     var cm = $('cx-mdl');
     function cxClose() { cm.classList.remove('open'); }
     $('cancel').addEventListener('click', function () {
@@ -198,7 +187,6 @@
         }).catch(function () { done(); show($('e2'), 'Could not reach the server. Check your connection and try again.'); });
     });
 
-    // ---- after a refresh: go back to where the passenger was
     var saved = load();
     if (saved && saved.who) {
         s1.hidden = true; who = saved.who;

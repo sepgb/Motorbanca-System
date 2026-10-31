@@ -47,12 +47,11 @@ page_head('Track my ride', 'public');
                 <div><small>Going to</small><b id="td"></b></div>
                 <div><small>Distance</small><b id="tk">&hellip;</b></div>
             </div>
-            <div class="alert" id="ts">Finding your location&hellip;</div>
+            <div class="alert" id="ts"><span id="tst">Finding your location&hellip;</span><button class="btn sm" id="retry" type="button" hidden>Try again</button></div>
             <div id="map" class="trk-map"></div>
         </div>
         <div class="alert" id="e3" hidden></div>
         <div class="trk-act">
-            <button class="btn sm" id="retry" type="button" hidden>Try again</button>
             <button class="btn sm ghost" id="stop" type="button">Stop</button>
             <button class="btn sm ghost trk-loc" id="center" type="button">Your location</button>
         </div>

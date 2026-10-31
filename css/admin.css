@@ -7995,3 +7995,15 @@ body.r-public:has(#s3:not([hidden])) .trk-act #center {
 body.r-public:has(#s3:not([hidden])) .trk-act #center:active {
     background: #dc5f12 !important
 }
+
+.trk-card #ts .btn,
+.trk-box #ts .btn {
+    grid-column: 2;
+    justify-self: end;
+    margin-top: 10px;
+    min-height: 36px
+}
+
+.trk-box #ts:not(.bad) .btn {
+    display: none
+}
