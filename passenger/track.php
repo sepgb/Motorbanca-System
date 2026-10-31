@@ -1,9 +1,8 @@
 <?php
-// Public: a passenger checks that they are on a queued boat, picks their destination barangay and follows their live location.
 require_once '../config/layout.php';
 require_once '../config/profile.php';
 pax_device();
-$pf = pax_profile();   // details saved on this device's Profile page
+$pf = pax_profile();
 $all = [];
 try {
     $all = db()->query("SELECT DISTINCT name FROM barangays ORDER BY name")->fetchAll(PDO::FETCH_COLUMN);
@@ -16,7 +15,6 @@ page_head('Track my ride', 'public');
 
 <div class="trk" id="trk" data-api="<?= BASE ?>/api/track.php" data-cancel="<?= BASE ?>/api/cancel_trip.php">
     <div class="alert trk-sec" id="sec" hidden><b>Location needs a secure page.</b> This page was opened with plain http, so the browser will block your location. <a id="secgo" href="#">Open the secure (https) page</a>. If your browser warns about the certificate, tap Advanced, then Proceed.</div>
-    <!-- step 1 -->
     <form class="card trk-card<?= $pf ? ' trk-lock' : '' ?>" id="s1" autocomplete="off">
         <p class="muted"><?= $pf ? 'Your details come from your <a href="profile.php">Profile</a>.' : 'Enter your details exactly as they were given to the boat operator, or <a href="profile.php">set up your Profile</a> to fill this in automatically.' ?></p>
         <label>Full name<input name="name" maxlength="80" required<?= $pf ? ' readonly tabindex="-1"' : '' ?> value="<?= e($pf['full_name'] ?? '') ?>"></label>
@@ -30,7 +28,6 @@ page_head('Track my ride', 'public');
         <button class="btn" id="b1">Check</button>
     </form>
 
-    <!-- step 2 -->
     <section class="card trk-card" id="s2" hidden>
         <div class="trk-found"><i class="dot"></i>
             <div><b id="fb"></b><span id="fc"></span></div>
@@ -44,7 +41,6 @@ page_head('Track my ride', 'public');
         <button class="trk-link" id="back1" type="button">Not you? Go back</button>
     </section>
 
-    <!-- step 3 -->
     <section class="trk-live" id="s3" hidden>
         <div class="card trk-box">
             <div class="trk-info">
@@ -57,8 +53,8 @@ page_head('Track my ride', 'public');
         <div class="alert" id="e3" hidden></div>
         <div class="trk-act">
             <button class="btn sm" id="retry" type="button" hidden>Try again</button>
-            <button class="btn sm ghost trk-loc" id="center" type="button">Your location</button>
             <button class="btn sm ghost" id="stop" type="button">Stop</button>
+            <button class="btn sm ghost trk-loc" id="center" type="button">Your location</button>
         </div>
     </section>
 </div>

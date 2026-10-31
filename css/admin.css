@@ -7959,3 +7959,39 @@ body.r-public:has(#s3:not([hidden])) .trk-act #stop:active {
     letter-spacing: 0;
     line-height: 1.2
 }
+
+body.r-public .trk-card .trk-btns #cancel {
+    background: #fff !important;
+    border: 1px solid #e6e0da !important;
+    color: #1f1a17 !important;
+    box-shadow: none !important
+}
+
+body.r-public .trk-card .trk-btns #cancel:active {
+    background: #f4f0ec !important
+}
+
+body.r-public .trk-card .trk-btns #go {
+    background: #f26b1d !important;
+    color: #fff !important
+}
+
+body.r-public:has(#s3:not([hidden])) .trk-act #stop {
+    background: #fff !important;
+    color: #1f1a17 !important;
+    box-shadow: 0 0 0 1px #1f1a1720, 0 2px 10px #1f1a1733 !important
+}
+
+body.r-public:has(#s3:not([hidden])) .trk-act #stop:active {
+    background: #f4f0ec !important
+}
+
+body.r-public:has(#s3:not([hidden])) .trk-act #center {
+    background: #f26b1d !important;
+    color: #fff !important;
+    box-shadow: 0 2px 10px #b4470a66 !important
+}
+
+body.r-public:has(#s3:not([hidden])) .trk-act #center:active {
+    background: #dc5f12 !important
+}
