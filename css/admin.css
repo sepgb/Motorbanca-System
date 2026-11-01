@@ -8105,3 +8105,280 @@ body.r-public:has(#s3:not([hidden])) .trk-act #center:active {
         border-left: 1px solid var(--ln)
     }
 }
+
+.crew2 .mdsd-box .crew-h {
+    margin: 0 0 6px !important;
+    line-height: 1.2
+}
+
+.crew2 .mdsd-box .crew-note {
+    margin: 0 0 22px;
+    line-height: 1.45
+}
+
+.crew2 .mdsd-box .md-h {
+    margin: 0 0 8px
+}
+
+.crew2 .mdsd-box .md-q {
+    padding: 14px 0
+}
+
+.crew2 .mdsd-box .md-t {
+    line-height: 1.5
+}
+
+.crew2 .crew-title {
+    margin: 0 0 6px;
+    line-height: 1.2
+}
+
+.crew2 .crew-sub {
+    margin: 0 0 22px;
+    line-height: 1.45
+}
+
+body.r-public .trk {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 520px
+}
+
+body.r-public .trk::before {
+    content: "Step 1 of 3";
+    order: -3;
+    font-size: .68rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #8c8279
+}
+
+body.r-public .trk::after {
+    content: "";
+    order: -2;
+    height: 4px;
+    border-radius: 99px;
+    background: linear-gradient(#f26b1d, #f26b1d) 0 0 / 33.33% 100% no-repeat, #efe7e0;
+    transition: background-size .5s cubic-bezier(.2, .8, .2, 1)
+}
+
+body.r-public .trk:has(#s2:not([hidden]))::before {
+    content: "Step 2 of 3"
+}
+
+body.r-public .trk:has(#s2:not([hidden]))::after {
+    background-size: 66.66% 100%
+}
+
+body.r-public .trk:has(#s3:not([hidden]))::before,
+body.r-public .trk:has(#s3:not([hidden]))::after {
+    display: none
+}
+
+body.r-public .trk #sec {
+    order: -4
+}
+
+body.r-public .trk #s1,
+body.r-public .trk #s2 {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 4px 0 0;
+    display: grid;
+    gap: 16px
+}
+
+body.r-public .trk #s1>p.muted {
+    margin: 0;
+    max-width: 36ch;
+    font-size: .92rem;
+    line-height: 1.5;
+    color: #6f655d
+}
+
+body.r-public .trk #s1 label,
+body.r-public .trk #s2 label {
+    display: grid;
+    gap: 8px;
+    font-size: .7rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: #8c8279
+}
+
+body.r-public .trk #s1 input {
+    height: 52px;
+    padding: 0 16px;
+    border: 1px solid #e6dcd2;
+    border-radius: 14px;
+    background: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #1f1a17;
+    box-shadow: none;
+    transition: border-color .15s, box-shadow .15s
+}
+
+body.r-public .trk #s1 input:focus {
+    outline: 0;
+    border-color: #f26b1d;
+    box-shadow: 0 0 0 4px #f26b1d1f
+}
+
+body.r-public .trk #s1 .trk-row {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 12px
+}
+
+body.r-public .trk #s1.trk-lock {
+    gap: 18px
+}
+
+body.r-public .trk #s1.trk-lock input[readonly] {
+    height: auto;
+    padding: 0 0 12px;
+    border: 0 !important;
+    border-bottom: 1px solid #eadfd5 !important;
+    border-radius: 0;
+    background: transparent !important;
+    color: #1f1a17 !important;
+    -webkit-text-fill-color: #1f1a17;
+    font-size: 1.15rem;
+    font-weight: 700;
+    box-shadow: none
+}
+
+body.r-public .trk #s1.trk-lock .trk-row {
+    gap: 18px
+}
+
+body.r-public .trk .trk-found {
+    position: relative;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid #eadfd5;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 20px 34px -24px #b4470a66
+}
+
+body.r-public .trk .trk-found b {
+    font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    color: #1f1a17
+}
+
+body.r-public .trk .trk-found span {
+    margin-top: 6px;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #8c8279
+}
+
+body.r-public .trk #s2 select {
+    height: 52px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #1f1a17
+}
+
+body.r-public .trk .trk-link {
+    justify-self: center;
+    padding: 6px 4px;
+    font-size: .85rem;
+    font-weight: 600;
+    color: #8c8279;
+    text-decoration: underline;
+    text-decoration-color: #d9cec4;
+    text-underline-offset: 4px
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+    body.r-public .trk #s1>*,
+    body.r-public .trk #s2>* {
+        animation: pxrise .5s cubic-bezier(.2, .8, .2, 1) both
+    }
+
+    body.r-public .trk #s1>*:nth-child(2),
+    body.r-public .trk #s2>*:nth-child(2) {
+        animation-delay: .05s
+    }
+
+    body.r-public .trk #s1>*:nth-child(3),
+    body.r-public .trk #s2>*:nth-child(3) {
+        animation-delay: .1s
+    }
+
+    body.r-public .trk #s1>*:nth-child(4),
+    body.r-public .trk #s2>*:nth-child(4) {
+        animation-delay: .15s
+    }
+
+    body.r-public .trk #s1>*:nth-child(n+5),
+    body.r-public .trk #s2>*:nth-child(n+5) {
+        animation-delay: .2s
+    }
+}
+
+@media (max-width: 999px) {
+    body.r-public:has(#s3:not([hidden])) .trk-box .trk-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        padding: 12px 0;
+        background: #ffffffe6;
+        -webkit-backdrop-filter: blur(14px) saturate(1.2);
+        backdrop-filter: blur(14px) saturate(1.2);
+        border: 1px solid #ffffffb3;
+        border-radius: 18px;
+        box-shadow: 0 18px 32px -18px #1f1a1773
+    }
+
+    body.r-public:has(#s3:not([hidden])) .trk-box .trk-info>div {
+        padding: 0 18px
+    }
+
+    body.r-public:has(#s3:not([hidden])) .trk-box .trk-info>div+div {
+        border-left: 1px solid #eadfd5;
+        text-align: left
+    }
+
+    body.r-public:has(#s3:not([hidden])) .trk-box .trk-info small {
+        margin-bottom: 4px;
+        font-size: .64rem;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: #8c8279
+    }
+
+    body.r-public:has(#s3:not([hidden])) .trk-box .trk-info b {
+        font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -.02em
+    }
+
+    body.r-public:has(#s3:not([hidden])) .trk-box .trk-info>div+div b {
+        color: #f26b1d;
+        font-variant-numeric: tabular-nums
+    }
+}
