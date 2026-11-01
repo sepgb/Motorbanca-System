@@ -60,13 +60,13 @@ function md_row($k, $label, $cur, $sub = false, $req = false)
     return "<div class='md-q" . ($sub ? ' md-sub' : '') . "' role='radiogroup' aria-labelledby='md-$k'><div class='md-t' id='md-$k'>$label</div>" . md_opts($k, $cur, $req) . "</div>";
 }
 
-function md_rows($cur, $req = false)
+function md_rows($cur, $req = false, $cols = false)
 {
-    $h = "<h2 class='md-h'>Inspection findings</h2>";
-    foreach (mdsd_items() as $it) $h .= md_row($it[0], "<b>" . $it[0] . ")</b> " . e($it[1]), $cur, false, $req);
-    $h .= "<h2 class='md-h'>Attached documents</h2>";
-    foreach (mdsd_docs() as $d) $h .= md_row($d[0], "<b>" . $d[1] . "</b> " . e($d[2]), $cur, true, $req);
-    return $h;
+    $f = "<h2 class='md-h'>Inspection findings</h2>";
+    foreach (mdsd_items() as $it) $f .= md_row($it[0], "<b>" . $it[0] . ")</b> " . e($it[1]), $cur, false, $req);
+    $d = "<h2 class='md-h'>Attached documents</h2>";
+    foreach (mdsd_docs() as $x) $d .= md_row($x[0], "<b>" . $x[1] . "</b> " . e($x[2]), $cur, true, $req);
+    return $cols ? "<div class='md-cols'><section class='md-col'>$f</section><section class='md-col'>$d</section></div>" : $f . $d;
 }
 
 function mdsd_table()

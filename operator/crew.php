@@ -100,7 +100,7 @@ page_head('Crew list', 'operator');
     <div class="mdsd-box">
         <h3 class="crew-h">Master&rsquo;s Declaration of Safe Departure</h3>
         <p class="muted crew-note">As the boat master, answer every item before you submit.</p>
-        <?= md_rows($cur, true) ?>
+        <?= md_rows($cur, true, true) ?>
     </div>
     <div class="crew-act">
         <a class="btn sm ghost" href="dashboard.php">Cancel</a>
