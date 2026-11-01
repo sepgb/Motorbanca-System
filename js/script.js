@@ -1,4 +1,3 @@
-// Live updates: every element with data-live="url" re-fetches its HTML from PHP/MySQL every few seconds.
 document.querySelectorAll('[data-live]').forEach(function (el) {
   function load() {
     fetch(el.dataset.live, { cache: 'no-store', credentials: 'same-origin' })
@@ -9,7 +8,7 @@ document.querySelectorAll('[data-live]').forEach(function (el) {
   setInterval(load, 4000);
 });
 
-// 2-minute departure countdown (the server value is re-synced on every refresh)
+
 setInterval(function () {
   document.querySelectorAll('.cd').forEach(function (e) {
     var s = Math.max(0, (+e.dataset.s) - 1);
@@ -18,7 +17,7 @@ setInterval(function () {
   });
 }, 1000);
 
-// Admin header clock: "Sunday, 3 May 2026 - 4:39 PM" (uses the device's own time)
+
 (function () {
   var d = document.getElementById('clk-date'), t = document.getElementById('clk-time');
   if (!d || !t) return;
@@ -28,8 +27,8 @@ setInterval(function () {
   var noDay = document.body.classList.contains('r-operator');
   function tick() {
     var n = new Date(), h = n.getHours();
-    // narrower screens (tablets) get a shorter date so the header still fits: "Wed, 21 Oct 2026"
-    // the operator's header leaves out the day of the week: "24 Oct 2026"
+
+
     var wd = noDay ? '' : (short.matches ? D[n.getDay()].slice(0, 3) : D[n.getDay()]) + ', ';
     d.textContent = wd + n.getDate() + ' ' + (short.matches ? M[n.getMonth()].slice(0, 3) : M[n.getMonth()]) + ' ' + n.getFullYear();
     t.textContent = ((h % 12) || 12) + ':' + ('0' + n.getMinutes()).slice(-2) + ' ' + (h < 12 ? 'AM' : 'PM');
@@ -37,13 +36,13 @@ setInterval(function () {
   tick(); setInterval(tick, 1000);
 })();
 
-// Cards fade in only on first load (not on every live refresh)
+
 setTimeout(function () { document.body.classList.remove('enter'); }, 900);
 
-// Depart button: first a window to check the crew list and the manifest, then the MDSD checklist in a modal, then the PDIC (inspection checklist) in a third one.
-// The boat departs when the PCG submits the PDIC; a last window then offers to print the MDSD and the PDIC.
+
+
 (function () {
-  var step = 1, rtrip = 0, rbox, rbody, rerr, rsub, rnext, mbox, pbox, dbox, mbody, pbody, merr, perr, mcount, pcount, msub, psub, pgo, url, mid, started, busy;
+  var step = 1, rtrip = 0, rbox, rbody, rerr, rsub, rnext, pbox, dbox, pbody, perr, pcount, psub, pgo, url, mid, started, busy;
   var PRINT = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg>';
 
   function make(html) {
@@ -58,7 +57,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   function closeM(m) { m.classList.remove('open'); }
   function show(el, t) { el.textContent = t || ''; el.hidden = !t; }
 
-  // ---- the answers are kept on this device whether the checklist is open or closed, so closing it never means starting over
+
   function draftKey() { return 'batis_depart_' + mid; }
   function readFields(body) {
     var o = {};
@@ -77,24 +76,24 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     });
   }
   function saveDraft() {
-    if (!mbody || !mbody.firstChild) return;   // nothing loaded yet
-    try { localStorage.setItem(draftKey(), JSON.stringify({ trip: rtrip, step: step, m: readFields(mbody), p: readFields(pbody) })); } catch (x) { }
+    if (!pbody || !pbody.firstChild) return;
+    try { localStorage.setItem(draftKey(), JSON.stringify({ trip: rtrip, step: step, p: readFields(pbody) })); } catch (x) { }
   }
   function loadDraft() {
-    try { var j = JSON.parse(localStorage.getItem(draftKey())); return j && j.trip === rtrip ? j : null; } catch (x) { return null; }   // a draft of an older trip is ignored
+    try { var j = JSON.parse(localStorage.getItem(draftKey())); return j && j.trip === rtrip ? j : null; } catch (x) { return null; }
   }
   function clearDraft() { try { localStorage.removeItem(draftKey()); } catch (x) { } }
-  // go to step 1 (crew list and manifest), 2 (MDSD) or 3 (PDIC)
+
   function goStep(n) {
-    [rbox, mbox, pbox].forEach(closeM);
-    openM(n === 3 ? pbox : n === 2 ? mbox : rbox);
+    [rbox, pbox].forEach(closeM);
+    openM(n === 2 ? pbox : rbox);
     step = n; saveDraft();
   }
   function tally(body, out) {
     var all = body.querySelectorAll('.md-q');
     out.textContent = body.querySelectorAll('.md-q input:checked').length + ' of ' + all.length + ' answered';
   }
-  // every row needs an answer: flag the ones that do not have one and return the first
+
   function firstMissing(body) {
     var first = null;
     body.querySelectorAll('.md-q').forEach(function (q) {
@@ -108,45 +107,27 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     m.addEventListener('change', function (e) {
       if (e.target.type === 'radio') {
         e.target.closest('.md-q').classList.remove('miss'); tally(body, out);
-        var er = m.querySelector('.md-err');   // once every item has an answer the warning goes away by itself
+        var er = m.querySelector('.md-err');
         if (er && body.querySelectorAll('.md-q').length === body.querySelectorAll('.md-q input:checked').length) show(er, '');
       }
     });
   }
 
   function build() {
-    // ---- step 1: check the crew list and the passenger manifest
+
     rbox = make('<div class="mdl-box wide md-box md-rv"><div class="mdl-head"><div class="mdl-title"><h3>Crew List and Manifest</h3><p class="sub"></p></div>' +
       '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
       '<div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
-      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel">Cancel</button><button type="button" class="btn sm md-next md-go-wide" disabled>Continue to MDSD</button></div></div>');
+      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel">Cancel</button><button type="button" class="btn sm md-next md-go-wide" disabled>Continue to PDIC</button></div></div>');
     rbody = rbox.querySelector('.md-body'); rerr = rbox.querySelector('.md-err'); rsub = rbox.querySelector('.sub'); rnext = rbox.querySelector('.md-next');
     rbox.addEventListener('click', function (e) {
-      var tb = e.target.closest('.rv-tabs button');   // Crew list / Manifest tabs: the whole document is shown
+      var tb = e.target.closest('.rv-tabs button');
       if (tb) { showDoc(tb.getAttribute('data-t')); return; }
       if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) closeM(rbox);
-      else if (e.target.classList.contains('md-next') && !rnext.disabled) goStep(2);   // on to the MDSD
+      else if (e.target.classList.contains('md-next') && !rnext.disabled) goStep(2);
     });
 
-    // ---- step 2: MDSD
-    mbox = make('<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Master\u2019s Declaration of Safe Departure</h3><p class="sub"></p></div>' +
-      '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
-      '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
-      '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-prev">Back</button><button type="submit" class="btn sm md-next">Next</button></div></form></div>');
-    mbody = mbox.querySelector('.md-body'); merr = mbox.querySelector('.md-err'); mcount = mbox.querySelector('.md-count'); msub = mbox.querySelector('.sub');
-    clearOnChange(mbox, mbody, mcount);
-    mbox.addEventListener('click', function (e) {   // no backdrop close: a half-filled checklist is not lost by a stray tap
-      if (e.target.classList.contains('md-prev')) goStep(1);   // back to the crew list and manifest
-      else if (e.target.classList.contains('x')) { closeM(mbox); saveDraft(); }   // closing keeps the answers
-    });
-    mbox.querySelector('form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      var first = firstMissing(mbody);
-      if (first) { show(merr, 'Please answer every item'); first.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
-      show(merr, ''); goStep(3);   // on to the PDIC
-    });
 
-    // ---- step 3: PDIC: Back (to the MDSD) and Depart; the X closes the window and keeps the answers
     pbox = make('<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Pre-Departure Inspection Checklist</h3><p class="sub"></p></div>' +
       '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
       '<form class="md-form" novalidate><div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
@@ -154,23 +135,22 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     pbody = pbox.querySelector('.md-body'); perr = pbox.querySelector('.md-err'); pcount = pbox.querySelector('.md-count'); psub = pbox.querySelector('.sub'); pgo = pbox.querySelector('.md-go');
     clearOnChange(pbox, pbody, pcount);
     pbox.addEventListener('click', function (e) {
-      if (e.target.classList.contains('md-prev')) goStep(2);   // back to the MDSD
-      else if (e.target.classList.contains('x')) { closeM(pbox); saveDraft(); }   // closing keeps the answers
+      if (e.target.classList.contains('md-prev')) goStep(1);
+      else if (e.target.classList.contains('x')) { closeM(pbox); saveDraft(); }
     });
-    ['input', 'change'].forEach(function (ev) { mbox.addEventListener(ev, saveDraft); pbox.addEventListener(ev, saveDraft); });   // every answer is saved as it is given
+    ['input', 'change'].forEach(function (ev) { pbox.addEventListener(ev, saveDraft); });
     pbox.addEventListener('input', function (e) { if (e.target.name === 'inspector') e.target.closest('.md-ins').classList.remove('miss'); });
     pbox.querySelector('form').addEventListener('submit', submit);
 
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
       if (dbox && dbox.classList.contains('open')) location.reload();
-      else if (pbox.classList.contains('open')) goStep(2);
+      else if (pbox.classList.contains('open')) goStep(1);
       else if (rbox.classList.contains('open')) closeM(rbox);
-      else if (mbox.classList.contains('open')) { closeM(mbox); saveDraft(); }
     });
   }
 
-  // the real Crew List or Manifest form of the trip that is about to depart (same pages used for printing, shown here as a preview)
+
   function showDoc(kind) {
     var fr = rbody.querySelector('.rv-frame'); if (!fr || !rtrip) return;
     rbody.querySelectorAll('.rv-tabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-t') === kind); });
@@ -179,17 +159,17 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     fr.src = '../operator/' + kind + '.php?trip=' + rtrip + '&print=1';
   }
 
-  // zoom the whole page out so it fits the window (no scrollbars)
+
   function fitDoc() {
     var st = rbody && rbody.querySelector('.rv-stage'), fr = st && st.querySelector('.rv-frame'); if (!fr) return;
     var w = 816, h = 1056;
     try { var d = fr.contentDocument.documentElement; w = Math.max(d.scrollWidth, 816); h = Math.max(d.scrollHeight, 1056); } catch (x) { }
     fr.style.width = w + 'px'; fr.style.height = h + 'px';
-    st.style.width = '';   // measure the room available, then shrink the card to the page
-    var k = Math.min(st.clientWidth / w, Math.max(320, window.innerHeight * 0.62) / h);   // fit the width, but never taller than the window
-    st.style.height = Math.round(h * k) + 'px';   // the card is exactly as tall as the page, no empty space
+    st.style.width = '';
+    var k = Math.min(st.clientWidth / w, Math.max(320, window.innerHeight * 0.62) / h);
+    st.style.height = Math.round(h * k) + 'px';
     fr.style.transform = 'scale(' + k + ')';
-    st.style.width = Math.round(w * k) + 'px'; st.style.margin = '0 auto';   // the card is only as wide as the page
+    st.style.width = Math.round(w * k) + 'px'; st.style.margin = '0 auto';
     fr.style.left = '0px';
   }
   window.addEventListener('resize', fitDoc);
@@ -206,8 +186,8 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     show(perr, ''); busy = true; pgo.disabled = true; pgo.textContent = 'Departing\u2026';
     var d = new FormData();
     d.append('mid', mid); d.append('ajax', '1'); d.append('started', started); d.append('inspector', name);
-    [mbody, pbody].forEach(function (b) { b.querySelectorAll('input[type=radio]:checked').forEach(function (i) { d.append(i.name, i.value); }); });
-    pbody.querySelectorAll('input.md-rm').forEach(function (i) { if (i.value.trim()) d.append(i.name, i.value); });   // PDIC remarks
+    pbody.querySelectorAll('input[type=radio]:checked').forEach(function (i) { d.append(i.name, i.value); });
+    pbody.querySelectorAll('input.md-rm').forEach(function (i) { if (i.value.trim()) d.append(i.name, i.value); });
     function fail(t) { show(perr, t); busy = false; pgo.disabled = false; pgo.textContent = 'Depart motorbanca'; }
     fetch(url, { method: 'POST', body: d, credentials: 'same-origin' })
       .then(function (x) { return x.json(); })
@@ -215,9 +195,9 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       .catch(function () { fail('Could not reach the server. Check your connection and try again.'); });
   }
 
-  // ---- step 4: the boat has departed: print the MDSD and the PDIC if wanted
+
   function done(trip) {
-    clearDraft(); closeM(mbox); closeM(pbox);
+    clearDraft(); closeM(pbox);
     if (!trip) { location.reload(); return; }
     dbox = make('<div class="mdl-box wide md-done"><div class="mdl-head"><div class="mdl-title"><h3>Motorbanca departed</h3><p class="sub">Do you want to print the documents of this trip? You can also print them later from Trip History.</p></div></div>' +
       '<div class="mdl-body md-docs">' +
@@ -231,31 +211,30 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   function open(f) {
     mid = f.querySelector('[name=mid]').value;
     url = f.action.replace(/depart\.php.*$/, 'mdsd.php');
-    if (!mbox) build();
-    busy = false; pgo.disabled = false; pgo.textContent = 'Depart motorbanca'; show(merr, ''); show(perr, '');
+    if (!pbox) build();
+    busy = false; pgo.disabled = false; pgo.textContent = 'Depart motorbanca'; show(perr, '');
     step = 1; rtrip = 0; rsub.textContent = 'Loading\u2026'; rbody.innerHTML = ''; rnext.disabled = true; show(rerr, '');
-    msub.textContent = ''; mbody.innerHTML = ''; pbody.innerHTML = ''; mcount.textContent = ''; pcount.textContent = '';
+    pbody.innerHTML = ''; pcount.textContent = '';
     openM(rbox);
     fetch(url + '?ajax=1&mid=' + encodeURIComponent(mid), { credentials: 'same-origin' })
       .then(function (x) { return x.json(); })
       .then(function (d) {
         if (d.ok === false) { rsub.textContent = ''; show(rerr, d.error); return; }
-        msub.textContent = d.sub; psub.textContent = d.sub; rsub.textContent = d.sub;
+        psub.textContent = d.sub; rsub.textContent = d.sub;
         rtrip = d.trip || 0;
         rbody.innerHTML = rtrip ? '<div class="rv-tabs"><button type="button" class="on" data-t="print_crew">Crew list</button><button type="button" data-t="print">Manifest</button></div><div class="rv-stage"><iframe class="rv-frame" title="Document preview" scrolling="no"></iframe></div>' : '<div class="alert bad">No trip was found for this boat.</div>';
         if (rtrip) showDoc('print_crew');
         rnext.disabled = false;
-        mbody.innerHTML = d.html;   // built and escaped on the server
         pbody.innerHTML = d.pdic + '<div class="md-ins"><label for="pd-ins">Name of inspector</label><input id="pd-ins" name="inspector" type="text" maxlength="100" autocomplete="off"></div>';
-        started = d.started;   // the inspection starts when the checklist is opened
-        var dr = loadDraft();   // the answers given before the window was closed
-        if (dr) { writeFields(mbody, dr.m || {}); writeFields(pbody, dr.p || {}); }
-        tally(mbody, mcount); tally(pbody, pcount);
-        if (dr && dr.step > 1) goStep(dr.step);   // carry on where the PCG stopped
+        started = d.started;
+        var dr = loadDraft();
+        if (dr) writeFields(pbody, dr.p || {});
+        tally(pbody, pcount);
+        if (dr && dr.step > 1) goStep(2);
       })
       .catch(function () { rsub.textContent = ''; show(rerr, 'Could not load the checklist.'); });
   }
-  // The Depart button never sends the boat straight away: both a click and a form submit (Enter key) open the checklist.
+
   document.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('.depart') : null;
     if (!b) return;
@@ -270,10 +249,10 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   }, true);
 })();
 
-// Trip history: double-click a row to see that trip's passengers
+
 (function () {
   var box;
-  // one white print button of the trip popup; a form that may not exist for this trip starts disabled
+
   function docBtn(label, kind, off) {
     return '<button type="button" class="btn sm ghost pdfbtn" data-print="" data-kind="' + kind + '"' + (off ? ' disabled' : '') + '><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg><span>' + label + '</span></button>';
   }
@@ -294,12 +273,12 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     if (!box) build();
     box.querySelector('h3').textContent = r.dataset.name || 'Trip';
     box.querySelector('.sub').textContent = 'Loading…';
-    box.querySelectorAll('[data-print]').forEach(function (b) {   // straight print of this trip's form (a kind with a folder, like admin/mdsd_print, is used as it is)
+    box.querySelectorAll('[data-print]').forEach(function (b) {
       var k = b.getAttribute('data-kind');
       b.setAttribute('data-print', r.dataset.url.replace('admin/passengers.php', (k.indexOf('/') < 0 ? 'operator/' : '') + k + '.php') + '&print=1');
     });
     var mb = box.querySelector('[data-kind="admin/mdsd_print"]'), pb = box.querySelector('[data-kind="admin/pdic_print"]');
-    mb.disabled = true; mb.title = ''; pb.disabled = true; pb.title = '';   // on only if this trip has an MDSD / a PDIC
+    mb.disabled = true; mb.title = ''; pb.disabled = true; pb.title = '';
     box.querySelector('.mdl-body').innerHTML = '';
     void box.offsetWidth;
     box.classList.add('open');
@@ -308,7 +287,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       .then(function (d) {
         box.querySelector('h3').textContent = d.title;
         box.querySelector('.sub').textContent = d.sub;
-        box.querySelector('.mdl-body').innerHTML = d.html;   // built and escaped on the server
+        box.querySelector('.mdl-body').innerHTML = d.html;
         mb.disabled = !d.mdsd; mb.title = d.mdsd ? '' : 'No MDSD was made for this trip';
         pb.disabled = !d.pdic; pb.title = d.pdic ? '' : 'No PDIC was made for this trip';
       })
@@ -317,7 +296,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box) box.classList.remove('open'); });
 })();
 
-// Register page: double-click a motorbanca row to edit it
+
 (function () {
   var m = document.getElementById('edit-mdl'); if (!m) return;
   var f = document.getElementById('edit-form'), err = document.getElementById('edit-err'), sub = document.getElementById('edit-sub'), busy = false;
@@ -347,8 +326,8 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   });
 })();
 
-// Styled hint for double-clickable rows. It appears only after the cursor stops (it does not follow the cursor)
-// and also shows the full value of a cell that is cut with "...".
+
+
 (function () {
   var tip, tx, timer = null, shown = false, ax = 0, ay = 0, lx = 0, ly = 0, lr = null, lt = null;
   function build() {
@@ -378,10 +357,10 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   document.addEventListener('mousemove', function (e) {
     var r = e.target.closest ? e.target.closest('.mb-row,.trip-row,.th-row[data-hint]') : null;
     if (!r) { hide(); lr = null; return; }
-    if (shown && Math.abs(e.clientX - ax) < 6 && Math.abs(e.clientY - ay) < 6) return;   // tiny jitter: keep it
+    if (shown && Math.abs(e.clientX - ax) < 6 && Math.abs(e.clientY - ay) < 6) return;
     hide();
     lr = r; lt = e.target; lx = e.clientX; ly = e.clientY;
-    timer = setTimeout(show, 450);   // shown only once the cursor has stopped for a moment
+    timer = setTimeout(show, 450);
   });
   document.addEventListener('mouseleave', function () { hide(); lr = null; });
   document.addEventListener('dblclick', function () { hide(); lr = null; });
@@ -389,7 +368,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   window.addEventListener('scroll', function () { hide(); lr = null; }, true);
 })();
 
-// Download buttons ([data-pdf]): the form is built in a hidden frame and saved as a PDF file.
+
 (function () {
   document.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('[data-pdf]') : null;
@@ -398,13 +377,13 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     var finish = function (ok) {
       clearTimeout(t); window.removeEventListener('message', on); f.remove();
       b.disabled = false; sp.textContent = label;
-      if (!ok) window.open(u, '_blank');   // PDF tool could not load (offline?): show the form instead
+      if (!ok) window.open(u, '_blank');
     };
     var on = function (ev) {
       if (ev.source !== f.contentWindow || !ev.data || !ev.data.pdf) return;
-      if (ev.data.pdf === 'done' && ev.data.blob) {   // save from this page (a hidden frame can not reliably download on phones)
+      if (ev.data.pdf === 'done' && ev.data.blob) {
         var url = URL.createObjectURL(ev.data.blob), a = document.createElement('a');
-        var d = new Date(), z = function (n) { return (n < 10 ? '0' : '') + n; };   // unique name each time, so the phone does not treat it as already downloaded
+        var d = new Date(), z = function (n) { return (n < 10 ? '0' : '') + n; };
         a.href = url; a.download = fname.replace('.pdf', ' ' + d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()) + ' ' + z(d.getHours()) + z(d.getMinutes()) + z(d.getSeconds()) + '.pdf'); a.style.display = 'none'; document.body.appendChild(a); a.click();
         setTimeout(function () { a.remove(); URL.revokeObjectURL(url); }, 60000);
         finish(true);
@@ -418,7 +397,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   });
 })();
 
-// Print buttons ([data-print]): load the form in a hidden frame and open the print dialog straight away.
+
 (function () {
   document.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('[data-print]') : null;
@@ -431,7 +410,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   });
 })();
 
-// Bottom tab bar: the tapped icon pops, then the page opens (log out keeps its own confirm).
+
 document.addEventListener('click', function (e) {
   var a = e.target.closest ? e.target.closest('.btabs a') : null;
   if (!a || a.classList.contains('lo') || a.classList.contains('on') || e.defaultPrevented || e.ctrlKey || e.metaKey) return;

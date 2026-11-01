@@ -1,16 +1,13 @@
 <?php
-// MDSD: Master's Declaration of Safe Departure (Coast Guard Form C).
-// The PCG answers the checklist when a boat is departed (admin/mdsd.php); the printable form (admin/mdsd_print.php) fills in the rest by itself.
+
 require_once __DIR__ . '/live.php';
 
-// Details that are the same for every departure. Change them here if they are not right.
-const MDSD_STATION = 'Coast Guard Sub-Station Binangonan';   // "Station/Detachment"
-const MDSD_BERTH = 'Binangonan Port';                        // "presently berthed / anchored at"
-const MDSD_PLACE = 'Binangonan, Rizal';                      // "City/Municipality of"
-const MDSD_INFANT_MAX = 3;                                   // age 0 to 3 = infant
-const MDSD_CHILD_MAX = 11;                                   // age 4 to 11 = child (same as the fares page), 12 and up = adult
+const MDSD_STATION = 'Coast Guard Sub-Station Binangonan';
+const MDSD_BERTH = 'Binangonan Port';
+const MDSD_PLACE = 'Binangonan, Rizal';
+const MDSD_INFANT_MAX = 3;
+const MDSD_CHILD_MAX = 11;
 
-// Item 2 a) to l)
 function mdsd_items()
 {
     return [
@@ -29,7 +26,6 @@ function mdsd_items()
     ];
 }
 
-// Item 2 l) i. to vii.: the attached documents
 function mdsd_docs()
 {
     return [
@@ -43,13 +39,34 @@ function mdsd_docs()
     ];
 }
 
-// Every question that needs a Yes / No / N/A answer
 function mdsd_keys()
 {
     $k = [];
     foreach (mdsd_items() as $i) $k[] = $i[0];
     foreach (mdsd_docs() as $d) $k[] = $d[0];
     return $k;
+}
+
+function md_opts($k, $cur, $req = false)
+{
+    $o = '';
+    foreach (['yes' => 'Yes', 'no' => 'No', 'na' => 'N/A'] as $val => $lab)
+        $o .= "<label class='md-o md-$val'><input type='radio' name='q[$k]' value='$val'" . (($cur[$k] ?? '') === $val ? ' checked' : '') . ($req ? ' required' : '') . "><span>$lab</span></label>";
+    return "<div class='md-opts'>$o</div>";
+}
+
+function md_row($k, $label, $cur, $sub = false, $req = false)
+{
+    return "<div class='md-q" . ($sub ? ' md-sub' : '') . "' role='radiogroup' aria-labelledby='md-$k'><div class='md-t' id='md-$k'>$label</div>" . md_opts($k, $cur, $req) . "</div>";
+}
+
+function md_rows($cur, $req = false)
+{
+    $h = "<h2 class='md-h'>Inspection findings</h2>";
+    foreach (mdsd_items() as $it) $h .= md_row($it[0], "<b>" . $it[0] . ")</b> " . e($it[1]), $cur, false, $req);
+    $h .= "<h2 class='md-h'>Attached documents</h2>";
+    foreach (mdsd_docs() as $d) $h .= md_row($d[0], "<b>" . $d[1] . "</b> " . e($d[2]), $cur, true, $req);
+    return $h;
 }
 
 function mdsd_table()
@@ -63,7 +80,6 @@ function mdsd_table()
     }
 }
 
-// Save the answers of a trip: ['a' => 'yes', 'b' => 'no', 'd1' => 'na', ...]
 function mdsd_save($tid, $ans)
 {
     mdsd_table();
@@ -79,7 +95,6 @@ function mdsd_get($tid)
     return $r ? (json_decode($r, true) ?: []) : [];
 }
 
-// Everything on the form that fills in by itself, as ready-to-print text. Returns null if the trip does not exist.
 function mdsd_data($tid)
 {
     $s = db()->prepare("SELECT t.id, t.trip_date, t.departure_time, t.cluster_id, m.motorbanca_name, m.owner_name, m.capacity, c.name cluster
@@ -100,7 +115,7 @@ function mdsd_data($tid)
         elseif ($age <= MDSD_CHILD_MAX) $children++;
         else $adults++;
     }
-    // "sail for": the barangays of the boat's cluster, with "and" before the last one (Kasile and Bombong / A, B and C)
+
     $bq = db()->prepare("SELECT name FROM barangays WHERE cluster_id=? ORDER BY id");
     $bq->execute([$t['cluster_id']]);
     $brgys = $bq->fetchAll(PDO::FETCH_COLUMN);
