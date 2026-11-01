@@ -71,10 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $cur = $_SERVER['REQUEST_METHOD'] === 'POST' ? $q : ['d2' => 'yes', 'd3' => 'yes'];
 page_head('Crew list', 'operator');
 ?>
-<h1>Crew list</h1>
-<p class="lead">The PCG will inspect your boat before putting it on queue</p>
-<?php if ($err) echo "<div class='alert bad' role='alert'>" . e($err) . "</div>"; ?>
 <form method="post" class="card crewform crew2" autocomplete="off">
+    <h1 class="crew-title">Crew list</h1>
+    <p class="crew-sub">The PCG will inspect your boat before putting it on queue</p>
+    <?php if ($err) echo "<div class='alert bad' role='alert'>" . e($err) . "</div>"; ?>
     <div class="crew-cols">
         <section class="crew-col">
             <h3 class="crew-h">Details</h3>

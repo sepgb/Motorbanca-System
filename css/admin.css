@@ -8031,21 +8031,37 @@ body.r-public:has(#s3:not([hidden])) .trk-act #center:active {
     margin-top: 20px
 }
 
-body.r-operator .main>h1:has(~ form.crew2) {
-    margin: 0 0 4px !important;
-    font-family: "Figtree", "Plus Jakarta Sans", system-ui, sans-serif !important;
-    font-size: 1.05rem !important;
-    font-weight: 700 !important;
-    letter-spacing: 0 !important;
-    line-height: 1.3 !important
+.crew2 .crew-title {
+    margin: 0 0 2px;
+    font-family: "Figtree", "Plus Jakarta Sans", system-ui, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    line-height: 1.1;
+    color: var(--tx)
 }
 
-body.r-operator .main>.lead:has(~ form.crew2) {
-    margin: 0 0 14px !important;
-    font-family: "Figtree", "Plus Jakarta Sans", system-ui, sans-serif !important;
-    font-size: .85rem !important;
-    font-weight: 400 !important;
-    letter-spacing: 0 !important;
-    line-height: 1.5 !important;
+.crew2 .crew-sub {
+    margin: 0 0 20px;
+    font-size: .95rem;
+    line-height: 1.2;
     color: var(--mut)
+}
+
+.crew2>.alert {
+    margin: 0 0 18px
+}
+
+.crew2 .mdsd-box .crew-h {
+    margin: 0 0 2px !important;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    line-height: 1.1
+}
+
+.crew2 .mdsd-box .crew-note {
+    margin: 0 0 4px;
+    font-size: .95rem;
+    line-height: 1.2
 }
