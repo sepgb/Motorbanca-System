@@ -8382,3 +8382,23 @@ body.r-public .trk .trk-link {
         font-variant-numeric: tabular-nums
     }
 }
+
+.crew2 .crew-title {
+    margin: 0 0 1px;
+    line-height: 1.1
+}
+
+.crew2 .crew-sub {
+    margin: 0 0 20px;
+    line-height: 1.15
+}
+
+.crew2 .mdsd-box .crew-h {
+    margin: 0 0 1px !important;
+    line-height: 1.1
+}
+
+.crew2 .mdsd-box .crew-note {
+    margin: 0 0 20px;
+    line-height: 1.15
+}

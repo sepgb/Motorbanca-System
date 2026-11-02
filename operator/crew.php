@@ -73,7 +73,7 @@ page_head('Crew list', 'operator');
 ?>
 <form method="post" class="card crewform crew2" autocomplete="off">
     <h1 class="crew-title">Crew list</h1>
-    <p class="crew-sub">The PCG will inspect your boat before putting it on queue</p>
+    <p class="crew-sub">Fill in your boat details, crew and declaration, then submit them for PCG inspection.</p>
     <?php if ($err) echo "<div class='alert bad' role='alert'>" . e($err) . "</div>"; ?>
     <div class="crew-cols">
         <section class="crew-col">
@@ -99,7 +99,7 @@ page_head('Crew list', 'operator');
     </div>
     <div class="mdsd-box">
         <h3 class="crew-h">Master&rsquo;s Declaration of Safe Departure</h3>
-        <p class="muted crew-note">As the boat master, answer every item before you submit.</p>
+        <p class="muted crew-note">Declare the condition of your boat and its documents. Every item needs an answer.</p>
         <?= md_rows($cur, true, true) ?>
     </div>
     <div class="crew-act">
