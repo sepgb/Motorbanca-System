@@ -2,16 +2,16 @@
 require_once __DIR__ . '/live.php';
 require_once __DIR__ . '/announcements.php';
 require_once __DIR__ . '/profile.php';
-// First name of this device's passenger profile, or 'passenger' if there is none yet.
+
 function pax_first_name()
 {
     $p = pax_profile();
     $n = trim((string)($p['full_name'] ?? ''));
     if ($n === '') return 'passenger';
-    if (strpos($n, ',') !== false) $n = trim(substr($n, strpos($n, ',') + 1)) ?: $n;   // "Dela Cruz, Juan" -> Juan
+    if (strpos($n, ',') !== false) $n = trim(substr($n, strpos($n, ',') + 1)) ?: $n;
     return preg_split('/\s+/', $n)[0];
 }
-// URL of a css/js file with its last-modified time, so phones and browsers never keep an old copy after an update.
+
 function asset($path)
 {
     $f = dirname(__DIR__) . '/' . $path;
@@ -29,10 +29,11 @@ function page_head($title, $role = 'public')
 <body class='" . ($role === 'public' ? 'r-admin r-public enter' : ($role === 'operator' ? 'r-admin r-operator enter' : 'r-' . $role . ($role === 'admin' ? ' enter' : ''))) . "'>";
     if ($role === 'admin' || $role === 'operator') {
         $me = basename($_SERVER['PHP_SELF']);
+        if ($me === 'crew.php') $me = 'dashboard.php';
         $dir = $role === 'operator' ? 'operator' : 'admin';
         $links = $role === 'operator' ? ['dashboard.php' => 'Home', 'manifest.php' => 'Passengers', 'announcements.php' => 'Alert', 'trips.php' => 'History']
             : ['dashboard.php' => 'Dashboard', 'queue.php' => 'Queue', 'motorbancas.php' => 'Register', 'announcements.php' => 'Alert', 'trip' . 's.php' => 'History'];
-        // icons for the nav (top pills on desktop, bottom bar on phones / tablets)
+
         $tabIco = [
             'dashboard.php' => '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
             'motorbancas.php' => '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
@@ -42,7 +43,7 @@ function page_head($title, $role = 'public')
             'announcements.php' => '<path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/>'
         ];
         $tabIco['dashboard.php'] = '<g class="o"><g stroke-width="1.9"><path d="M9.4 21H5.5a2 2 0 0 1-2-2v-8.4L12 3.6l8.5 7V19a2 2 0 0 1-2 2h-3.9v-4.4a2.6 2.6 0 0 0-5.2 0z"/></g></g><g class="f" fill="currentColor" stroke="none" fill-rule="evenodd"><path d="M12.9 2.9a1.4 1.4 0 0 0-1.8 0L3.2 9.4A1.8 1.8 0 0 0 2.5 10.8V19.4a2.1 2.1 0 0 0 2.1 2.1h4.6v-4.6a2.8 2.8 0 0 1 5.6 0v4.6h4.6a2.1 2.1 0 0 0 2.1-2.1V10.8a1.8 1.8 0 0 0-.7-1.4z"/></g>';
-        if ($role !== 'operator') {   // admin: Dashboard takes the list icon, Queue the people icon (as Passengers on the operator side), Register a document with a plus
+        if ($role !== 'operator') {
             $tabIco['dashboard.php'] = $tabIco['queue.php'];
             $tabIco['queue.php'] = $tabIco['manifest.php'];
             $tabIco['motorbancas.php'] = '<path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6M9 15h6"/>';
@@ -64,14 +65,14 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){set
 JS;
         echo "</nav>$pillJs<div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date($role === 'operator' ? 'j F Y' : 'l, j F Y') . "</span><span class='dt-sep'>-</span></span><b id='clk-time'>" . date('g:i A') . "</b></span>
 <a class='ibtn' href='$b/logout.php' title='Log out' aria-label='Log out'>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</a></div></header>";
-        // phone / tablet: sticky bottom tab bar (the top pills are hidden below 1000px)
+
         $short = ['announcements.php' => 'Alert', 'trips.php' => 'History'];
-        // phone / tablet bottom bar for operator and admin: icons only (the name stays as aria-label), all tabs the same size, Home like the others
-        $order = $role === 'operator' ? ['dashboard.php', 'manifest.php', 'announcements.php', 'trips.php'] : array_keys($links);   // admin: the same order as the top menu
+
+        $order = $role === 'operator' ? ['dashboard.php', 'manifest.php', 'announcements.php', 'trips.php'] : array_keys($links);
         echo "<nav class='btabs btabs-pub' aria-label='Main'>";
         foreach ($order as $f) echo "<a href='$b/$dir/$f' aria-label='" . e($links[$f]) . "'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico($tabIco[$f]) . "</i></a>";
         echo "<a href='$b/logout.php' class='lo' aria-label='Log out'><i>" . ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</i></a></nav>";
-        // confirm before logging out (top button and bottom tab)
+
         echo "<div class='mdl' id='lo-mdl' role='dialog' aria-modal='true' aria-labelledby='lo-t'><div class='mdl-box'><div class='mdl-ic red'>" .
             ico('<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>') . "</div><h3 id='lo-t'>Log out?</h3><p>You will need to log in again to use the admin pages.</p>" .
             "<div class='mdl-act'><button type='button' class='no'>Stay</button><button type='button' class='go red'>Log out</button></div></div></div>";
@@ -93,9 +94,9 @@ JS;
         echo "<header class='atop'><a class='logo' href='$b/passenger/index.php'>" . "<svg viewBox='0 0 40 40' width='40' height='40' fill='none' stroke='#f26b1d' stroke-width='5' stroke-linecap='round'><circle cx='20' cy='20' r='15' stroke-dasharray='19 12.42' transform='rotate(-80 20 20)'/></svg>" . "<span>BATIS<small>Banca Tracking and Information System</small></span></a><nav class='pills'>";
         foreach ($plinks as $f => $l) echo "<a href='$b/passenger/$f'" . ($f === $me ? " class='on'" : '') . ">$l</a>";
         echo "</nav><div class='tools'><span class='datechip'>" . ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') . "<span class='dt-date'><span id='clk-date'>" . date('l, j F Y') . "</span><span class='dt-sep'>-</span></span><b id='clk-time'>" . date('g:i A') . "</b></span></div></header>";
-        // phone bar: icon with its name under it, in this order: Home, Track, Fare, Alert, Profile (the open page is orange, the others soft grey)
+
         $plab = ['index.php' => 'Home', 'track.php' => 'Track', 'fares.php' => 'Fare', 'announcements.php' => 'Alert', 'profile.php' => 'Profile'];
-        // solid versions of the same icons: the open page shows the solid one, the others the outline
+
         $pfill = ['index.php' => '<path d="M12.9 2.9a1.4 1.4 0 0 0-1.8 0L3.2 9.4A1.8 1.8 0 0 0 2.5 10.8V19.4a2.1 2.1 0 0 0 2.1 2.1h4.6v-4.6a2.8 2.8 0 0 1 5.6 0v4.6h4.6a2.1 2.1 0 0 0 2.1-2.1V10.8a1.8 1.8 0 0 0-.7-1.4z"/>', 'track.php' => '<path d="M12 22s8-6.6 8-12.2A8 8 0 0 0 4 9.8C4 15.4 12 22 12 22zm0-9.8a2.6 2.6 0 1 1 0-5.2 2.6 2.6 0 0 1 0 5.2z"/>', 'fares.php' => '<path d="M2 8.5a3 3 0 0 1 0 7V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a3 3 0 0 1 0-7V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2zM13.25 5.5v2h1.5v-2zm0 5.5v2h1.5v-2zm0 5.5v2h1.5v-2z"/>', 'announcements.php' => '<path d="M12 2.5A6.5 6.5 0 0 0 5.5 9c0 6-2.4 7.9-2.5 8a1 1 0 0 0 .7 1.7h16.6a1 1 0 0 0 .7-1.7c-.1-.1-2.5-2-2.5-8A6.5 6.5 0 0 0 12 2.5zM9.6 20.3a2.5 2.5 0 0 0 4.8 0z"/>', 'profile.php' => '<circle cx="12" cy="7.6" r="4.4"/><path d="M3.5 21c0-4.6 3.8-7.5 8.5-7.5s8.5 2.9 8.5 7.5a.9.9 0 0 1-.9.9H4.4a.9.9 0 0 1-.9-.9z"/>'];
         echo "<nav class='btabs btabs-pub btabs-lbl' aria-label='Main'>";
         foreach (['index.php', 'track.php', 'fares.php', 'announcements.php', 'profile.php'] as $f) echo "<a href='$b/passenger/$f' aria-label='" . e($plinks[$f]) . "'" . ($f === $me ? " class='on' aria-current='page'" : '') . "><i>" . ico("<g class='o'>" . $ptab[$f] . "</g><g class='f' fill='currentColor' stroke='none' fill-rule='evenodd'>" . $pfill[$f] . "</g>") . "</i><span>" . $plab[$f] . "</span></a>";
@@ -108,7 +109,7 @@ function page_foot($role = 'public')
     $b = BASE;
     echo "</main>";
     if ($role === 'operator') {
-        ann_live_html('operator');   // live pop-up for a new announcement, and for the PCG approving this boat (with a chime)
+        ann_live_html('operator');
     } elseif ($role === 'public') ann_live_html('passenger');
     if ($role === 'public' && basename($_SERVER['PHP_SELF']) === 'index.php') {
         require_once __DIR__ . '/profile.php';

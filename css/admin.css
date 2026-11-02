@@ -8402,3 +8402,17 @@ body.r-public .trk .trk-link {
     margin: 0 0 20px;
     line-height: 1.15
 }
+
+.crew2 .crew-col .crew-h {
+    margin: 0 0 2px !important;
+    line-height: 1.15
+}
+
+.crew2 .crew-col .crew-note {
+    margin: 0 0 10px;
+    line-height: 1.2
+}
+
+.crew2 .crew-col:first-child .crew-h {
+    margin-bottom: 12px !important
+}
