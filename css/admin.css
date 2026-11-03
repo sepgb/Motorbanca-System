@@ -8049,3 +8049,11 @@ body.r-public .trk .trk-link {
 .crew2 .md-col .md-h {
     color: #1f1a17 !important;
 }
+
+body.r-operator .mpage form.card .btn {
+    min-height: 40px !important;
+    height: 40px;
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: .88rem
+}

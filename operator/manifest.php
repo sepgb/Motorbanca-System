@@ -7,12 +7,12 @@ if (!$m) {
   header('Location: ../logout.php');
   exit;
 }
-$tq = db()->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status IN ('Inspection','Queued') ORDER BY id DESC LIMIT 1");   // a departed trip lives in Trip History
+$tq = db()->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status IN ('Inspection','Queued') ORDER BY id DESC LIMIT 1");
 $tq->execute([$m['id']]);
 $trip = $tq->fetchColumn();
 $pos = null;
 $tag = '';
-if ($m['status'] === 'Queued') {   // 0 = ON QUEUE, 1 = NEXT TRIP, 2+ = WAITING
+if ($m['status'] === 'Queued') {
   [$dep, $q] = split_cluster(live_rows(), $m['cluster_id']);
   foreach ($q as $i => $r) if ($r['id'] == $m['id']) {
     $pos = $i + ($dep ? 1 : 0);
@@ -20,10 +20,10 @@ if ($m['status'] === 'Queued') {   // 0 = ON QUEUE, 1 = NEXT TRIP, 2+ = WAITING
   }
 }
 $open = $trip && $m['status'] === 'Queued' && $pos === 0;
-$canRm = $trip && $m['status'] === 'Queued';   // while the boat is on the queue, a passenger who decides not to board can be taken off
+$canRm = $trip && $m['status'] === 'Queued';
 $err = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_id']) && $canRm) {
-  db()->prepare("DELETE FROM passengers WHERE id=? AND trip_id=?")->execute([(int)$_POST['remove_id'], $trip]);   // only from this boat's own trip
+  db()->prepare("DELETE FROM passengers WHERE id=? AND trip_id=?")->execute([(int)$_POST['remove_id'], $trip]);
   header('Location: manifest.php');
   exit;
 }
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $open && !isset($_POST['remove_id']
   } else {
     $pdo = db();
     $pdo->beginTransaction();
-    $pdo->prepare("SELECT id FROM motorbancas WHERE id=? FOR UPDATE")->execute([$m['id']]);   // blocks double-adds
+    $pdo->prepare("SELECT id FROM motorbancas WHERE id=? FOR UPDATE")->execute([$m['id']]);
     $c = $pdo->prepare("SELECT COUNT(*) FROM passengers WHERE trip_id=?");
     $c->execute([$trip]);
     if ($c->fetchColumn() >= $m['capacity']) {
@@ -75,7 +75,7 @@ endif; ?>
 <?php $tc = $trip ? trip_crew_get($trip) : null;
 $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)->fetchColumn() : null; ?>
 <div class="mpage">
-  <?php if ($trip): ?><div class="card mp-count"><?php echo count_html($m['pax'], $m['capacity']); ?><p class="muted" style="margin:0">passengers on board</p>
+  <?php if ($trip): ?><div class="card mp-count"><?php echo count_html($m['pax'], $m['capacity'], 'passengers on board'); ?>
     </div><?php endif; ?>
   <?php if ($err) echo "<div class='alert bad mp-alert'>" . e($err) . "</div>"; ?>
   <?php $showForm = false;
@@ -135,7 +135,7 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
               correctLevel: QRCode.CorrectLevel.M
             })
           })();
-          // passengers who scan appear here without refreshing
+
           setInterval(function() {
             if (document.hidden) return;
             fetch(location.href, {
@@ -208,7 +208,7 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
         m.classList.remove('open');
         if (from) from.focus()
       }
-      // the passenger table refreshes by itself, so listen on the page, not on the buttons
+
       document.addEventListener('click', function(e) {
         var b = e.target.closest('.rm-btn');
         if (!b) return;
