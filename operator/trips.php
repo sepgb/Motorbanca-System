@@ -69,15 +69,18 @@ page_head('Trip History', 'operator');
                     </header>
                     <?php foreach ($days as $d => $list): ?>
                         <div class="hx-day">
-                            <div class="hx-date"><b><?= date('j', strtotime($d)) ?></b><span><?= date('D', strtotime($d)) ?></span></div>
                             <ul class="hx-rows">
-                                <?php foreach ($list as $r):
-                                    $gone = $r['status'] === 'Departed' || $r['departure_time']; ?>
+                                <?php foreach ($list as $n => $r):
+                                    $gone = $r['status'] === 'Departed' || $r['departure_time'];
+                                    $w = ($r['start_time'] && $r['departure_time']) ? strtotime($r['departure_time']) - strtotime($r['start_time']) : -1;
+                                    $wait = $w < 0 ? '&mdash;' : ($w >= 3600 ? floor($w / 3600) . 'h ' . floor($w % 3600 / 60) . 'm' : floor($w / 60) . ' min'); ?>
                                     <li>
                                         <button type="button" class="hx-row" data-trip="<?= (int)$r['id'] ?>" data-name="<?= e(date('M j, Y', strtotime($r['trip_date']))) ?>">
+                                            <span class="hx-date"><?php if ($n === 0): ?><b><?= date('j', strtotime($d)) ?></b><span><?= date('D', strtotime($d)) ?></span><?php endif; ?></span>
                                             <span class="hx-tm"><b><?= $tm($r['start_time']) ?></b><i>Queued</i></span>
                                             <?= $arw ?>
                                             <span class="hx-tm<?= $gone ? '' : ' off' ?>"><b><?= $gone ? $tm($r['departure_time']) : 'On queue' ?></b><i>Departed</i></span>
+                                            <span class="hx-tm hx-wt<?= $w < 0 ? ' off' : '' ?>"><b><?= $wait ?></b><i>Wait time</i></span>
                                             <span class="hx-px"><b><?= (int)$r['pax'] ?></b><i><?= (int)$r['pax'] == 1 ? 'passenger' : 'passengers' ?></i></span>
                                             <?= $chev ?>
                                         </button>
