@@ -45,7 +45,7 @@ page_head('Trip History', 'operator');
 <?php else: ?>
     <div class="hx" id="hx">
         <div class="hx-mos">
-            <select class="hx-ys on" id="hx-y" aria-label="Year">
+            <select class="hx-ys" id="hx-y" aria-label="Year">
                 <?php foreach ($tree as $y => $months): ?>
                     <option value="<?= e($y) ?>"><?= e($y) ?></option>
                 <?php endforeach; ?>
@@ -97,7 +97,6 @@ page_head('Trip History', 'operator');
 
             function run() {
                 var y = ys.value;
-                ys.classList.toggle('on', !m);
                 mb.forEach(function(b) {
                     b.hidden = b.getAttribute('data-y') !== y;
                     b.classList.toggle('on', b.getAttribute('data-m') === m)
