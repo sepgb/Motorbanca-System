@@ -8057,3 +8057,12 @@ body.r-operator .mpage form.card .btn {
     padding-bottom: 0;
     font-size: .88rem
 }
+
+.rm-btn,
+.r-admin .rm-btn,
+.rm-btn:hover,
+.r-admin .rm-btn:hover,
+.rm-btn:active,
+.r-admin .rm-btn:active {
+    box-shadow: none
+}
