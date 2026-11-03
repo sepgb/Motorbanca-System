@@ -87,10 +87,10 @@ page_head('Crew list', 'operator');
         </section>
         <section class="crew-col">
             <h3 class="crew-h">Crew</h3>
-            <p class="muted crew-note">*At least 1 crew member is required besides the captain and the motorman.</p>
+            <p class="muted crew-note">At least 1 crew member is required besides the captain and the motorman.</p>
             <?php foreach ($roles as $i => $role): ?>
                 <div class="crewrow">
-                    <span class="crew-pos"><?= $i + 1 ?> &middot; <?= ucwords(strtolower($role)) ?></span>
+                    <span class="crew-pos"><?= ucwords(strtolower($role)) ?></span>
                     <input name="cname[]" maxlength="80" placeholder="Full name" value="<?= e($crew[$i]['name'] ?? '') ?>" <?= $i === 0 ? ' required' : '' ?>>
                     <input name="cage[]" type="number" inputmode="numeric" min="0" max="120" placeholder="Age" value="<?= e($crew[$i]['age'] ?? '') ?>" <?= $i === 0 ? ' required' : '' ?>>
                 </div>

@@ -8416,3 +8416,78 @@ body.r-public .trk .trk-link {
 .crew2 .crew-col:first-child .crew-h {
     margin-bottom: 12px !important
 }
+
+.crew2 .crew-top label,
+.crew2 .crewrow {
+    display: grid;
+    grid-template-rows: 16px 50px;
+    row-gap: 6px
+}
+
+.crew2 .crew-top label {
+    margin: 0;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    line-height: 16px;
+    text-transform: uppercase;
+    color: var(--od)
+}
+
+.crew2 .crew-top input,
+.crew2 .crewrow input {
+    height: 50px
+}
+
+.crew2 .crewrow {
+    grid-template-columns: minmax(0, 1fr) 92px;
+    column-gap: 8px;
+    margin-top: 14px
+}
+
+.crew2 .crewrow:first-of-type {
+    margin-top: 0
+}
+
+.crew2 .crew-pos {
+    grid-column: 1 / -1;
+    line-height: 16px
+}
+
+.crew2 .crew-top {
+    gap: 14px
+}
+
+.crew2 .crew-col .crew-h,
+.crew2 .crew-col:first-child .crew-h {
+    margin: 0 0 2px !important;
+    line-height: 1.15;
+    color: #e8650f
+}
+
+.crew2 .mdsd-box .md-h {
+    color: #e8650f
+}
+
+@media (min-width: 800px) {
+    .crew2 .crew-col .crew-note {
+        height: 18px;
+        margin: 0 0 10px;
+        line-height: 18px;
+        white-space: nowrap
+    }
+
+    .crew2 .crew-col:first-child .crew-top {
+        margin-top: 28px
+    }
+}
+
+.crew2 .crew-top label,
+.crew2 .crew-pos {
+    font-size: .82rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 16px;
+    text-transform: none;
+    color: var(--tx)
+}
