@@ -35,6 +35,7 @@ function hx_plural($n, $w)
 }
 $tm = fn($v) => $v ? date('g:i A', strtotime($v)) : '&mdash;';
 $first = $tree ? (string)array_key_first($tree) : '';
+$k = 0;
 $arw = '<svg class="hx-arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 $chev = '<svg class="hx-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 page_head('Trip History', 'operator');
@@ -49,7 +50,7 @@ page_head('Trip History', 'operator');
                 <button type="button" class="hx-ys" aria-haspopup="listbox" aria-expanded="false" aria-label="Year"><span id="hx-yv"><?= e($first) ?></span></button>
                 <ul class="hx-opts" role="listbox" aria-label="Year" hidden>
                     <?php foreach ($tree as $y => $months): ?>
-                        <li role="option" tabindex="-1" data-y="<?= e($y) ?>" aria-selected="<?= (string)$y === $first ? 'true' : 'false' ?>"><?= e($y) ?></li>
+                        <li role="option" tabindex="-1" style="--i:<?= $k++ ?>" data-y="<?= e($y) ?>" aria-selected="<?= (string)$y === $first ? 'true' : 'false' ?>"><?= e($y) ?></li>
                     <?php endforeach; ?>
                 </ul>
             </div>
