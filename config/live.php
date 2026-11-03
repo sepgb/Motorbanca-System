@@ -85,7 +85,7 @@ function render_live($admin = false)
     foreach (db()->query("SELECT * FROM clusters ORDER BY id")->fetchAll() as $c) {
         [$dep, $q, $next] = split_cluster($rows, $c['id']);
         echo "<section class='cluster'><h2>" . e($c['name']) . "</h2>";
-        if (!empty($bmap[$c['id']])) echo "<div class='brgy'><small>Barangays</small>" .
+        if (!empty($bmap[$c['id']])) echo "<div class='brgy'><small></small>" .
             implode('', array_map(fn($b) => "<span>" . e($b) . "</span>", $bmap[$c['id']])) . "</div>";
         if (!$dep && !$q) echo travel_suspended()
             ? "<div class='mb empty susp'><b>TRAVEL SUSPENDED</b><p>No trips until the Coast Guard lifts the suspension.</p></div>"
