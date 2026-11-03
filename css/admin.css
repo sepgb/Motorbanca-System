@@ -4437,15 +4437,52 @@ body.r-operator .main>h1:has(+ .hx-none) {
 
 .hx-mos {
     display: flex;
+    align-items: center;
     gap: 26px;
     margin-top: 10px;
     border-bottom: 1px solid var(--ln);
+}
+
+.hx-ms {
+    display: flex;
+    flex: 1;
+    gap: 26px;
+    min-width: 0;
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
 }
 
-.hx-mos::-webkit-scrollbar {
+.hx .hx-ys {
+    appearance: none;
+    -webkit-appearance: none;
+    width: auto;
+    flex: none;
+    min-height: 46px;
+    margin: 0;
+    padding: 0 22px 0 2px;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a99f96' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 2px center / 14px;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    font: 600 .98rem/1 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    color: var(--hx-mut);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color .15s, border-color .15s;
+}
+
+.hx .hx-ys.on {
+    color: var(--hx-tx);
+    border-bottom-color: var(--o);
+}
+
+.hx .hx-ys:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.hx-ms::-webkit-scrollbar {
     display: none;
 }
 
@@ -4454,7 +4491,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
     -webkit-appearance: none;
     flex: none;
     min-height: 46px;
-    margin: 0 0 -1px;
+    margin: 0;
     padding: 0 2px;
     background: transparent;
     border: 0;
@@ -4637,7 +4674,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 @media (max-width: 760px) {
-    .hx-mos {
+    .hx-ms {
         gap: 20px;
     }
 
@@ -4662,6 +4699,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
 
 @media (prefers-reduced-motion: reduce) {
 
+    .hx-ys,
     .hx-mb,
     .hx-row {
         transition: none;

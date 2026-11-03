@@ -34,6 +34,7 @@ function hx_plural($n, $w)
     return $n . ' ' . $w . ($n == 1 ? '' : 's');
 }
 $tm = fn($v) => $v ? date('g:i A', strtotime($v)) : '&mdash;';
+$first = $tree ? (string)array_key_first($tree) : '';
 $arw = '<svg class="hx-arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 $chev = '<svg class="hx-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 page_head('Trip History', 'operator');
@@ -43,17 +44,23 @@ page_head('Trip History', 'operator');
     <p class="hx-none">No trips yet.</p>
 <?php else: ?>
     <div class="hx" id="hx">
-        <div class="hx-mos" aria-label="Month">
-            <button type="button" class="hx-mb on" data-m="">All</button>
-            <?php foreach ($tree as $y => $months): foreach ($months as $mo => $days): ?>
-                    <button type="button" class="hx-mb" data-m="<?= e($y) ?>-<?= $mo ?>"><?= date('M Y', mktime(0, 0, 0, $mo, 1, (int)$y)) ?></button>
-            <?php endforeach;
-            endforeach; ?>
+        <div class="hx-mos">
+            <select class="hx-ys on" id="hx-y" aria-label="Year">
+                <?php foreach ($tree as $y => $months): ?>
+                    <option value="<?= e($y) ?>"><?= e($y) ?></option>
+                <?php endforeach; ?>
+            </select>
+            <div class="hx-ms" aria-label="Month">
+                <?php foreach ($tree as $y => $months): foreach ($months as $mo => $days): ?>
+                        <button type="button" class="hx-mb" data-y="<?= e($y) ?>" data-m="<?= $mo ?>" <?= (string)$y === $first ? '' : 'hidden' ?>><?= date('F', mktime(0, 0, 0, $mo, 1)) ?></button>
+                <?php endforeach;
+                endforeach; ?>
+            </div>
         </div>
         <?php foreach ($tree as $y => $months): foreach ($months as $mo => $days): [$mt, $mp] = hx_tally($days); ?>
-                <section class="hx-mon" data-m="<?= e($y) ?>-<?= $mo ?>">
+                <section class="hx-mon" data-y="<?= e($y) ?>" data-m="<?= $mo ?>" <?= (string)$y === $first ? '' : 'hidden' ?>>
                     <header>
-                        <h2><?= date('F Y', mktime(0, 0, 0, $mo, 1, (int)$y)) ?></h2>
+                        <h2><?= date('F', mktime(0, 0, 0, $mo, 1)) ?></h2>
                         <span><?= hx_plural($mt, 'trip') ?> &middot; <?= hx_plural($mp, 'passenger') ?></span>
                     </header>
                     <?php foreach ($days as $d => $list): ?>
@@ -83,28 +90,34 @@ page_head('Trip History', 'operator');
         (function() {
             var root = document.getElementById('hx');
             if (!root) return;
-            var mb = [].slice.call(root.querySelectorAll('.hx-mb')),
+            var ys = document.getElementById('hx-y'),
+                mb = [].slice.call(root.querySelectorAll('.hx-mb')),
                 secs = [].slice.call(root.querySelectorAll('.hx-mon')),
                 m = '';
 
             function run() {
+                var y = ys.value;
+                ys.classList.toggle('on', !m);
                 mb.forEach(function(b) {
+                    b.hidden = b.getAttribute('data-y') !== y;
                     b.classList.toggle('on', b.getAttribute('data-m') === m)
                 });
                 secs.forEach(function(s) {
-                    s.hidden = !!m && s.getAttribute('data-m') !== m
+                    s.hidden = s.getAttribute('data-y') !== y || (!!m && s.getAttribute('data-m') !== m)
                 })
             }
+            ys.addEventListener('change', function() {
+                m = '';
+                run()
+            });
             mb.forEach(function(b) {
                 b.addEventListener('click', function() {
-                    m = b.getAttribute('data-m');
-                    run();
-                    b.scrollIntoView({
-                        block: 'nearest',
-                        inline: 'center'
-                    })
+                    var k = b.getAttribute('data-m');
+                    m = m === k ? '' : k;
+                    run()
                 })
-            })
+            });
+            run()
         })();
     </script>
 <?php endif; ?>
