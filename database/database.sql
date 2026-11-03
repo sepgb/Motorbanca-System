@@ -25,7 +25,6 @@ CREATE TABLE motorbancas (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (cluster_id) REFERENCES clusters(id)
 ) ENGINE = InnoDB;
--- password = hashed. temp_password = readable copy so the PCG can view/give credentials.
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(60) NOT NULL UNIQUE,
@@ -70,15 +69,16 @@ CREATE TABLE barangays (
   name VARCHAR(60) NOT NULL,
   FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
--- Clusters, barangays and motorbancas are loaded by database/load_list.sql
 INSERT INTO clusters (name)
-VALUES ('Cluster 1'),
-('Cluster 2'),
-('Cluster 3'),
-('Cluster 4'),
-('Cluster 5');
--- The first admin (pcg_admin / admin123) is created automatically on first visit to login.php
--- Crew list filled in by the operator before a boat can join the queue (also auto-created by the app).
+VALUES ('Cluster 1A'),
+  ('Cluster 1B'),
+  ('Cluster 2A'),
+  ('Cluster 2B'),
+  ('Cluster 3'),
+  ('Cluster 4'),
+  ('Cluster 5'),
+  ('Cluster 6'),
+  ('Cluster 7');
 CREATE TABLE IF NOT EXISTS trip_crew (
   trip_id INT PRIMARY KEY,
   address VARCHAR(160) NOT NULL,
