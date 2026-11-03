@@ -4453,15 +4453,18 @@ body.r-operator .main>h1:has(+ .hx-none) {
     -webkit-overflow-scrolling: touch;
 }
 
-.hx .hx-ys {
-    appearance: none;
-    -webkit-appearance: none;
-    width: auto;
+.hx-dd {
+    position: relative;
     flex: none;
+}
+
+.hx-ys {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     min-height: 46px;
-    margin: 0;
-    padding: 0 22px 0 2px;
-    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a99f96' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 2px center / 14px;
+    padding: 0 2px;
+    background: transparent;
     border: 0;
     border-bottom: 3px solid transparent;
     border-radius: 0;
@@ -4469,17 +4472,87 @@ body.r-operator .main>h1:has(+ .hx-none) {
     color: var(--hx-mut);
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    transition: color .15s, border-color .15s;
 }
 
-.hx .hx-ys.on {
-    color: var(--hx-tx);
-    border-bottom-color: var(--o);
+.hx-ys::after {
+    content: "";
+    width: 18px;
+    height: 18px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f26b1d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center/18px no-repeat;
+    transition: rotate .2s;
 }
 
-.hx .hx-ys:focus {
-    box-shadow: none;
-    outline: none;
+.hx-ys[aria-expanded="true"]::after {
+    rotate: 180deg;
+}
+
+.hx-opts {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: -8px;
+    z-index: 30;
+    min-width: 150px;
+    max-height: 330px;
+    margin: 0;
+    padding: 6px;
+    overflow-y: auto;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #efe7e0;
+    border-radius: 14px;
+    box-shadow: 0 24px 48px -16px #1f1a1747, 0 2px 6px #1f1a170f;
+}
+
+.hx-opts li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 16px 0 18px;
+    border-bottom: 1px solid #f4ede7;
+    border-radius: 8px;
+    font-size: .96rem;
+    font-weight: 600;
+    color: #1f1a17;
+    cursor: pointer;
+}
+
+.hx-opts li:last-child {
+    border-bottom: 0;
+}
+
+.hx-opts li:hover,
+.hx-opts li:focus-visible {
+    background: #faf7f4;
+    outline: 0;
+}
+
+.hx-opts li[aria-selected="true"] {
+    background: #fff4ec;
+    color: #b4470a;
+    font-weight: 700;
+}
+
+.hx-opts li[aria-selected="true"]::before {
+    content: "";
+    order: 3;
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-left: auto;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f26b1d' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/18px no-repeat;
+}
+
+.hx-opts li[aria-selected="true"]::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 0;
+    width: 3px;
+    border-radius: 3px;
+    background: #f26b1d;
 }
 
 .hx-ms::-webkit-scrollbar {

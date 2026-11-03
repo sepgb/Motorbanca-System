@@ -45,11 +45,14 @@ page_head('Trip History', 'operator');
 <?php else: ?>
     <div class="hx" id="hx">
         <div class="hx-mos">
-            <select class="hx-ys" id="hx-y" aria-label="Year">
-                <?php foreach ($tree as $y => $months): ?>
-                    <option value="<?= e($y) ?>"><?= e($y) ?></option>
-                <?php endforeach; ?>
-            </select>
+            <div class="hx-dd" id="hx-dd">
+                <button type="button" class="hx-ys" aria-haspopup="listbox" aria-expanded="false" aria-label="Year"><span id="hx-yv"><?= e($first) ?></span></button>
+                <ul class="hx-opts" role="listbox" aria-label="Year" hidden>
+                    <?php foreach ($tree as $y => $months): ?>
+                        <li role="option" tabindex="-1" data-y="<?= e($y) ?>" aria-selected="<?= (string)$y === $first ? 'true' : 'false' ?>"><?= e($y) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
             <div class="hx-ms" aria-label="Month">
                 <?php foreach ($tree as $y => $months): foreach ($months as $mo => $days): ?>
                         <button type="button" class="hx-mb" data-y="<?= e($y) ?>" data-m="<?= $mo ?>" <?= (string)$y === $first ? '' : 'hidden' ?>><?= date('F', mktime(0, 0, 0, $mo, 1)) ?></button>
@@ -90,13 +93,17 @@ page_head('Trip History', 'operator');
         (function() {
             var root = document.getElementById('hx');
             if (!root) return;
-            var ys = document.getElementById('hx-y'),
+            var dd = document.getElementById('hx-dd'),
+                btn = dd.querySelector('.hx-ys'),
+                val = document.getElementById('hx-yv'),
+                list = dd.querySelector('.hx-opts'),
+                opts = [].slice.call(list.children),
                 mb = [].slice.call(root.querySelectorAll('.hx-mb')),
                 secs = [].slice.call(root.querySelectorAll('.hx-mon')),
+                y = val.textContent,
                 m = '';
 
             function run() {
-                var y = ys.value;
                 mb.forEach(function(b) {
                     b.hidden = b.getAttribute('data-y') !== y;
                     b.classList.toggle('on', b.getAttribute('data-m') === m)
@@ -105,9 +112,55 @@ page_head('Trip History', 'operator');
                     s.hidden = s.getAttribute('data-y') !== y || (!!m && s.getAttribute('data-m') !== m)
                 })
             }
-            ys.addEventListener('change', function() {
+
+            function setOpen(o) {
+                list.hidden = !o;
+                btn.setAttribute('aria-expanded', o ? 'true' : 'false');
+                if (o) {
+                    var s = list.querySelector('[aria-selected="true"]');
+                    (s || opts[0]).focus()
+                }
+            }
+
+            function pick(o) {
+                y = o.getAttribute('data-y');
+                opts.forEach(function(x) {
+                    x.setAttribute('aria-selected', x === o ? 'true' : 'false')
+                });
+                val.textContent = y;
                 m = '';
+                setOpen(false);
+                btn.focus();
                 run()
+            }
+            btn.addEventListener('click', function() {
+                setOpen(list.hidden)
+            });
+            opts.forEach(function(o) {
+                o.addEventListener('click', function() {
+                    pick(o)
+                });
+                o.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        pick(o)
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        (o.nextElementSibling || o).focus()
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        (o.previousElementSibling || o).focus()
+                    }
+                })
+            });
+            document.addEventListener('click', function(e) {
+                if (!list.hidden && !dd.contains(e.target)) setOpen(false)
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !list.hidden) {
+                    setOpen(false);
+                    btn.focus()
+                }
             });
             mb.forEach(function(b) {
                 b.addEventListener('click', function() {
