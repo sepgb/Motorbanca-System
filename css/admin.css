@@ -1140,19 +1140,19 @@ body.nav-open .pills {
 .regtbl {
     table-layout: fixed;
     width: 100%;
-    min-width: 640px;
+    min-width: 920px;
 }
 
 .regtbl th:nth-child(1) {
-    width: 21%;
+    width: 15%;
 }
 
 .regtbl th:nth-child(2) {
-    width: 17%;
+    width: 13%;
 }
 
 .regtbl th:nth-child(3) {
-    width: 11%;
+    width: 18%;
 }
 
 .regtbl th:nth-child(4) {
@@ -1160,11 +1160,19 @@ body.nav-open .pills {
 }
 
 .regtbl th:nth-child(5) {
-    width: 19%;
+    width: 8%;
 }
 
 .regtbl th:nth-child(6) {
-    width: 20%;
+    width: 9%;
+}
+
+.regtbl th:nth-child(7) {
+    width: 12%;
+}
+
+.regtbl th:nth-child(8) {
+    width: 13%;
 }
 
 .regtbl th,
@@ -1460,7 +1468,8 @@ body.nav-open .pills {
     margin-bottom: 2px;
 }
 
-.r-operator .tablewrap {
+.r-operator .tablewrap,
+.reg .tablewrap {
     overflow-x: auto;
 }
 
@@ -8065,4 +8074,152 @@ body.r-operator .mpage form.card .btn {
 .rm-btn:active,
 .r-admin .rm-btn:active {
     box-shadow: none
+}
+
+.reg-list {
+    min-width: 0
+}
+
+.reg-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 8px
+}
+
+.reg-search {
+    flex: 1 1 260px
+}
+
+.reg-bar input,
+.reg-bar select {
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #ece4dc;
+    border-radius: 12px;
+    background-color: #fff;
+    font-size: .92rem;
+    box-shadow: none
+}
+
+.reg-bar input {
+    width: 100%
+}
+
+.reg-bar select {
+    min-width: 170px
+}
+
+.reg-count {
+    margin-left: auto;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--mut)
+}
+
+.reg-list .tablewrap {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none
+}
+
+.regtbl {
+    border-collapse: separate;
+    border-spacing: 0 8px
+}
+
+.regtbl th {
+    padding: 6px 12px;
+    border: 0;
+    background: none;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #9a8d82
+}
+
+.regtbl td {
+    padding: 14px 12px;
+    border-top: 1px solid #f1e9e1;
+    border-bottom: 1px solid #f1e9e1;
+    background: #fff
+}
+
+.regtbl td:first-child {
+    border-left: 1px solid #f1e9e1;
+    border-radius: 14px 0 0 14px
+}
+
+.regtbl td:last-child {
+    border-right: 1px solid #f1e9e1;
+    border-radius: 0 14px 14px 0
+}
+
+.mb-row:hover td {
+    border-color: #f6d5bd;
+    background: #fffaf6
+}
+
+.mb-row[hidden] {
+    display: none
+}
+
+.regtbl .nm {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0
+}
+
+.regtbl .nm b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 700
+}
+
+.mb-ic {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #fff0e5;
+    color: #b4470a;
+    font-size: .85rem;
+    font-weight: 800
+}
+
+.cl-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #f5eee8;
+    font-size: .76rem;
+    font-weight: 700;
+    color: #6b6058
+}
+
+.regtbl code {
+    padding: 3px 8px;
+    border: 1px solid #eadfd4;
+    border-radius: 8px;
+    background: #faf7f4;
+    font-size: .8rem
+}
+
+.reg .card .reg-note {
+    margin: -4px 0 14px;
+    font-size: .86rem
+}
+
+@media (min-width: 1200px) {
+    .reg .card {
+        position: sticky;
+        top: 96px
+    }
 }

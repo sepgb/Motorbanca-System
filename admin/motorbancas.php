@@ -48,26 +48,36 @@ page_head('Register', 'admin');
 <?php if ($msg) echo "<div class='alert ok'>$msg<br><small>Give these to the operator. You can see them anytime in the list.</small></div>";
 if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
 <div class="reg">
-    <div class="tablewrap">
-        <table class="regtbl">
-            <tr>
-                <th>Name</th>
-                <th>Owner</th>
-                <th>Address</th>
-                <th>Contact No.</th>
-                <th>Capacity</th>
-                <th>Cluster</th>
-                <th>Username</th>
-                <th>Password</th>
-            </tr>
-            <?php foreach ($list as $m) echo "<tr class='mb-row' data-hint='Double-click to edit' data-id='{$m['id']}' data-name='" . e(preg_replace('#^M/B\s*#', '', $m['motorbanca_name'])) .
-                "' data-owner='" . e($m['owner_name'] === 'Not set' ? '' : $m['owner_name']) . "' data-address='" . e($m['address'] ?? '') . "' data-contact='" . e($m['contact'] ?? '') . "' data-cap='{$m['capacity']}' data-cluster='{$m['cluster_id']}' data-status='" . e($m['status']) . "'><td>" . e($m['motorbanca_name']) . "</td><td>" . e($m['owner_name']) .
-                "</td><td>" . e(($m['address'] ?? '') ?: 'Not set') . "</td><td>" . e(($m['contact'] ?? '') ?: 'Not set') . "</td><td>{$m['capacity']}</td><td>" . e($m['cluster']) . "</td><td><code>" . e($m['username']) .
-                "</code></td><td><code>" . e($m['temp_password']) . "</code></td></tr>"; ?>
-        </table>
+    <div class="reg-list">
+        <div class="reg-bar">
+            <div class="reg-search"><input id="reg-q" type="search" placeholder="Search name, owner, address or username" autocomplete="off"></div>
+            <select id="reg-c">
+                <option value="">All clusters</option><?php foreach ($clusters as $c) echo "<option value='{$c['id']}'>" . e($c['name']) . "</option>"; ?>
+            </select>
+            <span class="reg-count" id="reg-n"></span>
+        </div>
+        <div class="tablewrap">
+            <table class="regtbl">
+                <tr>
+                    <th>Name</th>
+                    <th>Owner</th>
+                    <th>Address</th>
+                    <th>Contact No.</th>
+                    <th>Capacity</th>
+                    <th>Cluster</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                </tr>
+                <?php foreach ($list as $m) echo "<tr class='mb-row' data-hint='Double-click to edit' data-id='{$m['id']}' data-name='" . e(preg_replace('#^M/B\s*#', '', $m['motorbanca_name'])) .
+                    "' data-owner='" . e($m['owner_name'] === 'Not set' ? '' : $m['owner_name']) . "' data-address='" . e($m['address'] ?? '') . "' data-contact='" . e($m['contact'] ?? '') . "' data-cap='{$m['capacity']}' data-cluster='{$m['cluster_id']}' data-status='" . e($m['status']) . "'><td><div class='nm'><span class='mb-ic'>" . e(strtoupper(substr(preg_replace('#^M/B\s*#', '', $m['motorbanca_name']), 0, 1))) . "</span><b>" . e($m['motorbanca_name']) . "</b></div></td><td>" . e($m['owner_name']) .
+                    "</td><td>" . e(($m['address'] ?? '') ?: 'Not set') . "</td><td>" . e(($m['contact'] ?? '') ?: 'Not set') . "</td><td>{$m['capacity']}</td><td><span class='cl-pill'>" . e($m['cluster']) . "</span></td><td><code>" . e($m['username']) .
+                    "</code></td><td><code>" . e($m['temp_password']) . "</code></td></tr>"; ?>
+            </table>
+        </div>
     </div>
     <div class="card">
         <h3>New registration</h3>
+        <p class="muted reg-note">A login for the operator is created automatically.</p>
         <form method="post" class="grid">
             <label>Motorbanca name<div class="pfx"><span>M/B</span><input name="name" placeholder="Ruiz" maxlength="45" required></div></label>
             <label>Owner name<input name="owner" placeholder="Juan Dela Cruz" maxlength="100" required></label>
@@ -101,4 +111,27 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
         </form>
     </div>
 </div>
+<script>
+    (function() {
+        var q = document.getElementById('reg-q'),
+            c = document.getElementById('reg-c'),
+            n = document.getElementById('reg-n'),
+            rows = [].slice.call(document.querySelectorAll('.mb-row'));
+
+        function run() {
+            var t = q.value.trim().toLowerCase(),
+                cl = c.value,
+                k = 0;
+            rows.forEach(function(r) {
+                var ok = (!cl || r.getAttribute('data-cluster') === cl) && (!t || r.textContent.toLowerCase().indexOf(t) > -1);
+                r.hidden = !ok;
+                if (ok) k++;
+            });
+            n.textContent = k + ' of ' + rows.length + ' boats';
+        }
+        q.addEventListener('input', run);
+        c.addEventListener('change', run);
+        run();
+    })();
+</script>
 <?php page_foot('admin');
