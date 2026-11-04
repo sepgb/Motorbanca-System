@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/database.php';
 
-// ---------- Announcements (posted by the PCG admin, shown to operators and passengers) ----------
 if (!defined('ANN_KINDS')) define('ANN_KINDS', ['danger' => 'Warning', 'warn' => 'Advisory', 'ok' => 'Good news', 'info' => 'Notice']);
 if (!function_exists('ann_ensure')) {
     function ann_ensure()
@@ -26,7 +25,6 @@ if (!function_exists('ann_ensure')) {
             return [];
         }
     }
-    // Strip shown on other pages while a recent announcement (last 24 hours) is out.
     function ann_banner($url)
     {
         ann_ensure();
@@ -45,7 +43,6 @@ if (!function_exists('ann_ensure')) {
             echo "<div class='ann-empty'><p class='muted' style='margin:0'>No " . (strpos($_SERVER['PHP_SELF'] ?? '', '/passenger/') !== false ? 'notifications' : 'announcements') . " yet.</p></div>";
             return;
         }
-        // Passenger / operator / admin: latest 10, split into Today and Earlier, fixed-height rows, unread vs read look, tap to read the whole notice in a modal.
         echo "<link rel='stylesheet' href='" . (function_exists('asset') ? asset('css/notif.css') : BASE . '/css/notif.css') . "'>";
         $all = isset($_GET['all']);
         $more = count($rows) > 10;
@@ -88,7 +85,7 @@ function openN(a){
   document.getElementById('ann-mtag').textContent=a.querySelector('.ann-tag').textContent;
   document.getElementById('ann-mt').textContent=a.querySelector('h3').textContent;
   document.getElementById('ann-mtime').textContent=a.querySelector('time').textContent;
-  document.getElementById('ann-mb').innerHTML=a.querySelector('p').innerHTML;   // already escaped by the server
+  document.getElementById('ann-mb').innerHTML=a.querySelector('p').innerHTML;
   a.classList.remove('unread');
   var id=a.getAttribute('data-id');
   if(R.indexOf(id)<0){R.push(id);if(R.length>300)R=R.slice(-300);try{localStorage.setItem(K,JSON.stringify(R));}catch(e){}}
@@ -107,7 +104,6 @@ JS;
     }
 }
 
-// ---- Travel suspension: the newest "Suspension of travel" / "Resumption of travel" notice decides the state ----
 if (!function_exists('susp_ensure')) {
     function susp_ensure()
     {
@@ -133,9 +129,6 @@ if (!function_exists('susp_ensure')) {
         }
         return $v;
     }
-    // Admin posted a suspension: the boat that is ON QUEUE in each cluster is NOT departed (the admin departs and checks it
-    // right away); every other queued boat (next trip, waiting) and every boat waiting for inspection is cancelled.
-    // Returns [boats still on queue, boats cancelled].
     function suspend_all_boats()
     {
         $keep = [];
@@ -151,13 +144,11 @@ if (!function_exists('susp_ensure')) {
     }
 }
 
-// ---- Live pop-up and unread count: a new announcement appears on operator and passenger pages without reloading ----
 if (!function_exists('ann_latest')) {
-    // The newest announcement (id, kind, title, message) plus the ids of the latest 50, as an array, or null. Polled by api/live.php?v=ann.
     function ann_latest()
     {
         susp_ensure();
-        $appr = (($_SESSION['role'] ?? '') === 'operator') ? appr_state() : null;   // operators: did the PCG just approve my boat?
+        $appr = (($_SESSION['role'] ?? '') === 'operator') ? appr_state() : null;
         try {
             $a = db()->query("SELECT id, kind, title, body FROM announcements ORDER BY id DESC LIMIT 1")->fetch();
             $ids = array_map('intval', db()->query("SELECT id FROM announcements ORDER BY id DESC LIMIT 50")->fetchAll(PDO::FETCH_COLUMN));
@@ -166,16 +157,14 @@ if (!function_exists('ann_latest')) {
         }
         return ['id' => $a ? (int)$a['id'] : 0, 'kind' => $a && isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info', 'title' => $a['title'] ?? '', 'body' => $a['body'] ?? '', 'ids' => $ids, 'appr' => $appr];
     }
-    // $who is 'operator' or 'passenger' (the folder of the page that opens when the pop-up is tapped).
-    // Also keeps the red unread count on the notification icon: unread = announcements this device has not opened yet.
     function ann_live_html($who)
     {
         $now = ann_latest();
-        $base = $now ? $now['id'] : 0;   // only announcements newer than this one pop up
+        $base = $now ? $now['id'] : 0;
         $ids = json_encode($now ? $now['ids'] : []);
         $kinds = json_encode(ANN_KINDS);
         $api = e(BASE . '/api/live.php?v=ann');
-        $onList = basename($_SERVER['PHP_SELF'] ?? '') === 'announcements.php';   // no announcement pop-up on the list itself
+        $onList = basename($_SERVER['PHP_SELF'] ?? '') === 'announcements.php';
         $goAppr = e(BASE . '/operator/manifest.php');
         if (!$onList || $who === 'operator') {
             $go = e(BASE . '/' . $who . '/announcements.php');
@@ -205,8 +194,7 @@ if (!function_exists('ann_latest')) {
         void p.offsetWidth;
         p.classList.add('show');
     }
-    // Operator: the PCG approved this boat. Same pop-up, in green, with a chime. It is not an announcement and is not added to the notifications.
-    function unlock() {   // browsers only allow sound after a tap: do it on the first one (iPad / iPhone Safari need touchend or click)
+    function unlock() {
         try { var C = window.AudioContext || window.webkitAudioContext; if (!C) return; ac = ac || new C(); if (ac.state === 'suspended') ac.resume(); } catch (e) {}
     }
     function chime() {
@@ -231,9 +219,9 @@ if (!function_exists('ann_latest')) {
         if (!p || !s || !s.token) return;
         var key = 'batis_appr_' + s.mid, seen = '';
         try { seen = localStorage.getItem(key) || ''; } catch (e) {}
-        if (String(s.token) === seen) return;               // this approval was already announced
+        if (String(s.token) === seen) return;
         try { localStorage.setItem(key, String(s.token)); } catch (e) {}
-        if (s.age > 900) return;                            // only approvals from the last 15 minutes
+        if (s.age > 900) return;
         clearTimeout(tmr);
         p.className = 'ann-pop k-ok';
         p.querySelector('.ap-main').setAttribute('href', goAppr);
@@ -247,7 +235,6 @@ if (!function_exists('ann_latest')) {
         tmr = setTimeout(hide, 15000);
     }
     if (isOp) ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, unlock, {passive: true}); });
-    // red count on the notification icon: announcements this device has not opened yet (9+ above nine)
     function render() {
         var R = [];
         try { R = JSON.parse(localStorage.getItem('ann_read_v1')) || []; } catch (e) {}
@@ -270,12 +257,15 @@ if (!function_exists('ann_latest')) {
         }).catch(function () {});
     }
     if (p) p.querySelector('.ap-x').addEventListener('click', hide);
+    if (p) p.querySelector('.ap-main').addEventListener('click', function (e) {
+        if (p.classList.contains('k-ok')) { e.preventDefault(); location.href = goAppr; }
+    });
     render();
-    setInterval(render, 1000);   // picks up a notification being opened on this page
+    setInterval(render, 1000);
     setInterval(check, 5000);
     check();
     document.addEventListener('visibilitychange', check);
-    window.addEventListener('pageshow', check);   // tablets: coming back to the page
+    window.addEventListener('pageshow', check);
     window.addEventListener('focus', check);
     window.addEventListener('online', check);
 })();
@@ -284,7 +274,6 @@ JS;
     }
 }
 
-// ---- Home-page strip: shows once for the newest announcement; opening the Announcements page dismisses it ----
 if (!function_exists('ann_seen_mark')) {
     function ann_seen_mark()
     {
@@ -310,8 +299,6 @@ if (!function_exists('ann_seen_mark')) {
     }
 }
 
-// ---- Live "request approved" pop-up for the operator: the PCG approved the boat, it is now on the queue.
-//      Same pop-up look as the announcements, with a chime, and it is NOT added to the notifications list. ----
 if (!function_exists('appr_state')) {
     function appr_state()
     {
@@ -321,6 +308,6 @@ if (!function_exists('appr_state')) {
         $s->execute([$mid]);
         $r = $s->fetch();
         if (!$r || $r['status'] !== 'Queued' || !$r['tk']) return ['mid' => $mid, 'token' => 0];
-        return ['mid' => $mid, 'token' => (int)$r['tk'], 'age' => (int)$r['age']];   // token = the moment the boat went on the queue
+        return ['mid' => $mid, 'token' => (int)$r['tk'], 'age' => (int)$r['age']];
     }
 }
