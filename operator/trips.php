@@ -55,7 +55,9 @@ page_head('Trip History', 'operator');
                 </ul>
             </div>
             <div class="hx-ms" aria-label="Month">
-                <?php foreach ($tree as $y => $months): foreach ($months as $mo => $days): ?>
+                <?php foreach ($tree as $y => $months): $ms = $months;
+                    ksort($ms);
+                    foreach ($ms as $mo => $days): ?>
                         <button type="button" class="hx-mb" data-y="<?= e($y) ?>" data-m="<?= $mo ?>" <?= (string)$y === $first ? '' : 'hidden' ?>><?= date('F', mktime(0, 0, 0, $mo, 1)) ?></button>
                 <?php endforeach;
                 endforeach; ?>
