@@ -1,5 +1,4 @@
 <?php
-// Read-only HTML fragments polled by script.js. Passengers can call v=passenger; nothing here writes data.
 require_once '../config/live.php';
 header('Cache-Control: no-store');
 process_departures();
@@ -11,6 +10,9 @@ elseif ($v === 'susp' && $role === 'admin') susp_notice_html();
 elseif ($v === 'ann') {
     header('Content-Type: application/json');
     echo json_encode(ann_latest());
+} elseif ($v === 'rdy' && $role === 'admin') {
+    header('Content-Type: application/json');
+    echo json_encode(ready_state());
 } elseif ($v === 'appr' && $role === 'operator') {
     header('Content-Type: application/json');
     echo json_encode(appr_state());

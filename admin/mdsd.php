@@ -14,11 +14,17 @@ function md_json($data)
     exit;
 }
 
-$c = db()->prepare("SELECT id, motorbanca_name, capacity, status, cluster_id FROM motorbancas WHERE id=?");
+mb_schema();
+$c = db()->prepare("SELECT id, motorbanca_name, capacity, status, cluster_id, depart_req FROM motorbancas WHERE id=?");
 $c->execute([$mid]);
 $m = $c->fetch();
 if (!$m || $m['status'] !== 'Queued' || on_queue_id($m['cluster_id']) != $mid) {
     if ($ajax) md_json(['ok' => false, 'error' => 'This boat is no longer on the queue. Reload the page.']);
+    header('Location: ' . $back);
+    exit;
+}
+if (empty($m['depart_req']) && !travel_suspended()) {
+    if ($ajax) md_json(['ok' => false, 'error' => 'The operator has not marked this boat ready to depart yet.']);
     header('Location: ' . $back);
     exit;
 }
@@ -72,6 +78,7 @@ if ($ajax) md_json([
     'title' => 'Pre-Departure Inspection Checklist',
     'sub' => $sub,
     'trip' => (int)$qt,
+    'mdsd' => $qt ? (bool)mdsd_get($qt) : false,
     'pdic' => pdic_rows($pcur),
     'started' => date('Y-m-d H:i:s'),
 ]);

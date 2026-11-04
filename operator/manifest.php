@@ -1,6 +1,7 @@
 <?php
 require_once '../config/layout.php';
 require_once '../config/qr.php';
+require_once '../config/mdsd_helpers.php';
 need('operator');
 $m = my_mb();
 if (!$m) {
@@ -19,8 +20,10 @@ if ($m['status'] === 'Queued') {
     $tag = tag_for((bool)$dep, $i);
   }
 }
-$open = $trip && $m['status'] === 'Queued' && $pos === 0;
-$canRm = $trip && $m['status'] === 'Queued';
+$ready = $trip && $m['status'] === 'Queued' && !empty($m['depart_req']);
+$open = $trip && $m['status'] === 'Queued' && $pos === 0 && !$ready;
+$canRm = $trip && $m['status'] === 'Queued' && !$ready;
+$canDepart = $open;
 $err = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_id']) && $canRm) {
   db()->prepare("DELETE FROM passengers WHERE id=? AND trip_id=?")->execute([(int)$_POST['remove_id'], $trip]);
@@ -76,8 +79,9 @@ page_head('Passengers', 'operator');
 endif; ?>
 <?php $tc = $trip ? trip_crew_get($trip) : null;
 $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)->fetchColumn() : null; ?>
-<div class="mpage">
+<div class="mpage" data-ready="<?= $ready ? 1 : 0 ?>">
   <?php if ($trip): ?><div class="card mp-count"><?php echo count_html($m['pax'], $m['capacity'], 'passengers on board'); ?>
+      <?php if ($canDepart): ?><button type="button" class="btn dep-open" style="margin-top:16px;width:100%">Depart</button><?php endif; ?>
     </div><?php endif; ?>
   <?php if ($err) echo "<div class='alert bad mp-alert'>" . e($err) . "</div>"; ?>
   <?php $showForm = false;
@@ -90,6 +94,11 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
       $noteM = 'You can add passengers once the PCG approves your boat and it is on the queue.';
       $noteC = 'Waiting for the PCG';
       $noteI = '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>';
+    } elseif ($ready) {
+      $noteT = 'Ready to depart';
+      $noteM = 'The PCG has been notified. They will check your crew list, manifest and MDSD, then depart your boat.';
+      $noteC = 'Waiting for the PCG';
+      $noteI = '<path d="M7 17L17 7M8 7h9v9"/>';
     } elseif ($m['status'] === 'Queued') {
       $noteT = strtoupper($tag) === 'NEXT TRIP' ? 'You are next in line' : 'You are waiting in line';
       $noteM = 'You can add passengers once your boat is on the queue.';
@@ -228,6 +237,127 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
         if (e.key === 'Escape' && m.classList.contains('open')) close()
       });
     })();
+  </script>
+<?php endif; ?>
+<?php if ($canDepart): ?>
+  <div class="mdl" id="dep-mdl" role="dialog" aria-modal="true" aria-labelledby="dep-t">
+    <div class="mdl-box wide md-box">
+      <div class="mdl-head">
+        <div class="mdl-title">
+          <h3 id="dep-t">Master&rsquo;s Declaration of Safe Departure</h3>
+          <p class="sub">Declare the condition of your boat and its documents. Every item needs an answer.</p>
+        </div>
+        <div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div>
+      </div>
+      <form class="md-form" id="dep-form" novalidate>
+        <div class="mdl-body md-body"><?= md_rows(['d2' => 'yes', 'd3' => 'yes'], false, true) ?></div>
+        <div class="alert bad md-err" hidden></div>
+        <div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel md-pair">Cancel</button><button type="submit" class="btn sm md-go md-go-wide md-pair">Submit and depart</button></div>
+      </form>
+    </div>
+  </div>
+  <script>
+    (function() {
+      var m = document.getElementById('dep-mdl'),
+        f = document.getElementById('dep-form'),
+        err = m.querySelector('.md-err'),
+        cnt = m.querySelector('.md-count'),
+        go = m.querySelector('.md-go'),
+        busy = false;
+
+      function tally() {
+        cnt.textContent = f.querySelectorAll('.md-q input:checked').length + ' of ' + f.querySelectorAll('.md-q').length + ' answered'
+      }
+
+      function say(t) {
+        err.textContent = t || '';
+        err.hidden = !t
+      }
+
+      function close() {
+        m.classList.remove('open')
+      }
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dep-open')) return;
+        say('');
+        tally();
+        void m.offsetWidth;
+        m.classList.add('open')
+      });
+      m.addEventListener('click', function(e) {
+        if (e.target === m || e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) close()
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && m.classList.contains('open')) close()
+      });
+      f.addEventListener('change', function(e) {
+        if (e.target.type === 'radio') {
+          e.target.closest('.md-q').classList.remove('miss');
+          say('');
+          tally()
+        }
+      });
+      f.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (busy) return;
+        var first = null;
+        f.querySelectorAll('.md-q').forEach(function(q) {
+          var miss = !q.querySelector('input:checked');
+          q.classList.toggle('miss', miss);
+          if (miss && !first) first = q
+        });
+        if (first) {
+          say('Please answer every item of the declaration.');
+          first.scrollIntoView({
+            block: 'center',
+            behavior: 'smooth'
+          });
+          return
+        }
+        busy = true;
+        go.disabled = true;
+        go.textContent = 'Submitting\u2026';
+        say('');
+        fetch('depart_request.php', {
+            method: 'POST',
+            body: new FormData(f),
+            credentials: 'same-origin'
+          })
+          .then(function(x) {
+            return x.json()
+          })
+          .then(function(j) {
+            if (j.ok) location.reload();
+            else {
+              say(j.error || 'Could not submit. Try again.');
+              busy = false;
+              go.disabled = false;
+              go.textContent = 'Submit and depart'
+            }
+          })
+          .catch(function() {
+            say('Could not submit. Check your connection.');
+            busy = false;
+            go.disabled = false;
+            go.textContent = 'Submit and depart'
+          })
+      })
+    })();
+  </script>
+<?php endif; ?>
+<?php if ($ready): ?>
+  <script>
+    setInterval(function() {
+      if (document.hidden) return;
+      fetch(location.href, {
+        credentials: 'same-origin'
+      }).then(function(r) {
+        return r.text()
+      }).then(function(h) {
+        var d = new DOMParser().parseFromString(h, 'text/html');
+        if (!d.querySelector('.mpage[data-ready="1"]')) location.reload()
+      }).catch(function() {})
+    }, 5000);
   </script>
 <?php endif; ?>
 <?php page_foot('operator');

@@ -1,5 +1,4 @@
 <?php
-// Shared "one source of truth" helpers used by admin, operator and passenger pages.
 require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/announcements.php';
 
@@ -23,20 +22,18 @@ function count_html($p, $c, $label = '')
     return "<div class='count" . ($full ? ' full' : '') . "'><b>$p</b><span>/ $c</span>" . ($label !== '' ? "<small class='cnt-lbl'>$label</small>" : '') .
         "</div><div class='bar'><i style='width:$w%'></i></div>";
 }
-// Passengers shown for a boat = those on its latest (non-cancelled) trip.
 const PAX_SQL = "IF(m.status='Not Queued',0,(SELECT COUNT(*) FROM passengers p WHERE p.trip_id=(SELECT MAX(t.id) FROM trips t WHERE t.motorbanca_id=m.id AND t.status<>'Cancelled')))";
-// A departed boat stays on the board for 2 minutes, then it is removed.
 const DEP_RECENT = "EXISTS(SELECT 1 FROM trips t WHERE t.motorbanca_id=m.id AND t.status='Departed' AND t.departure_time > NOW() - INTERVAL 2 MINUTE)";
 
 function live_rows()
 {
-    return db()->query("SELECT m.id, m.motorbanca_name name, m.capacity, m.status, m.cluster_id, " . PAX_SQL . " pax,
+    mb_schema();
+    return db()->query("SELECT m.id, m.motorbanca_name name, m.capacity, m.status, m.cluster_id, (m.depart_req IS NOT NULL) ready, " . PAX_SQL . " pax,
         (SELECT 120 - TIMESTAMPDIFF(SECOND, MAX(t.departure_time), NOW()) FROM trips t WHERE t.motorbanca_id=m.id AND t.status='Departed') left_s,
         (SELECT DATE_FORMAT(DATE_ADD(t.start_time, INTERVAL 70 MINUTE), '%l:%i %p') FROM trips t WHERE t.motorbanca_id=m.id AND t.status='Queued' AND t.start_time IS NOT NULL ORDER BY t.id DESC LIMIT 1) etd
         FROM motorbancas m WHERE m.status='Queued' OR (m.status='Departed' AND " . DEP_RECENT . ")
         ORDER BY (m.status='Departed'), m.queued_at, m.id")->fetchAll();
 }
-// Boats that pressed New trip and are waiting for the PCG's physical inspection (admin queue page only).
 function inspection_html()
 {
     try {
@@ -58,8 +55,6 @@ function inspection_html()
     }
     return $h . "</section>";
 }
-// Admin notice while travel is suspended and boats are still on queue: they are not departed automatically,
-// so the admin must depart and check them (MDSD and PDIC) right away. Shown on the admin dashboard and queue pages.
 function susp_notice_html()
 {
     if (!travel_suspended()) return;
@@ -67,11 +62,10 @@ function susp_notice_html()
     $n = 0;
     foreach (array_unique(array_column($rows, 'cluster_id')) as $cid) {
         [$d, $q] = split_cluster($rows, $cid);
-        if (!$d && $q) $n++;   // a boat is ON QUEUE in this cluster
+        if (!$d && $q) $n++;
     }
-    if ($n) echo "<div class='alert bad susp-note'><b>Travel is suspended.</b> Depart and check " . ($n === 1 ? 'the boat' : "the $n boats") . " on queue right now (MDSD and PDIC).</div>";
+    if ($n) echo "<div class='alert bad susp-note'><b>Travel is suspended.</b> Depart and check " . ($n === 1 ? 'the boat' : "the $n boats") . " on queue right now.</div>";
 }
-// Live queue, grouped by cluster (used on passenger page and admin pages).
 function render_live($admin = false)
 {
     process_departures();
@@ -92,17 +86,16 @@ function render_live($admin = false)
             : "<div class='mb empty'><p class='muted'>No motorbanca on queue right now.</p></div>";
         $pos = 0;
         foreach ($dep as $r) echo mb_card($r, ++$pos, 'DEPARTED');
-        // only the ON QUEUE boat gets a card; the next-trip boat is shown in the footer below
-        foreach ($q as $i => $r) if (tag_for((bool)$dep, $i) === 'ON QUEUE') echo mb_card($r, ++$pos, 'ON QUEUE');
-        if (!$dep && $q && (!empty($q[0]['etd']) || $admin)) {   // bottom-right, above the footer line: expected departure, then the Depart button
+        foreach ($q as $i => $r) if (tag_for((bool)$dep, $i) === 'ON QUEUE') echo mb_card($r, ++$pos, !empty($r['ready']) ? 'READY TO DEPART' : 'ON QUEUE');
+        if (!$dep && $q && (!empty($q[0]['etd']) || $admin)) {
             echo "<div class='etd-row'>" . (!empty($q[0]['etd']) ? "<div class='etd'>Expected departure <b>" . e($q[0]['etd']) . "</b></div>" : '');
-            if ($admin) echo depart_form($q[0]['id'], $q[0]['name']);   // PCG only
+            if ($admin) echo depart_form($q[0]['id'], $q[0]['name'], !empty($q[0]['ready']));
             echo "</div>";
         }
         if (!$dep && !$q && travel_suspended()) {
             echo "<div class='cfoot' style='visibility:hidden'><div class='next no'>&nbsp;</div></div></section>";
             continue;
-        }   // suspended: no next trip, footer kept blank so the card height stays the same
+        }
         echo "<div class='cfoot'>" . ($next
             ? "<div class='next yes'>⏭ Next Trip: <b>" . e($next['name']) . "</b></div>"
             : "<div class='next no'>⛔ No Next Trip Available</div>");
@@ -113,14 +106,13 @@ function stats_html()
 {
     $q = fn($s) => (int)db()->query($s)->fetchColumn();
     $rows = live_rows();
-    $queuedCount = 0;   // boats ON QUEUE (the one boarding in each cluster). The NEXT TRIP and WAITING boats are not counted here.
-    $nextCount = 0;     // boats tagged NEXT TRIP (one per cluster at most)
+    $queuedCount = 0;
+    $nextCount = 0;
     foreach (db()->query("SELECT id FROM clusters")->fetchAll() as $c) {
         [$dep, $qd, $next] = split_cluster($rows, $c['id']);
         if (!$dep && $qd) $queuedCount++;
         if ($next) $nextCount++;
     }
-    // Passengers are counted on the day they were added (operator input or QR scan), so the number moves live, before the boat departs.
     $paxSql = "SELECT COUNT(*) FROM passengers p JOIN trips t ON t.id=p.trip_id WHERE t.status<>'Cancelled' AND DATE(p.created_at)=";
     $today = $q($paxSql . "CURDATE()");
     $yday = $q($paxSql . "CURDATE() - INTERVAL 1 DAY");
@@ -134,11 +126,10 @@ function stats_html()
         ['Next Trips', $nextCount, 'clusters with a next boat'],
         ['Passengers Today', $today, $delta],
     ];
-    $icons = array_slice(array_values(STAT_ICONS), 2);   // icons for the four cards
+    $icons = array_slice(array_values(STAT_ICONS), 2);
     foreach ($cards as $i => [$label, $v, $foot])
         echo "<div class='stat'>" . ico($icons[$i]) . "<span>" . e($label) . "</span><b>$v</b><p>$foot</p></div>";
 }
-// A boat that has departed can start a new trip only after 1 hour. Returns the time it may start again, or null if it can now.
 const TRIP_GAP = '1 HOUR';
 function next_trip_at($mid)
 {
@@ -151,13 +142,12 @@ function next_trip_at($mid)
 }
 function my_mb()
 {
+    mb_schema();
     $s = db()->prepare("SELECT m.*, c.name cluster, " . PAX_SQL . " pax FROM motorbancas m
                         JOIN clusters c ON c.id=m.cluster_id WHERE m.id=?");
     $s->execute([$_SESSION['mid'] ?? 0]);
     return $s->fetch();
 }
-// Crew list (filled in by the operator before the boat can join the queue). One row per trip.
-// The table is created on first use, so no manual SQL import is needed.
 function crew_table()
 {
     static $done = false;
@@ -180,7 +170,6 @@ function trip_crew_get($tid)
     $r['crew'] = json_decode($r['crew'], true) ?: [];
     return $r;
 }
-// The boat's most recent crew list, used to pre-fill the form so the operator does not retype it every trip.
 function crew_last($mid)
 {
     crew_table();
@@ -191,7 +180,6 @@ function crew_last($mid)
     $r['crew'] = json_decode($r['crew'], true) ?: [];
     return $r;
 }
-// Operator: the boat's own state as a coloured label (same look as the admin cards).
 function op_tag($m)
 {
     $tag = $m['status'] === 'Departed' ? 'DEPARTED' : ($m['status'] === 'Inspection' ? 'FOR INSPECTION' : 'NOT QUEUED');
@@ -202,8 +190,9 @@ function op_tag($m)
             $tag = tag_for((bool)$dep, $i);
             $pos = $i + ($dep ? 1 : 0);
         }
+        if ($tag === 'ON QUEUE' && !empty($m['depart_req'])) $tag = 'READY TO DEPART';
     }
-    $cls = $tag === 'ON QUEUE' ? 'g' : ($tag === 'DEPARTED' ? 'b' : (in_array($tag, ['NEXT TRIP', 'WAITING', 'FOR INSPECTION'], true) ? 'o' : 'n'));
+    $cls = $tag === 'ON QUEUE' ? 'g' : ($tag === 'DEPARTED' ? 'b' : (in_array($tag, ['NEXT TRIP', 'WAITING', 'FOR INSPECTION', 'READY TO DEPART'], true) ? 'o' : 'n'));
     return [$tag, $cls, $pos];
 }
 function op_card($m)
@@ -212,7 +201,19 @@ function op_card($m)
     echo "<div class='optag $cls'>$tag</div>" . count_html($m['pax'], $m['capacity'], 'passengers on board');
     if (($pos !== null && $pos > 0) || $tag === 'FOR INSPECTION') echo "<p class='muted' style='margin-top:10px'>You can add passengers once you are ON QUEUE.</p>";
 }
-// The "Inspection" status is added to the two status columns the first time a boat needs it (no manual SQL).
+function mb_schema()
+{
+    static $done = false;
+    if ($done) return;
+    $done = true;
+    try {
+        $have = db()->query("SHOW COLUMNS FROM motorbancas")->fetchAll(PDO::FETCH_COLUMN);
+        if (!in_array('address', $have, true)) db()->exec("ALTER TABLE motorbancas ADD COLUMN address VARCHAR(160) NULL");
+        if (!in_array('contact', $have, true)) db()->exec("ALTER TABLE motorbancas ADD COLUMN contact VARCHAR(30) NULL");
+        if (!in_array('depart_req', $have, true)) db()->exec("ALTER TABLE motorbancas ADD COLUMN depart_req DATETIME NULL");
+    } catch (PDOException $x) {
+    }
+}
 function inspection_schema()
 {
     static $done = false;
@@ -224,22 +225,22 @@ function inspection_schema()
             db()->exec("ALTER TABLE $t MODIFY status " . substr($c['Type'], 0, -1) . ",'Inspection') NOT NULL DEFAULT '" . $c['Default'] . "'");
     }
 }
-// The ONLY place a status changes: keeps motorbanca + trip in sync.
 function set_status($mid, $st)
 {
-    if (($st === 'Inspection' || $st === 'Queued') && travel_suspended()) return;   // no new trips while travel is suspended
-    if ($st === 'Inspection') inspection_schema();   // ALTER TABLE commits implicitly, so it runs before the transaction
+    if (($st === 'Inspection' || $st === 'Queued') && travel_suspended()) return;
+    mb_schema();
+    if ($st === 'Inspection') inspection_schema();
     $pdo = db();
     $pdo->beginTransaction();
-    $pdo->prepare("UPDATE motorbancas SET status=?, queued_at=IF(?='Queued',NOW(),queued_at) WHERE id=?")->execute([$st, $st, $mid]);
+    $pdo->prepare("UPDATE motorbancas SET status=?, queued_at=IF(?='Queued',NOW(),queued_at), depart_req=NULL WHERE id=?")->execute([$st, $st, $mid]);
     $new = "INSERT INTO trips(motorbanca_id,cluster_id,status,trip_date%s) SELECT id,cluster_id,'%s',CURDATE()%s FROM motorbancas WHERE id=?";
-    if ($st === 'Inspection') {        // New trip: the boat waits for the PCG inspection (no queued time yet)
+    if ($st === 'Inspection') {
         $x = $pdo->prepare("SELECT 1 FROM trips WHERE motorbanca_id=? AND status IN ('Inspection','Queued')");
         $x->execute([$mid]);
         if (!$x->fetch()) $pdo->prepare(sprintf($new, '', 'Inspection', ''))->execute([$mid]);
-    } elseif ($st === 'Not Queued') {  // inspection rejected, or travel suspended: the waiting or queued trip is cancelled
+    } elseif ($st === 'Not Queued') {
         $pdo->prepare("UPDATE trips SET status='Cancelled' WHERE motorbanca_id=? AND status IN ('Inspection','Queued')")->execute([$mid]);
-    } elseif ($st === 'Queued') {      // PCG approved the inspection (or joining directly): the boat joins the queue
+    } elseif ($st === 'Queued') {
         $x = $pdo->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status='Queued'");
         $x->execute([$mid]);
         $ins = $pdo->prepare("SELECT id FROM trips WHERE motorbanca_id=? AND status='Inspection' ORDER BY id DESC LIMIT 1");
@@ -248,11 +249,9 @@ function set_status($mid, $st)
         if ($iid && !$x->fetch()) {
             $o = $pdo->prepare("SELECT COUNT(*) FROM motorbancas WHERE cluster_id=(SELECT cluster_id FROM motorbancas WHERE id=?) AND status='Queued' AND id<>?");
             $o->execute([$mid, $mid]);
-            $first = (int)$o->fetchColumn() === 0;   // the queued time is stamped only for the first boat in line
+            $first = (int)$o->fetchColumn() === 0;
             $pdo->prepare("UPDATE trips SET status='Queued', start_time=" . ($first ? 'NOW()' : 'NULL') . " WHERE id=?")->execute([$iid]);
         } elseif (!$iid && !$x->fetch()) {
-            // The queued time is recorded only for the first boat in line. A boat that joins behind another
-            // queued boat (NEXT TRIP / WAITING) gets its time when the boat ahead of it departs.
             $o = $pdo->prepare("SELECT COUNT(*) FROM motorbancas WHERE cluster_id=(SELECT cluster_id FROM motorbancas WHERE id=?) AND status='Queued' AND id<>?");
             $o->execute([$mid, $mid]);
             if ((int)$o->fetchColumn() === 0) $pdo->prepare(sprintf($new, ',start_time', 'Queued', ',NOW()'))->execute([$mid]);
@@ -262,7 +261,6 @@ function set_status($mid, $st)
         $u = $pdo->prepare("UPDATE trips SET status='Departed', departure_time=NOW() WHERE motorbanca_id=? AND status='Queued'");
         $u->execute([$mid]);
         if (!$u->rowCount()) $pdo->prepare(sprintf($new, ',departure_time', 'Departed', ',NOW()'))->execute([$mid]);
-        // the boat now first in line (the next trip) gets its queued time
         $f = $pdo->prepare("SELECT m.id FROM motorbancas m WHERE m.cluster_id=(SELECT cluster_id FROM motorbancas WHERE id=?) AND m.status='Queued' ORDER BY m.queued_at, m.id LIMIT 1");
         $f->execute([$mid]);
         if ($nid = $f->fetchColumn())
@@ -283,7 +281,6 @@ function ico($p)
 {
     return "<svg class='ico' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'>$p</svg>";
 }
-// "Fleet status" card (admin dashboard)
 function fleet_html()
 {
     $q = fn($s) => (int)db()->query($s)->fetchColumn();
@@ -301,16 +298,10 @@ function cd_html($s)
     $s = max(0, (int)$s);
     return sprintf("<p style='margin:.3em 0;color:var(--cdc,#12468f);font-weight:600'>⏱ Leaving the port in <b class='cd' data-s='%d'>%d:%02d</b></p>", $s, intdiv($s, 60), $s % 60);
 }
-// Runs on every board refresh: 2 minutes after the PCG marks a boat Departed it is removed from the
-// board (status goes back to Not Queued). The next boat then moves up by itself, because
-// "on queue" and "next trip" are worked out from the queue order (see split_cluster).
 function process_departures()
 {
     db()->exec("UPDATE motorbancas m SET m.status='Not Queued' WHERE m.status='Departed' AND NOT " . DEP_RECENT);
 }
-// Queue order = the order operators tapped NEW TRIP. While a departed boat is still on the board
-// (its 2 minutes) it holds the "on queue" spot, so the first Queued boat is the Next Trip.
-// Otherwise the first Queued boat is on queue and the second one is the Next Trip.
 function split_cluster($rows, $cid)
 {
     $in = array_values(array_filter($rows, fn($r) => $r['cluster_id'] == $cid));
@@ -325,7 +316,7 @@ function tag_for($hasDep, $i)
 }
 function mb_card($r, $pos, $tag, $admin = false)
 {
-    $wait = in_array($tag, ['NEXT TRIP', 'WAITING'], true);   // not boarding yet: just shown as available
+    $wait = in_array($tag, ['NEXT TRIP', 'WAITING'], true);
     return "<article class='mb'><div class='mb-top'><div style='flex:1;min-width:0'><h3>" . e($r['name']) . "</h3>" .
         ($tag ? "<div style='margin-top:1px;line-height:1.2;font-size:.72rem;font-weight:800;letter-spacing:.06em;color:" . ($tag === 'DEPARTED' ? 'var(--depc,#12468f)' : 'var(--tagc,#15803d)') . "'>$tag</div>" : '') .
         "</div></div>" .
@@ -334,17 +325,107 @@ function mb_card($r, $pos, $tag, $admin = false)
         ($r['status'] === 'Departed' ? cd_html($r['left_s']) : '') .
         "</article>";
 }
-// The one boat in a cluster that is ON QUEUE: it is the only one that takes passengers and can be departed.
 function on_queue_id($cid)
 {
     [$dep, $q] = split_cluster(live_rows(), $cid);
     return (!$dep && $q) ? $q[0]['id'] : null;
 }
-// Depart button (bottom-right of the ON QUEUE card). Only shown on admin pages; admin/depart.php re-checks everything.
-function depart_form($id, $name = '')
+function depart_form($id, $name = '', $ready = true)
 {
+    $icon = ico('<path d="M7 17L17 7M8 7h9v9"/>');
+    if (!$ready && !travel_suspended())
+        return "<button type='button' class='depart' style='margin-left:auto;opacity:.5;cursor:not-allowed;box-shadow:none' title='Waiting for the operator to mark the boat ready' disabled>Depart<span>$icon</span></button>";
     return "<form method='post' action='" . BASE . "/admin/depart.php' style='margin-left:auto' data-name='" . e($name) . "'>" .
         "<input type='hidden' name='mid' value='" . (int)$id . "'>" .
-        "<button class='depart'>Depart<span>" .
-        ico('<path d="M7 17L17 7M8 7h9v9"/>') . "</span></button></form>";
+        "<button class='depart'>Depart<span>$icon</span></button></form>";
+}
+
+function ready_state()
+{
+    $rows = live_rows();
+    $ids = [];
+    foreach (array_unique(array_column($rows, 'cluster_id')) as $cid) {
+        [$d, $q] = split_cluster($rows, $cid);
+        if (!$d && $q && !empty($q[0]['ready'])) $ids[] = (int)$q[0]['id'];
+    }
+    if (!$ids) return [];
+    $list = db()->query("SELECT id, motorbanca_name, UNIX_TIMESTAMP(depart_req) tk, TIMESTAMPDIFF(SECOND, depart_req, NOW()) age FROM motorbancas WHERE id IN (" . implode(',', $ids) . ")")->fetchAll();
+    return array_map(fn($r) => ['mid' => (int)$r['id'], 'name' => $r['motorbanca_name'], 'token' => (int)$r['tk'], 'age' => (int)$r['age']], $list);
+}
+function ready_pop_html()
+{
+    $api = e(BASE . '/api/live.php?v=rdy');
+    $go = e(BASE . '/admin/mdsd.php');
+    $ic = "<svg viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M7 17L17 7M8 7h9v9'/></svg>";
+    echo "<div class='ann-pop k-ok' id='rdy-pop' role='alert' hidden><a class='ap-main' href='#'><span class='ap-ic'>$ic</span>" .
+        "<span class='ap-tx'><b class='ap-t'></b><span class='ap-msg'></span><small class='ap-go'></small></span></a>" .
+        "<button type='button' class='ap-x' aria-label='Dismiss'>&times;</button></div>";
+    echo <<<JS
+<script>
+(function () {
+    var p = document.getElementById('rdy-pop'), cur = null, tmr = null, ac = null;
+    if (!p) return;
+    function hide() {
+        p.classList.remove('show');
+        setTimeout(function () { if (!p.classList.contains('show')) p.hidden = true; }, 400);
+    }
+    function unlock() {
+        try { var C = window.AudioContext || window.webkitAudioContext; if (!C) return; ac = ac || new C(); if (ac.state === 'suspended') ac.resume(); } catch (e) {}
+    }
+    function chime() {
+        try {
+            unlock();
+            if (ac) {
+                var t = ac.currentTime;
+                [[880, 0], [1318.5, 0.18]].forEach(function (n) {
+                    var o = ac.createOscillator(), g = ac.createGain();
+                    o.type = 'sine'; o.frequency.value = n[0];
+                    g.gain.setValueAtTime(0.0001, t + n[1]);
+                    g.gain.exponentialRampToValueAtTime(0.3, t + n[1] + 0.02);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 1);
+                    o.connect(g); g.connect(ac.destination);
+                    o.start(t + n[1]); o.stop(t + n[1] + 1.05);
+                });
+            }
+        } catch (e) {}
+        try { if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) {}
+    }
+    function show(b) {
+        cur = b;
+        clearTimeout(tmr);
+        p.querySelector('.ap-t').textContent = 'Ready to depart';
+        p.querySelector('.ap-msg').textContent = b.name + ' is ready to depart.';
+        p.querySelector('.ap-go').textContent = 'Tap to check the documents and fill up the PDIC';
+        p.hidden = false;
+        void p.offsetWidth;
+        p.classList.add('show');
+        chime();
+        tmr = setTimeout(hide, 20000);
+    }
+    function check() {
+        fetch('$api', {cache: 'no-store', credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (list) {
+            var fresh = (list || []).filter(function (b) {
+                var seen = '';
+                try { seen = localStorage.getItem('batis_rdy_' + b.mid) || ''; } catch (e) {}
+                return String(b.token) !== seen && b.age <= 900;
+            })[0];
+            if (!fresh) return;
+            try { localStorage.setItem('batis_rdy_' + fresh.mid, String(fresh.token)); } catch (e) {}
+            show(fresh);
+        }).catch(function () {});
+    }
+    ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, unlock, {passive: true}); });
+    p.querySelector('.ap-x').addEventListener('click', hide);
+    p.querySelector('.ap-main').addEventListener('click', function (e) {
+        e.preventDefault();
+        if (cur && window.batisDepart) { hide(); window.batisDepart(cur.mid, '$go'); }
+    });
+    setInterval(check, 5000);
+    check();
+    document.addEventListener('visibilitychange', check);
+    window.addEventListener('pageshow', check);
+    window.addEventListener('focus', check);
+})();
+</script>
+JS;
 }

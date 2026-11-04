@@ -10,6 +10,8 @@ CREATE TABLE motorbancas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   motorbanca_name VARCHAR(50) NOT NULL UNIQUE,
   owner_name VARCHAR(100) NOT NULL,
+  address VARCHAR(160) NULL,
+  contact VARCHAR(30) NULL,
   capacity SMALLINT UNSIGNED NOT NULL,
   cluster_id INT NOT NULL,
   status ENUM(
@@ -22,6 +24,7 @@ CREATE TABLE motorbancas (
     'Completed'
   ) NOT NULL DEFAULT 'Not Queued',
   queued_at DATETIME NULL,
+  depart_req DATETIME NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (cluster_id) REFERENCES clusters(id)
 ) ENGINE = InnoDB;

@@ -1,6 +1,4 @@
 <?php
-// Passenger side: someone who joined a boat by scanning its trip QR code can take themselves off that boat's list.
-// Only works for a listing made on this same device, and only while the trip is still Queued (not departed).
 require_once '../config/live.php';
 require_once '../config/profile.php';
 require_once '../config/qr.php';
@@ -11,11 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['ok' => false, 'error' => 'Not allowed.']);
     exit;
 }
-process_departures();   // a boat that has just left can no longer be cancelled
+process_departures();
 qr_ensure();
+mb_schema();
 $d = db()->prepare("DELETE p FROM passengers p
     JOIN trips t ON t.id=p.trip_id AND t.status='Queued'
-    JOIN motorbancas m ON m.id=t.motorbanca_id AND m.status='Queued'
+    JOIN motorbancas m ON m.id=t.motorbanca_id AND m.status='Queued' AND m.depart_req IS NULL
     WHERE p.device_token=?");
 $d->execute([pax_device()]);
 if (!$d->rowCount()) {

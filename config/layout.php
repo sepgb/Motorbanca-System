@@ -110,6 +110,8 @@ function page_foot($role = 'public')
     echo "</main>";
     if ($role === 'operator') {
         ann_live_html('operator');
+    } elseif ($role === 'admin') {
+        ready_pop_html();
     } elseif ($role === 'public') ann_live_html('passenger');
     if ($role === 'public' && basename($_SERVER['PHP_SELF']) === 'index.php') {
         require_once __DIR__ . '/profile.php';

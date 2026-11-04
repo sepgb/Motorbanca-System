@@ -8,7 +8,6 @@ document.querySelectorAll('[data-live]').forEach(function (el) {
   setInterval(load, 4000);
 });
 
-
 setInterval(function () {
   document.querySelectorAll('.cd').forEach(function (e) {
     var s = Math.max(0, (+e.dataset.s) - 1);
@@ -16,7 +15,6 @@ setInterval(function () {
     e.textContent = Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
   });
 }, 1000);
-
 
 (function () {
   var d = document.getElementById('clk-date'), t = document.getElementById('clk-time');
@@ -28,7 +26,6 @@ setInterval(function () {
   function tick() {
     var n = new Date(), h = n.getHours();
 
-
     var wd = noDay ? '' : (short.matches ? D[n.getDay()].slice(0, 3) : D[n.getDay()]) + ', ';
     d.textContent = wd + n.getDate() + ' ' + (short.matches ? M[n.getMonth()].slice(0, 3) : M[n.getMonth()]) + ' ' + n.getFullYear();
     t.textContent = ((h % 12) || 12) + ':' + ('0' + n.getMinutes()).slice(-2) + ' ' + (h < 12 ? 'AM' : 'PM');
@@ -36,10 +33,7 @@ setInterval(function () {
   tick(); setInterval(tick, 1000);
 })();
 
-
 setTimeout(function () { document.body.classList.remove('enter'); }, 900);
-
-
 
 (function () {
   var step = 1, rtrip = 0, rbox, rbody, rerr, rsub, rnext, pbox, dbox, pbody, perr, pcount, psub, pgo, url, mid, started, busy;
@@ -56,7 +50,6 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   function openM(m) { void m.offsetWidth; m.classList.add('open'); }
   function closeM(m) { m.classList.remove('open'); }
   function show(el, t) { el.textContent = t || ''; el.hidden = !t; }
-
 
   function draftKey() { return 'batis_depart_' + mid; }
   function readFields(body) {
@@ -115,7 +108,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
 
   function build() {
 
-    rbox = make('<div class="mdl-box wide md-box md-rv"><div class="mdl-head"><div class="mdl-title"><h3>Crew List and Manifest</h3><p class="sub"></p></div>' +
+    rbox = make('<div class="mdl-box wide md-box md-rv"><div class="mdl-head"><div class="mdl-title"><h3>Crew List, Manifest and MDSD</h3><p class="sub"></p></div>' +
       '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
       '<div class="mdl-body md-body"></div><div class="alert bad md-err" hidden></div>' +
       '<div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel">Cancel</button><button type="button" class="btn sm md-next md-go-wide" disabled>Continue to PDIC</button></div></div>');
@@ -126,7 +119,6 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) closeM(rbox);
       else if (e.target.classList.contains('md-next') && !rnext.disabled) goStep(2);
     });
-
 
     pbox = make('<div class="mdl-box wide md-box"><div class="mdl-head"><div class="mdl-title"><h3>Pre-Departure Inspection Checklist</h3><p class="sub"></p></div>' +
       '<div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div></div>' +
@@ -150,15 +142,13 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     });
   }
 
-
   function showDoc(kind) {
     var fr = rbody.querySelector('.rv-frame'); if (!fr || !rtrip) return;
     rbody.querySelectorAll('.rv-tabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-t') === kind); });
     fr.style.visibility = 'hidden';
     fr.onload = function () { fitDoc(); fr.style.visibility = 'visible'; };
-    fr.src = '../operator/' + kind + '.php?trip=' + rtrip + '&print=1';
+    fr.src = (kind === 'mdsd_print' ? '../admin/' : '../operator/') + kind + '.php?trip=' + rtrip + '&print=1';
   }
-
 
   function fitDoc() {
     var st = rbody && rbody.querySelector('.rv-stage'), fr = st && st.querySelector('.rv-frame'); if (!fr) return;
@@ -195,7 +185,6 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       .catch(function () { fail('Could not reach the server. Check your connection and try again.'); });
   }
 
-
   function done(trip) {
     clearDraft(); closeM(pbox);
     if (!trip) { location.reload(); return; }
@@ -208,9 +197,9 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     openM(dbox);
   }
 
-  function open(f) {
-    mid = f.querySelector('[name=mid]').value;
-    url = f.action.replace(/depart\.php.*$/, 'mdsd.php');
+  function openBoat(id, u) {
+    mid = id;
+    url = u;
     if (!pbox) build();
     busy = false; pgo.disabled = false; pgo.textContent = 'Depart motorbanca'; show(perr, '');
     step = 1; rtrip = 0; rsub.textContent = 'Loading\u2026'; rbody.innerHTML = ''; rnext.disabled = true; show(rerr, '');
@@ -222,7 +211,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
         if (d.ok === false) { rsub.textContent = ''; show(rerr, d.error); return; }
         psub.textContent = d.sub; rsub.textContent = d.sub;
         rtrip = d.trip || 0;
-        rbody.innerHTML = rtrip ? '<div class="rv-tabs"><button type="button" class="on" data-t="print_crew">Crew list</button><button type="button" data-t="print">Manifest</button></div><div class="rv-stage"><iframe class="rv-frame" title="Document preview" scrolling="no"></iframe></div>' : '<div class="alert bad">No trip was found for this boat.</div>';
+        rbody.innerHTML = rtrip ? '<div class="rv-tabs"><button type="button" class="on" data-t="print_crew">Crew list</button><button type="button" data-t="print">Manifest</button>' + (d.mdsd ? '<button type="button" data-t="mdsd_print">MDSD</button>' : '') + '</div><div class="rv-stage"><iframe class="rv-frame" title="Document preview" scrolling="no"></iframe></div>' : '<div class="alert bad">No trip was found for this boat.</div>';
         if (rtrip) showDoc('print_crew');
         rnext.disabled = false;
         pbody.innerHTML = d.pdic + '<div class="md-ins"><label for="pd-ins">Name of inspector</label><input id="pd-ins" name="inspector" type="text" maxlength="100" autocomplete="off"></div>';
@@ -235,9 +224,14 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       .catch(function () { rsub.textContent = ''; show(rerr, 'Could not load the checklist.'); });
   }
 
+  function open(f) {
+    openBoat(f.querySelector('[name=mid]').value, f.action.replace(/depart\.php.*$/, 'mdsd.php'));
+  }
+  window.batisDepart = openBoat;
+
   document.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('.depart') : null;
-    if (!b) return;
+    if (!b || b.disabled) return;
     e.preventDefault();
     open(b.closest('form'));
   });
@@ -248,7 +242,6 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     open(f);
   }, true);
 })();
-
 
 (function () {
   var box;
@@ -296,7 +289,6 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box) box.classList.remove('open'); });
 })();
 
-
 (function () {
   var m = document.getElementById('edit-mdl'); if (!m) return;
   var f = document.getElementById('edit-form'), err = document.getElementById('edit-err'), sub = document.getElementById('edit-sub'), busy = false;
@@ -306,6 +298,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     var r = e.target.closest ? e.target.closest('.mb-row') : null; if (!r) return;
     if (window.getSelection) window.getSelection().removeAllRanges();
     el('mid').value = r.dataset.id; el('name').value = r.dataset.name; el('owner').value = r.dataset.owner;
+    el('address').value = r.dataset.address || ''; el('contact').value = r.dataset.contact || '';
     el('capacity').value = r.dataset.cap; el('cluster').value = r.dataset.cluster;
     var locked = r.dataset.status !== 'Not Queued';
     el('cluster').disabled = locked;
@@ -325,8 +318,6 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       .catch(function () { err.textContent = 'Could not save. Check your connection.'; err.hidden = false; busy = false; });
   });
 })();
-
-
 
 (function () {
   var tip, tx, timer = null, shown = false, ax = 0, ay = 0, lx = 0, ly = 0, lr = null, lt = null;
@@ -368,7 +359,6 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   window.addEventListener('scroll', function () { hide(); lr = null; }, true);
 })();
 
-
 (function () {
   document.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('[data-pdf]') : null;
@@ -397,7 +387,6 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   });
 })();
 
-
 (function () {
   document.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('[data-print]') : null;
@@ -409,7 +398,6 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     setTimeout(function () { f.remove(); }, 120000);
   });
 })();
-
 
 document.addEventListener('click', function (e) {
   var a = e.target.closest ? e.target.closest('.btabs a') : null;

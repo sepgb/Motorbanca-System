@@ -1,6 +1,4 @@
 <?php
-// Per-trip QR code: every trip gets its own random code. Passengers scan it (or type the code) and their saved
-// Profile is added to that trip's manifest. Columns are added automatically the first time they are needed.
 require_once __DIR__ . '/database.php';
 
 function qr_ensure()
@@ -34,13 +32,13 @@ function trip_join_url($tok)
 function qr_trip_by_token($tok)
 {
     qr_ensure();
-    $q = db()->prepare("SELECT t.id, t.status, t.motorbanca_id, m.motorbanca_name, m.capacity, m.cluster_id, m.status mstatus
+    mb_schema();
+    $q = db()->prepare("SELECT t.id, t.status, t.motorbanca_id, m.motorbanca_name, m.capacity, m.cluster_id, m.status mstatus, m.depart_req
                         FROM trips t JOIN motorbancas m ON m.id=t.motorbanca_id WHERE t.qr_token=?");
     $q->execute([$tok]);
     return $q->fetch() ?: null;
 }
-// Passengers can board only while the trip is queued and the boat is ON QUEUE (same rule as the operator's Add passenger form).
 function qr_is_open($t)
 {
-    return $t && $t['status'] === 'Queued' && $t['mstatus'] === 'Queued' && on_queue_id($t['cluster_id']) == $t['motorbanca_id'];
+    return $t && $t['status'] === 'Queued' && $t['mstatus'] === 'Queued' && empty($t['depart_req']) && on_queue_id($t['cluster_id']) == $t['motorbanca_id'];
 }
