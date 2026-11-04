@@ -186,31 +186,29 @@ page_head('Trip History', 'operator');
             </div>
             <div class="mdl-tools">
                 <button type="button" class="btn sm ghost pdfbtn" data-doc="crew"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+                        <path d="M6 9V3h12v6" />
+                        <path d="M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2" />
+                        <path d="M6 14h12v7H6z" />
                     </svg><span>Crew list</span></button>
                 <button type="button" class="btn sm ghost pdfbtn" data-doc="manifest"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+                        <path d="M6 9V3h12v6" />
+                        <path d="M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2" />
+                        <path d="M6 14h12v7H6z" />
                     </svg><span>Manifest</span></button>
                 <button type="button" class="btn sm ghost pdfbtn" data-doc="mdsd" disabled><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+                        <path d="M6 9V3h12v6" />
+                        <path d="M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2" />
+                        <path d="M6 14h12v7H6z" />
                     </svg><span>MDSD</span></button>
                 <button type="button" class="btn sm ghost pdfbtn" data-doc="pdic" disabled><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+                        <path d="M6 9V3h12v6" />
+                        <path d="M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2" />
+                        <path d="M6 14h12v7H6z" />
                     </svg><span>PDIC</span></button>
             </div>
             <button type="button" class="x" aria-label="Close">&times;</button>
         </div>
         <div class="mdl-body"></div>
-    </div>
-</div>
-<div class="mdl" id="dl-mdl" role="dialog" aria-modal="true" aria-labelledby="dl-t">
-    <div class="mdl-box">
-        <div class="mdl-ic"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
-            </svg></div>
-        <h3 id="dl-t">Download document?</h3>
-        <p id="dl-p">This document will be saved as a PDF.</p>
-        <div class="mdl-act"><button type="button" class="no">Cancel</button><button type="button" class="go">Download</button></div>
     </div>
 </div>
 <script>
@@ -238,7 +236,7 @@ page_head('Trip History', 'operator');
             body.innerHTML = '';
             Object.keys(docs).forEach(function(k) {
                 var b = bt(k);
-                b.setAttribute('data-pdf', docs[k] + '?trip=' + encodeURIComponent(id));
+                b.setAttribute('data-print', docs[k] + '?trip=' + encodeURIComponent(id) + '&print=1');
                 if (k === 'mdsd' || k === 'pdic') {
                     b.disabled = true;
                     b.title = ''
@@ -278,52 +276,8 @@ page_head('Trip History', 'operator');
         box.addEventListener('click', function(e) {
             if (e.target === box || e.target.classList.contains('x')) close()
         });
-
-        var dm = document.getElementById('dl-mdl'),
-            pick = null,
-            ok = false;
-
-        function name(b) {
-            return b.querySelector('span').textContent
-        }
-
-        function askNo() {
-            dm.classList.remove('open')
-        }
-        box.addEventListener('click', function(e) {
-            var b = e.target.closest && e.target.closest('[data-pdf]');
-            if (!b) return;
-            if (ok) {
-                ok = false;
-                return
-            }
-            e.stopPropagation();
-            if (b.disabled) return;
-            pick = b;
-            var n = name(b),
-                l = (n === 'MDSD' || n === 'PDIC') ? n : n.toLowerCase();
-            document.getElementById('dl-t').textContent = 'Download ' + l + '?';
-            document.getElementById('dl-p').textContent = 'The ' + l + ' of this trip will be saved as a PDF.';
-            void dm.offsetWidth;
-            dm.classList.add('open');
-            dm.querySelector('.go').focus()
-        });
-        dm.querySelector('.no').addEventListener('click', askNo);
-        dm.querySelector('.go').addEventListener('click', function() {
-            askNo();
-            if (pick) {
-                ok = true;
-                pick.click();
-                ok = false
-            }
-        });
-        dm.addEventListener('click', function(e) {
-            if (e.target === dm) askNo()
-        });
         document.addEventListener('keydown', function(e) {
-            if (e.key !== 'Escape') return;
-            if (dm.classList.contains('open')) askNo();
-            else close()
+            if (e.key === 'Escape' && box.classList.contains('open')) close()
         })
     })();
 </script>

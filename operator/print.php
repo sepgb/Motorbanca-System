@@ -1,7 +1,6 @@
 <?php
-// Printable "Manipesto ng Pasahero" for the boat's current trip. Boat name, date, crew and captain fill in automatically.
 require_once '../config/live.php';
-if (($_SESSION['role'] ?? '') === 'admin') {   // PCG: any trip, from Trip history (?trip=ID)
+if (($_SESSION['role'] ?? '') === 'admin') {
     $tq = db()->prepare("SELECT t.id, t.trip_date, m.motorbanca_name FROM trips t JOIN motorbancas m ON m.id=t.motorbanca_id WHERE t.id=?");
     $tq->execute([(int)($_GET['trip'] ?? 0)]);
     $trip = $tq->fetch();
@@ -10,14 +9,14 @@ if (($_SESSION['role'] ?? '') === 'admin') {   // PCG: any trip, from Trip histo
         exit('Trip not found.');
     }
     $m = ['motorbanca_name' => $trip['motorbanca_name']];
-} else {                                       // operator: the boat's current trip
+} else {
     need('operator');
     $m = my_mb();
     if (!$m) {
         header('Location: ../logout.php');
         exit;
     }
-    if (isset($_GET['trip'])) {                // a past trip from Trip History (own boat only)
+    if (isset($_GET['trip'])) {
         $tq = db()->prepare("SELECT id, trip_date FROM trips WHERE id=? AND motorbanca_id=? AND status NOT IN ('Cancelled','Inspection')");
         $tq->execute([(int)$_GET['trip'], $m['id']]);
     } else {
@@ -34,7 +33,7 @@ $tc = trip_crew_get($trip['id']);
 $crew = $tc['crew'] ?? [];
 $captain = '';
 foreach ($crew as $c) if ($c['position'] === 'BOAT CAPTAIN') $captain = $c['name'];
-$tauhan = '';   // the first CREW member (position CREW), not the boat captain or the motorman
+$tauhan = '';
 foreach ($crew as $c) if ($c['position'] === 'CREW' && $c['name'] !== '') {
     $tauhan = $c['name'];
     break;
@@ -44,7 +43,7 @@ $ps->execute([$trip['id']]);
 $pax = $ps->fetchAll();
 $b = BASE;
 function cells($p, $n)
-{   // No. / Pangalan / Tirahan / Edad
+{
     return "<td class='no'>" . ($n ?: '') . "</td><td>" . ($p ? e($p['name']) : '') . "</td><td>" . ($p ? e($p['barangay']) : '') . "</td><td class='age'>" . ($p ? (int)$p['age'] : '') . "</td>";
 }
 $fn = 'Manifest.pdf';
@@ -57,7 +56,6 @@ $fn = 'Manifest.pdf';
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Manipesto ng Pasahero - <?= e($m['motorbanca_name']) ?></title>
     <style>
-        /* no browser header / footer (date, title, address): only the page count "1/1" at the bottom right */
         @page {
             size: letter;
             margin: 9mm;
@@ -280,7 +278,6 @@ $fn = 'Manifest.pdf';
     <?php if (!isset($_GET['print'])): ?>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
         <script>
-            // Opened inside the hidden frame on the Passengers page: build the PDF and download it.
             if (window.self !== window.top) window.addEventListener('load', function() {
                 var done = function(s) {
                     parent.postMessage({
