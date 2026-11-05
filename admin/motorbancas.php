@@ -66,7 +66,7 @@ if ($err) $keep = $_POST;
             <span><b><?= e($ad ?: 'Not set') ?></b><i><?= e($ct ?: 'Not set') ?></i></span>
             <span><?= e($m['owner_name']) ?></span>
             <span><?= (int)$m['capacity'] ?></span>
-            <span><i>Username: <?= e($m['username']) ?></i><i>Password: <?= e($m['temp_password']) ?></i></span>
+            <span><i>Username: <?= e($m['username']) ?></i><i>Password: <span class="rg-pw" data-pw="<?= e($m['temp_password']) ?>">********</span><button type="button" class="rg-eye" aria-label="Show password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="rg-slash" d="M4 4l16 16"/></svg></button></i></span>
         </div>
     <?php endforeach; ?>
     <p class="rg-none" id="reg-none" hidden>No motorbanca found.</p>
@@ -141,6 +141,17 @@ if ($err) $keep = $_POST;
         function close() {
             m.classList.remove('open');
         }
+        document.addEventListener('dblclick', function(e) {
+            if (e.target.closest('.rg-eye')) e.stopImmediatePropagation();
+        }, true);
+        document.addEventListener('click', function(e) {
+            var b = e.target.closest('.rg-eye');
+            if (!b) return;
+            var s = b.previousElementSibling,
+                on = b.classList.toggle('on');
+            s.textContent = on ? s.getAttribute('data-pw') : '********';
+            b.setAttribute('aria-label', on ? 'Hide password' : 'Show password');
+        });
         q.addEventListener('input', run);
         document.querySelector('.rg-new').addEventListener('click', open);
         m.addEventListener('click', function(e) {

@@ -842,7 +842,6 @@ body.nav-open .pills {
 }
 
 @media(prefers-reduced-motion:no-preference) {
-
     body.enter h1,
     body.enter .alert,
     body.enter .stat,
@@ -978,7 +977,6 @@ body.nav-open .pills {
 }
 
 @media(prefers-reduced-motion:reduce) {
-
     .mdl,
     .mdl-box {
         transition: none;
@@ -1249,7 +1247,6 @@ body.nav-open .pills {
 }
 
 @media(max-width:999px) {
-
     .pills,
     .a-burger,
     body.nav-open .pills {
@@ -2338,7 +2335,6 @@ body.r-public .main>.lead {
 }
 
 @media(prefers-reduced-motion:reduce) {
-
     .btabs a.on .ico,
     .btabs a.pop .ico {
         animation: none;
@@ -3483,7 +3479,6 @@ body.r-public .main>.lead {
 }
 
 @media (max-width:699px) {
-
     .mpage .tablewrap td,
     .mpage .tablewrap th {
         padding: 12px 8px;
@@ -3512,7 +3507,6 @@ body.r-public .main>.lead {
 }
 
 @media (max-width:379px) {
-
     .mpage .tablewrap td,
     .mpage .tablewrap th {
         padding-left: 5px;
@@ -4074,7 +4068,6 @@ body.r-public .main>h1,
 }
 
 @media (min-width:700px) {
-
     .r-admin .main>h1,
     body.r-public .main>h1,
     .r-admin .rg-head>h1 {
@@ -4272,7 +4265,6 @@ body.r-operator .mp-alert {
 }
 
 @supports (appearance: base-select) {
-
     .thf select,
     .thf select::picker(select) {
         appearance: base-select;
@@ -4727,7 +4719,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
     .hx-ys,
     .hx-mb,
     .hx-row,
@@ -4841,8 +4832,51 @@ body.r-operator .main>h1:has(+ .hx-none) {
     color: var(--hx-mut);
 }
 
-@media (max-width: 1100px) {
+.rg-cols>:nth-child(4),
+.rg-row>:nth-child(4) {
+    text-align: center;
+}
 
+.rg-row>:nth-child(4) {
+    align-items: center;
+}
+
+.rg-eye {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-left: 4px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    color: var(--hx-mut);
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.rg-eye:hover {
+    background: #f4ede7;
+    color: var(--hx-tx);
+}
+
+.rg-eye svg {
+    width: 16px;
+    height: 16px;
+}
+
+.rg-eye .rg-slash {
+    display: none;
+}
+
+.rg-eye.on .rg-slash {
+    display: block;
+}
+
+@media (max-width: 1100px) {
     .rg-cols,
     .rg-row {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -5493,7 +5527,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
 }
 
 @media (max-width:999px) {
-
     #annf>label:first-of-type,
     #annf #a-seg {
         display: none;
@@ -5572,7 +5605,6 @@ body.r-public .main>.lead {
 }
 
 @media (max-width:699px) {
-
     body.r-operator .main>h1,
     body.r-public .main>h1 {
         font-size: 25px;
@@ -5852,7 +5884,6 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
 }
 
 @keyframes apRing {
-
     0%,
     50%,
     100% {
@@ -5871,7 +5902,6 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
     .ap-ic::after,
     .ap-ic svg {
         animation: none;
@@ -6252,7 +6282,6 @@ body.r-operator .mp-note.mp-alert {
 }
 
 @keyframes mpdot {
-
     0%,
     80%,
     100% {
@@ -6476,7 +6505,6 @@ body.r-operator .mp-note.mp-alert {
 }
 
 @supports (appearance: base-select) {
-
     .trk-card select,
     .pf-form select,
     .trk-card select::picker(select),
@@ -7049,7 +7077,6 @@ body.r-operator .mpage .mp-count .bar>* {
 }
 
 @supports (appearance: base-select) {
-
     .trk-card select::picker(select),
     .pf-form select::picker(select) {
         padding: 6px;
@@ -7302,7 +7329,6 @@ body.r-public .btn:not(.mdl .btn) {
 }
 
 @media (max-width:999px) and (prefers-reduced-motion:no-preference) {
-
     body.r-public .main>h1,
     body.r-public .main>.fx .fx-head,
     body.r-public .fx-row,
@@ -7882,7 +7908,6 @@ body.r-public .trk .trk-link {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-
     body.r-public .trk #s1>*,
     body.r-public .trk #s2>* {
         animation: pxrise .5s cubic-bezier(.2, .8, .2, 1) both;
