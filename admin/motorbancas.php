@@ -3,6 +3,7 @@ require_once '../config/layout.php';
 need('admin');
 mb_schema();
 $msg = $err = '';
+$keep = [];
 $clusters = db()->query("SELECT * FROM clusters ORDER BY id")->fetchAll();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rest = trim(preg_replace('#^\s*M\s*/\s*B\s*[-.:]?\s*#i', '', trim($_POST['name'] ?? '')));
@@ -43,49 +44,59 @@ $list = db()->query("SELECT m.*, c.name cluster, u.username, u.temp_password FRO
     JOIN clusters c ON c.id=m.cluster_id LEFT JOIN users u ON u.motorbanca_id=m.id AND u.role='operator'
     ORDER BY m.id DESC")->fetchAll();
 page_head('Register', 'admin');
+if ($err) $keep = $_POST;
 ?>
-<h1 style="margin-bottom:18px">Registered motorbanca</h1>
+<h1 class="rg-h" style="margin-bottom:18px">Registered motorbanca</h1>
 <?php if ($msg) echo "<div class='alert ok'>$msg<br><small>Give these to the operator. You can see them anytime in the list.</small></div>";
 if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
-<div class="reg">
-    <div class="reg-list">
-        <div class="reg-bar">
-            <div class="reg-search"><input id="reg-q" type="search" placeholder="Search name, owner, address or username" autocomplete="off"></div>
-            <select id="reg-c">
-                <option value="">All clusters</option><?php foreach ($clusters as $c) echo "<option value='{$c['id']}'>" . e($c['name']) . "</option>"; ?>
-            </select>
-            <span class="reg-count" id="reg-n"></span>
+<div class="rg">
+    <div class="rg-top">
+        <div>
+            <h2>Motorbanca list</h2>
+            <p id="reg-n"><?= count($list) ?> registered motorbancas</p>
         </div>
-        <div class="tablewrap">
-            <table class="regtbl">
-                <tr>
-                    <th>Name</th>
-                    <th>Owner</th>
-                    <th>Address</th>
-                    <th>Contact No.</th>
-                    <th>Capacity</th>
-                    <th>Cluster</th>
-                    <th>Username</th>
-                    <th>Password</th>
-                </tr>
-                <?php foreach ($list as $m) echo "<tr class='mb-row' data-hint='Double-click to edit' data-id='{$m['id']}' data-name='" . e(preg_replace('#^M/B\s*#', '', $m['motorbanca_name'])) .
-                    "' data-owner='" . e($m['owner_name'] === 'Not set' ? '' : $m['owner_name']) . "' data-address='" . e($m['address'] ?? '') . "' data-contact='" . e($m['contact'] ?? '') . "' data-cap='{$m['capacity']}' data-cluster='{$m['cluster_id']}' data-status='" . e($m['status']) . "'><td><div class='nm'><span class='mb-ic'>" . e(strtoupper(substr(preg_replace('#^M/B\s*#', '', $m['motorbanca_name']), 0, 1))) . "</span><b>" . e($m['motorbanca_name']) . "</b></div></td><td>" . e($m['owner_name']) .
-                    "</td><td>" . e(($m['address'] ?? '') ?: 'Not set') . "</td><td>" . e(($m['contact'] ?? '') ?: 'Not set') . "</td><td>{$m['capacity']}</td><td><span class='cl-pill'>" . e($m['cluster']) . "</span></td><td><code>" . e($m['username']) .
-                    "</code></td><td><code>" . e($m['temp_password']) . "</code></td></tr>"; ?>
-            </table>
+        <div class="rg-tools">
+            <input id="reg-q" class="rg-q" type="search" placeholder="Search name, owner, address or username" autocomplete="off">
+            <select id="reg-c" class="rg-sel">
+                <option value="">All clusters</option>
+                <?php foreach ($clusters as $c) echo "<option value='{$c['id']}'>" . e($c['name']) . "</option>"; ?>
+            </select>
+            <button type="button" class="btn rg-new">New registration +</button>
         </div>
     </div>
-    <div class="card">
-        <h3>New registration</h3>
-        <p class="muted reg-note">A login for the operator is created automatically.</p>
-        <form method="post" class="grid">
-            <label>Motorbanca name<div class="pfx"><span>M/B</span><input name="name" placeholder="Ruiz" maxlength="45" required></div></label>
-            <label>Owner name<input name="owner" placeholder="Juan Dela Cruz" maxlength="100" required></label>
-            <label>Address<input name="address" placeholder="Brgy. Buhangin, Binangonan, Rizal" maxlength="160" required></label>
-            <label>Contact No.<input name="contact" type="tel" inputmode="tel" placeholder="09XX XXX XXXX" maxlength="25" required></label>
-            <label>Capacity<input name="capacity" type="number" min="1" max="500" placeholder="45" required></label>
-            <label>Cluster<select name="cluster"><?php foreach ($clusters as $c) echo "<option value='{$c['id']}'>" . e($c['name']) . "</option>"; ?></select></label>
-            <button class="btn">Register and create login</button>
+    <div class="rg-cols"><span>Motorbanca</span><span>Owner</span><span>Address and contact</span><span>Capacity</span><span>Cluster</span><span>Operator login</span></div>
+    <?php foreach ($list as $m):
+        $nm = preg_replace('#^M/B\s*#', '', $m['motorbanca_name']);
+        $ad = $m['address'] ?? '';
+        $ct = $m['contact'] ?? ''; ?>
+        <div class="mb-row rg-row" data-hint="Double-click to edit" data-id="<?= (int)$m['id'] ?>" data-name="<?= e($nm) ?>" data-owner="<?= e($m['owner_name'] === 'Not set' ? '' : $m['owner_name']) ?>" data-address="<?= e($ad) ?>" data-contact="<?= e($ct) ?>" data-cap="<?= (int)$m['capacity'] ?>" data-cluster="<?= (int)$m['cluster_id'] ?>">
+            <span><b><?= e($m['motorbanca_name']) ?></b><i>Motorbanca #<?= (int)$m['id'] ?></i></span>
+            <span><?= e($m['owner_name']) ?></span>
+            <span><b><?= e($ad ?: 'Not set') ?></b><i><?= e($ct ?: 'Not set') ?></i></span>
+            <span class="rg-cap"><b><?= (int)$m['capacity'] ?></b><i>Seats</i></span>
+            <span><?= e($m['cluster']) ?></span>
+            <span><b><?= e($m['username']) ?></b><i>Password: <?= e($m['temp_password']) ?></i></span>
+        </div>
+    <?php endforeach; ?>
+    <p class="rg-none" id="reg-none" hidden>No motorbanca found.</p>
+</div>
+
+<div class="mdl" id="reg-mdl" role="dialog" aria-modal="true" aria-labelledby="reg-t">
+    <div class="mdl-box wide">
+        <div class="mdl-head">
+            <div>
+                <h3 id="reg-t">New registration</h3>
+                <p class="sub">A login for the operator is created automatically.</p>
+            </div><button type="button" class="x" aria-label="Close">&times;</button>
+        </div>
+        <form method="post" class="mdl-form grid">
+            <label>Motorbanca name<div class="pfx"><span>M/B</span><input name="name" placeholder="Ruiz" maxlength="45" value="<?= e($keep['name'] ?? '') ?>" required></div></label>
+            <label>Owner name<input name="owner" placeholder="Juan Dela Cruz" maxlength="100" value="<?= e($keep['owner'] ?? '') ?>" required></label>
+            <label>Address<input name="address" placeholder="Brgy. Buhangin, Binangonan, Rizal" maxlength="160" value="<?= e($keep['address'] ?? '') ?>" required></label>
+            <label>Contact No.<input name="contact" type="tel" inputmode="tel" placeholder="09XX XXX XXXX" maxlength="25" value="<?= e($keep['contact'] ?? '') ?>" required></label>
+            <label>Capacity<input name="capacity" type="number" min="1" max="500" placeholder="45" value="<?= e($keep['capacity'] ?? '') ?>" required></label>
+            <label>Cluster<select name="cluster"><?php foreach ($clusters as $c) echo "<option value='{$c['id']}'" . (($keep['cluster'] ?? '') == $c['id'] ? ' selected' : '') . ">" . e($c['name']) . "</option>"; ?></select></label>
+            <div class="mdl-act"><button type="button" class="no">Cancel</button><button class="go">Register and create login</button></div>
         </form>
     </div>
 </div>
@@ -116,6 +127,8 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
         var q = document.getElementById('reg-q'),
             c = document.getElementById('reg-c'),
             n = document.getElementById('reg-n'),
+            none = document.getElementById('reg-none'),
+            m = document.getElementById('reg-mdl'),
             rows = [].slice.call(document.querySelectorAll('.mb-row'));
 
         function run() {
@@ -127,11 +140,31 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
                 r.hidden = !ok;
                 if (ok) k++;
             });
-            n.textContent = k + ' of ' + rows.length + ' boats';
+            n.textContent = (cl || t) ? k + ' of ' + rows.length + ' motorbancas' : rows.length + ' registered motorbancas';
+            none.hidden = k > 0;
+        }
+
+        function open() {
+            void m.offsetWidth;
+            m.classList.add('open');
+            var f = m.querySelector('input');
+            if (f) f.focus();
+        }
+
+        function close() {
+            m.classList.remove('open');
         }
         q.addEventListener('input', run);
         c.addEventListener('change', run);
+        document.querySelector('.rg-new').addEventListener('click', open);
+        m.addEventListener('click', function(e) {
+            if (e.target === m || e.target.classList.contains('x') || e.target.classList.contains('no')) close();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && m.classList.contains('open')) close();
+        });
         run();
+        <?php if ($err) echo 'open();'; ?>
     })();
 </script>
 <?php page_foot('admin');
