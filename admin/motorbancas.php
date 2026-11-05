@@ -56,16 +56,16 @@ if ($err) $keep = $_POST;
     </div>
     <?php if ($msg) echo "<div class='alert ok' style='margin-top:18px'>$msg<br><small>Give these to the operator. You can see them anytime in the list.</small></div>";
     if ($err) echo "<div class='alert bad' style='margin-top:18px'>" . e($err) . "</div>"; ?>
-    <div class="rg-cols"><span>Motorbanca</span><span>Address and contact</span><span>Owner</span><span>Cluster</span><span>Operator login</span></div>
+    <div class="rg-cols"><span>Motorbanca</span><span>Address and contact</span><span>Owner</span><span>Capacity</span><span>Operator login</span></div>
     <?php foreach ($list as $m):
         $nm = preg_replace('#^M/B\s*#', '', $m['motorbanca_name']);
         $ad = $m['address'] ?? '';
         $ct = $m['contact'] ?? ''; ?>
         <div class="mb-row rg-row" data-hint="Double-click to edit" data-id="<?= (int)$m['id'] ?>" data-name="<?= e($nm) ?>" data-owner="<?= e($m['owner_name'] === 'Not set' ? '' : $m['owner_name']) ?>" data-address="<?= e($ad) ?>" data-contact="<?= e($ct) ?>" data-cap="<?= (int)$m['capacity'] ?>" data-cluster="<?= (int)$m['cluster_id'] ?>">
-            <span><b><?= e($m['motorbanca_name']) ?></b><i><?= (int)$m['capacity'] ?> seats</i></span>
+            <span><i><?= e($m['cluster']) ?></i><b><?= e($m['motorbanca_name']) ?></b></span>
             <span><b><?= e($ad ?: 'Not set') ?></b><i><?= e($ct ?: 'Not set') ?></i></span>
             <span><?= e($m['owner_name']) ?></span>
-            <span><?= e($m['cluster']) ?></span>
+            <span><?= (int)$m['capacity'] ?> seats</span>
             <span><i>Username: <?= e($m['username']) ?></i><i>Password: <?= e($m['temp_password']) ?></i></span>
         </div>
     <?php endforeach; ?>
