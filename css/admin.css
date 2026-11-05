@@ -148,7 +148,7 @@ body.r-admin {
 .pills a.on {
     background: var(--o);
     color: #fff;
-    box-shadow: 0 6px 14px -4px #f26b1d99;
+    box-shadow: none;
 }
 
 .pill-bg {
@@ -160,7 +160,7 @@ body.r-admin {
     width: 0;
     border-radius: 999px;
     background: var(--o);
-    box-shadow: 0 6px 14px -4px #f26b1d99;
+    box-shadow: none;
     z-index: 0;
     transition: transform .38s cubic-bezier(.65, 0, .25, 1), width .38s cubic-bezier(.65, 0, .25, 1);
 }
@@ -181,7 +181,7 @@ body.r-admin {
 
     .pills.has-bg a.on {
         background: var(--o);
-        box-shadow: 0 6px 14px -4px #f26b1d99;
+        box-shadow: none;
     }
 }
 
@@ -4770,12 +4770,20 @@ body.r-operator .main>h1:has(+ .hx-none) {
     width: 260px;
     margin: 0;
     border-radius: 999px;
+    padding-left: 46px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a99f96' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 17px center / 18px;
 }
 
-.rg .rg-new {
+.rg .btn.rg-new {
     flex: none;
     width: auto;
     white-space: nowrap;
+    box-shadow: none;
+}
+
+.rg .btn.rg-new:hover,
+.rg .btn.rg-new:active {
+    box-shadow: none;
 }
 
 .rg-cols,
