@@ -60,7 +60,7 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
             <button type="button" class="btn rg-new">New registration +</button>
         </div>
     </div>
-    <div class="rg-cols"><span>Motorbanca</span><span>Owner</span><span>Address and contact</span><span>Capacity</span><span>Cluster</span><span>Operator login</span></div>
+    <div class="rg-cols"><span>Motorbanca</span><span>Owner</span><span>Address and contact</span><span>Cluster</span><span>Operator login</span></div>
     <?php foreach ($list as $m):
         $nm = preg_replace('#^M/B\s*#', '', $m['motorbanca_name']);
         $ad = $m['address'] ?? '';
@@ -69,7 +69,6 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
             <span><b><?= e($m['motorbanca_name']) ?></b><i><?= (int)$m['capacity'] ?> seats</i></span>
             <span><?= e($m['owner_name']) ?></span>
             <span><b><?= e($ad ?: 'Not set') ?></b><i><?= e($ct ?: 'Not set') ?></i></span>
-            <span class="rg-cap"><b><?= (int)$m['capacity'] ?></b><i>Seats</i></span>
             <span><?= e($m['cluster']) ?></span>
             <span><i>Username: <?= e($m['username']) ?></i><i>Password: <?= e($m['temp_password']) ?></i></span>
         </div>

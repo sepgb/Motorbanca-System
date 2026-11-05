@@ -4781,9 +4781,9 @@ body.r-operator .main>h1:has(+ .hx-none) {
 .rg-cols,
 .rg-row {
     display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1.7fr) 84px minmax(0, .9fr) minmax(0, 1.5fr);
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, .8fr) minmax(0, 1.5fr);
     align-items: center;
-    column-gap: 20px;
+    column-gap: 24px;
 }
 
 .rg-cols {
@@ -4811,7 +4811,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
 .rg-row>span {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 2px;
     min-width: 0;
     font-size: .98rem;
     font-weight: 600;
@@ -4838,18 +4838,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
     color: var(--hx-mut);
 }
 
-.rg-row .rg-cap b {
-    font: 700 1.5rem/1 "Sora", "Figtree", system-ui, sans-serif;
-    letter-spacing: -.04em;
-    font-variant-numeric: tabular-nums;
-}
-
-.rg-row .rg-cap i {
-    font-size: .72rem;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-}
-
 .rg-none {
     margin: 0;
     padding: 28px 12px;
@@ -4861,15 +4849,15 @@ body.r-operator .main>h1:has(+ .hx-none) {
 
     .rg-cols,
     .rg-row {
-        grid-template-columns: minmax(0, 1.4fr) 76px minmax(0, 1.4fr);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
 
     .rg-cols>:nth-child(2),
     .rg-cols>:nth-child(3),
-    .rg-cols>:nth-child(5),
+    .rg-cols>:nth-child(4),
     .rg-row>:nth-child(2),
     .rg-row>:nth-child(3),
-    .rg-row>:nth-child(5) {
+    .rg-row>:nth-child(4) {
         display: none;
     }
 }
