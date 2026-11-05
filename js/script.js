@@ -121,10 +121,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     rbox.addEventListener('click', function (e) {
       var tb = e.target.closest('.rv-tabs button');
       if (tb) { showDoc(tb.getAttribute('data-t')); return; }
-      if (e.target.closest('.rv-fs')) { enterFull(); return; }
-      if (e.target.closest('.rv-exit')) { leaveFull(); return; }
-      if (e.target.closest('.rv-prev')) { stepDoc(-1); return; }
-      if (e.target.closest('.rv-next')) { stepDoc(1); return; }
+      if (e.target.closest('.rv-fs')) { lbOpen(); return; }
       if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) closeM(rbox);
       else if (e.target.classList.contains('md-next') && !rnext.disabled) goStep(2);
     });
@@ -154,69 +151,100 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   function showDoc(kind) {
     var fr = rbody.querySelector('.rv-frame'); if (!fr || !rtrip) return;
     rbody.querySelectorAll('.rv-tabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-t') === kind); });
-    updateNav();
     fr.style.visibility = 'hidden';
     fr.onload = function () { fitDoc(); fr.style.visibility = 'visible'; };
-    fr.src = (kind === 'mdsd_print' ? '../admin/' : '../operator/') + kind + '.php?trip=' + rtrip + '&print=1';
+    fr.src = docUrl(kind);
+  }
+
+  function docUrl(kind) {
+    return (kind === 'mdsd_print' ? '../admin/' : '../operator/') + kind + '.php?trip=' + rtrip + '&print=1';
   }
 
   function docTabs() {
     return [].slice.call(rbody.querySelectorAll('.rv-tabs button'));
   }
 
-  function docIndex() {
+  function docIndex(kind) {
     var tabs = docTabs(), i = 0;
-    tabs.forEach(function (b, n) { if (b.classList.contains('on')) i = n; });
+    tabs.forEach(function (b, n) { if (b.getAttribute('data-t') === kind) i = n; });
     return i;
   }
 
-  function updateNav() {
-    var tabs = docTabs(), i = docIndex(), p = rbody.querySelector('.rv-prev'), n = rbody.querySelector('.rv-next'), nm = rbody.querySelector('.rv-name');
-    if (!p || !n || !nm || !tabs.length) return;
-    p.disabled = i === 0; n.disabled = i === tabs.length - 1;
-    nm.textContent = tabs[i].textContent + ' (' + (i + 1) + ' of ' + tabs.length + ')';
+  var lb = null, lbFrame = null, lbKind = '';
+
+  function lbOpen() {
+    var cur = rbody.querySelector('.rv-tabs button.on'); if (!cur) return;
+    if (!lb) {
+      lb = document.createElement('div');
+      lb.className = 'rv-lb';
+      lb.setAttribute('role', 'dialog');
+      lb.setAttribute('aria-modal', 'true');
+      lb.innerHTML = '<div class="rv-lb-top"><span class="rv-lb-name"></span><button type="button" class="rv-lb-x" aria-label="Close">' + CLOSE + '</button></div>' +
+        '<button type="button" class="rv-lb-prev" aria-label="Previous document">' + CHL + '</button>' +
+        '<div class="rv-lb-stage"><iframe class="rv-lb-frame" title="Document" scrolling="no"></iframe></div>' +
+        '<button type="button" class="rv-lb-next" aria-label="Next document">' + CHR + '</button>';
+      document.body.appendChild(lb);
+      lbFrame = lb.querySelector('.rv-lb-frame');
+      lb.addEventListener('click', function (e) {
+        if (e.target.closest('.rv-lb-x') || e.target === lb || e.target.classList.contains('rv-lb-stage')) lbClose();
+        else if (e.target.closest('.rv-lb-prev')) lbStep(-1);
+        else if (e.target.closest('.rv-lb-next')) lbStep(1);
+      });
+    }
+    lb.classList.add('open');
+    lbShow(cur.getAttribute('data-t'));
   }
 
-  function stepDoc(d) {
-    var tabs = docTabs(), i = docIndex() + d;
-    if (i >= 0 && i < tabs.length) showDoc(tabs[i].getAttribute('data-t'));
+  function lbClose() {
+    if (!lb) return;
+    lb.classList.remove('open');
+    if (lbKind) showDoc(lbKind);
   }
 
-  function fullEl() {
-    return document.fullscreenElement || document.webkitFullscreenElement || null;
+  function lbShow(kind) {
+    var tabs = docTabs(), i = docIndex(kind);
+    lbKind = kind;
+    lb.querySelector('.rv-lb-name').textContent = tabs[i].textContent;
+    lb.querySelector('.rv-lb-prev').disabled = i === 0;
+    lb.querySelector('.rv-lb-next').disabled = i === tabs.length - 1;
+    lbFrame.style.visibility = 'hidden';
+    lbFrame.onload = function () { lbFit(); lbFrame.style.visibility = 'visible'; };
+    lbFrame.src = docUrl(kind);
   }
 
-  function enterFull() {
-    var v = rbody.querySelector('.rv-view'); if (!v) return;
-    var f = v.requestFullscreen || v.webkitRequestFullscreen;
-    if (f) f.call(v);
+  function lbStep(d) {
+    var tabs = docTabs(), i = docIndex(lbKind) + d;
+    if (i >= 0 && i < tabs.length) lbShow(tabs[i].getAttribute('data-t'));
   }
 
-  function leaveFull() {
-    var f = document.exitFullscreen || document.webkitExitFullscreen;
-    if (fullEl() && f) f.call(document);
+  function lbFit() {
+    var st = lb.querySelector('.rv-lb-stage'), w = 816, h = 1056;
+    try { var d = lbFrame.contentDocument.documentElement; w = Math.max(d.scrollWidth, 816); h = Math.max(d.scrollHeight, 1056); } catch (x) { }
+    lbFrame.style.width = w + 'px'; lbFrame.style.height = h + 'px';
+    var k = Math.min((window.innerWidth - 240) / w, (window.innerHeight - 96) / h);
+    lbFrame.style.transform = 'scale(' + k + ')';
+    st.style.width = Math.round(w * k) + 'px'; st.style.height = Math.round(h * k) + 'px';
   }
 
   function fitDoc() {
     var st = rbody && rbody.querySelector('.rv-stage'), fr = st && st.querySelector('.rv-frame'); if (!fr) return;
-    var view = st.parentNode, full = fullEl() === view;
     var w = 816, h = 1056;
     try { var d = fr.contentDocument.documentElement; w = Math.max(d.scrollWidth, 816); h = Math.max(d.scrollHeight, 1056); } catch (x) { }
     fr.style.width = w + 'px'; fr.style.height = h + 'px';
     st.style.width = '';
-    var k = full ? Math.min(view.clientWidth / w, (view.clientHeight - 96) / h) : Math.min(st.clientWidth / w, Math.max(320, window.innerHeight * 0.62) / h);
+    var k = Math.min(st.clientWidth / w, Math.max(320, window.innerHeight * 0.62) / h);
     st.style.height = Math.round(h * k) + 'px';
     fr.style.transform = 'scale(' + k + ')';
     st.style.width = Math.round(w * k) + 'px'; st.style.margin = '0 auto';
     fr.style.left = '0px';
   }
   window.addEventListener('resize', fitDoc);
-  ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (ev) { document.addEventListener(ev, fitDoc); });
+  window.addEventListener('resize', function () { if (lb && lb.classList.contains('open')) lbFit(); });
   document.addEventListener('keydown', function (e) {
-    var v = rbody && rbody.querySelector('.rv-view');
-    if (!v || fullEl() !== v) return;
-    if (e.key === 'ArrowRight') { e.preventDefault(); stepDoc(1); }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); stepDoc(-1); }
+    if (!lb || !lb.classList.contains('open')) return;
+    if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); lbClose(); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); lbStep(1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); lbStep(-1); }
   });
 
   function submit(e) {
@@ -266,7 +294,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
         if (d.ok === false) { rsub.textContent = ''; show(rerr, d.error); return; }
         psub.textContent = d.sub; rsub.textContent = d.sub;
         rtrip = d.trip || 0;
-        rbody.innerHTML = rtrip ? '<div class="rv-tabs"><button type="button" class="on" data-t="print_crew">Crew list</button><button type="button" data-t="print">Manifest</button>' + (d.mdsd ? '<button type="button" data-t="mdsd_print">MDSD</button>' : '') + '</div><div class="rv-view"><div class="rv-bar"><button type="button" class="rv-prev" aria-label="Previous document">' + CHL + '</button><span class="rv-name"></span><button type="button" class="rv-next" aria-label="Next document">' + CHR + '</button><button type="button" class="rv-exit" aria-label="Exit full screen">' + CLOSE + '</button></div><div class="rv-stage"><iframe class="rv-frame" title="Document preview" scrolling="no"></iframe><button type="button" class="rv-fs" aria-label="Full screen">' + EXPAND + '</button></div></div>' : '<div class="alert bad">No trip was found for this boat.</div>';
+        rbody.innerHTML = rtrip ? '<div class="rv-tabs"><button type="button" class="on" data-t="print_crew">Crew list</button><button type="button" data-t="print">Manifest</button>' + (d.mdsd ? '<button type="button" data-t="mdsd_print">MDSD</button>' : '') + '</div><div class="rv-stage"><iframe class="rv-frame" title="Document preview" scrolling="no"></iframe><button type="button" class="rv-fs" aria-label="Full screen">' + EXPAND + '</button></div>' : '<div class="alert bad">No trip was found for this boat.</div>';
         if (rtrip) showDoc('print_crew');
         rnext.disabled = false;
         pbody.innerHTML = d.pdic + '<div class="md-ins"><label for="pd-ins">Name of inspector</label><input id="pd-ins" name="inspector" type="text" maxlength="100" autocomplete="off"></div>';
