@@ -46,7 +46,7 @@ $list = db()->query("SELECT m.*, c.name cluster, u.username, u.temp_password FRO
 page_head('Register', 'admin');
 if ($err) $keep = $_POST;
 ?>
-<h1 class="rg-h" style="margin-bottom:18px">Registered motorbanca</h1>
+<h1 style="margin-bottom:18px">Registered motorbanca</h1>
 <?php if ($msg) echo "<div class='alert ok'>$msg<br><small>Give these to the operator. You can see them anytime in the list.</small></div>";
 if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
 <div class="rg">
@@ -56,11 +56,7 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
             <p id="reg-n"><?= count($list) ?> registered motorbancas</p>
         </div>
         <div class="rg-tools">
-            <input id="reg-q" class="rg-q" type="search" placeholder="Search name, owner, address or username" autocomplete="off">
-            <select id="reg-c" class="rg-sel">
-                <option value="">All clusters</option>
-                <?php foreach ($clusters as $c) echo "<option value='{$c['id']}'>" . e($c['name']) . "</option>"; ?>
-            </select>
+            <input id="reg-q" class="rg-q" type="search" placeholder="Search M/B" autocomplete="off">
             <button type="button" class="btn rg-new">New registration +</button>
         </div>
     </div>
@@ -125,7 +121,6 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
 <script>
     (function() {
         var q = document.getElementById('reg-q'),
-            c = document.getElementById('reg-c'),
             n = document.getElementById('reg-n'),
             none = document.getElementById('reg-none'),
             m = document.getElementById('reg-mdl'),
@@ -133,14 +128,13 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
 
         function run() {
             var t = q.value.trim().toLowerCase(),
-                cl = c.value,
                 k = 0;
             rows.forEach(function(r) {
-                var ok = (!cl || r.getAttribute('data-cluster') === cl) && (!t || r.textContent.toLowerCase().indexOf(t) > -1);
+                var ok = !t || r.textContent.toLowerCase().indexOf(t) > -1;
                 r.hidden = !ok;
                 if (ok) k++;
             });
-            n.textContent = (cl || t) ? k + ' of ' + rows.length + ' motorbancas' : rows.length + ' registered motorbancas';
+            n.textContent = t ? k + ' of ' + rows.length + ' motorbancas' : rows.length + ' registered motorbancas';
             none.hidden = k > 0;
         }
 
@@ -155,7 +149,6 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
             m.classList.remove('open');
         }
         q.addEventListener('input', run);
-        c.addEventListener('change', run);
         document.querySelector('.rg-new').addEventListener('click', open);
         m.addEventListener('click', function(e) {
             if (e.target === m || e.target.classList.contains('x') || e.target.classList.contains('no')) close();

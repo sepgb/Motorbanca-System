@@ -4735,10 +4735,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
     }
 }
 
-body.r-admin .main>h1.rg-h {
-    color: #5a504a;
-}
-
 .rg-top {
     display: flex;
     align-items: flex-end;
@@ -4766,7 +4762,7 @@ body.r-admin .main>h1.rg-h {
 .rg-tools {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 10px;
 }
 
@@ -4776,13 +4772,9 @@ body.r-admin .main>h1.rg-h {
     border-radius: 999px;
 }
 
-.rg .rg-sel {
+.rg .rg-new {
+    flex: none;
     width: auto;
-    margin: 0;
-    border-radius: 999px;
-}
-
-.rg-new {
     white-space: nowrap;
 }
 
