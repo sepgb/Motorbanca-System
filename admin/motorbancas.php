@@ -46,20 +46,16 @@ $list = db()->query("SELECT m.*, c.name cluster, u.username, u.temp_password FRO
 page_head('Register', 'admin');
 if ($err) $keep = $_POST;
 ?>
-<h1 style="margin-bottom:18px">Registered motorbanca</h1>
-<?php if ($msg) echo "<div class='alert ok'>$msg<br><small>Give these to the operator. You can see them anytime in the list.</small></div>";
-if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
 <div class="rg">
-    <div class="rg-top">
-        <div>
-            <h2>Motorbanca list</h2>
-            <p id="reg-n"><?= count($list) ?> registered motorbancas</p>
-        </div>
+    <div class="rg-head">
+        <h1>Registered motorbanca</h1>
         <div class="rg-tools">
             <input id="reg-q" class="rg-q" type="search" placeholder="Search M/B" autocomplete="off">
             <button type="button" class="btn rg-new">New registration +</button>
         </div>
     </div>
+    <?php if ($msg) echo "<div class='alert ok' style='margin-top:18px'>$msg<br><small>Give these to the operator. You can see them anytime in the list.</small></div>";
+    if ($err) echo "<div class='alert bad' style='margin-top:18px'>" . e($err) . "</div>"; ?>
     <div class="rg-cols"><span>Motorbanca</span><span>Owner</span><span>Address and contact</span><span>Cluster</span><span>Operator login</span></div>
     <?php foreach ($list as $m):
         $nm = preg_replace('#^M/B\s*#', '', $m['motorbanca_name']);
@@ -120,7 +116,6 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
 <script>
     (function() {
         var q = document.getElementById('reg-q'),
-            n = document.getElementById('reg-n'),
             none = document.getElementById('reg-none'),
             m = document.getElementById('reg-mdl'),
             rows = [].slice.call(document.querySelectorAll('.mb-row'));
@@ -133,7 +128,6 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
                 r.hidden = !ok;
                 if (ok) k++;
             });
-            n.textContent = t ? k + ' of ' + rows.length + ' motorbancas' : rows.length + ' registered motorbancas';
             none.hidden = k > 0;
         }
 

@@ -4063,7 +4063,8 @@ body.r-public .main>.lead {
 }
 
 .r-admin .main>h1,
-body.r-public .main>h1 {
+body.r-public .main>h1,
+.r-admin .rg-head>h1 {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 30px;
     font-weight: 700;
@@ -4075,7 +4076,8 @@ body.r-public .main>h1 {
 @media (min-width:700px) {
 
     .r-admin .main>h1,
-    body.r-public .main>h1 {
+    body.r-public .main>h1,
+    .r-admin .rg-head>h1 {
         margin: 0 0 22px !important;
     }
 }
@@ -4735,28 +4737,13 @@ body.r-operator .main>h1:has(+ .hx-none) {
     }
 }
 
-.rg-top {
+.rg-head {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 16px 24px;
-    padding-bottom: 14px;
     border-bottom: 2px solid #ddd3ca;
-}
-
-.rg-top h2 {
-    margin: 0;
-    font: 700 1.4rem/1.2 "Sora", "Figtree", system-ui, sans-serif;
-    letter-spacing: -.03em;
-    color: var(--hx-tx);
-}
-
-.rg-top p {
-    margin: 4px 0 0;
-    font-size: .9rem;
-    font-weight: 600;
-    color: var(--hx-mut);
 }
 
 .rg-tools {
@@ -4764,6 +4751,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
     align-items: center;
     flex-wrap: nowrap;
     gap: 10px;
+    margin-bottom: 22px;
 }
 
 .rg .rg-q {
@@ -5009,7 +4997,8 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 .r-admin .main>h1,
-body.r-public .main>h1 {
+body.r-public .main>h1,
+.r-admin .rg-head>h1 {
     font-family: "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
     font-weight: 700;
     letter-spacing: -.025em;
