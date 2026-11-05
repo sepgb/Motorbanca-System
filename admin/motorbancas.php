@@ -66,12 +66,12 @@ if ($err) echo "<div class='alert bad'>" . e($err) . "</div>"; ?>
         $ad = $m['address'] ?? '';
         $ct = $m['contact'] ?? ''; ?>
         <div class="mb-row rg-row" data-hint="Double-click to edit" data-id="<?= (int)$m['id'] ?>" data-name="<?= e($nm) ?>" data-owner="<?= e($m['owner_name'] === 'Not set' ? '' : $m['owner_name']) ?>" data-address="<?= e($ad) ?>" data-contact="<?= e($ct) ?>" data-cap="<?= (int)$m['capacity'] ?>" data-cluster="<?= (int)$m['cluster_id'] ?>">
-            <span><b><?= e($m['motorbanca_name']) ?></b><i>Motorbanca #<?= (int)$m['id'] ?></i></span>
+            <span><b><?= e($m['motorbanca_name']) ?></b><i><?= (int)$m['capacity'] ?> seats</i></span>
             <span><?= e($m['owner_name']) ?></span>
             <span><b><?= e($ad ?: 'Not set') ?></b><i><?= e($ct ?: 'Not set') ?></i></span>
             <span class="rg-cap"><b><?= (int)$m['capacity'] ?></b><i>Seats</i></span>
             <span><?= e($m['cluster']) ?></span>
-            <span><b><?= e($m['username']) ?></b><i>Password: <?= e($m['temp_password']) ?></i></span>
+            <span><i>Username: <?= e($m['username']) ?></i><i>Password: <?= e($m['temp_password']) ?></i></span>
         </div>
     <?php endforeach; ?>
     <p class="rg-none" id="reg-none" hidden>No motorbanca found.</p>

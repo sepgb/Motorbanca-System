@@ -4811,11 +4811,12 @@ body.r-operator .main>h1:has(+ .hx-none) {
 .rg-row>span {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 0;
     min-width: 0;
     font-size: .98rem;
     font-weight: 600;
     color: var(--hx-tx);
+    line-height: 1.3;
 }
 
 .rg-row>span>b,
