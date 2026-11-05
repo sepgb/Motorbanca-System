@@ -1,9 +1,7 @@
 <?php
-// Printable MDSD (Master's Declaration of Safe Departure, Coast Guard Form C) for one trip. PCG (any trip) or the operator of that boat (own trips only).
-// The blanks fill in by themselves from the trip; the YES / NO / N/A boxes show the answers the PCG gave when the boat departed.
 require_once '../config/mdsd_helpers.php';
 $isOp = ($_SESSION['role'] ?? '') === 'operator';
-if ($isOp) {   // an operator may open the forms of this boat's own trips (for the PDF download in Trip History)
+if ($isOp) {
     need('operator');
     $mb = my_mb();
     $own = db()->prepare("SELECT 1 FROM trips WHERE id=? AND motorbanca_id=? AND status NOT IN ('Cancelled','Inspection')");
@@ -36,7 +34,6 @@ function bx($ans, $k, $val)
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>MDSD - <?= e($v['vessel']) ?></title>
     <style>
-        /* no browser header / footer (date, title, address): only the page count "1/1" at the bottom right */
         @page {
             size: letter;
             margin: 6mm 10mm;
@@ -350,7 +347,6 @@ function bx($ans, $k, $val)
                 min-height: 264mm
             }
 
-            /* the "Distribution" line sits at the bottom of the sheet, so no empty strip is left under the form */
             .page>p:last-child {
                 margin-top: auto !important
             }
@@ -369,10 +365,12 @@ function bx($ans, $k, $val)
 </head>
 
 <body>
-    <div class="bar">
-        <button type="button" onclick="window.print()">Print / Save as PDF</button>
-        <a href="<?= e($back) ?>">Done</a>
-    </div>
+    <?php if (!isset($_GET['print'])): ?>
+        <div class="bar">
+            <button type="button" onclick="window.print()">Print / Save as PDF</button>
+            <a href="<?= e($back) ?>">Done</a>
+        </div>
+    <?php endif; ?>
     <div class="page">
         <div class="formc">FORM C</div>
         <div class="stamp">For PCG Stamp<br>Cleared to depart/<br>Not Cleared to depart</div>
@@ -467,7 +465,6 @@ function bx($ans, $k, $val)
     <?php if (!isset($_GET['print'])): ?>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
         <script>
-            // Opened inside the hidden frame of the Trip History page: build the PDF and download it.
             if (window.self !== window.top) window.addEventListener('load', function() {
                 var done = function(s) {
                     parent.postMessage({

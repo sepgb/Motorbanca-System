@@ -39,6 +39,11 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   var step = 1, rtrip = 0, rbox, rbody, rerr, rsub, rnext, pbox, dbox, pbody, perr, pcount, psub, pgo, url, mid, started, busy;
   var PRINT = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6M7 17H5a1 1 0 01-1-1v-5a2 2 0 012-2h12a2 2 0 012 2v5a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg>';
 
+  var EXPAND = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+  var CHL = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>';
+  var CHR = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  var CLOSE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
   function make(html) {
     var m = document.createElement('div');
     m.className = 'mdl';
@@ -116,6 +121,10 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     rbox.addEventListener('click', function (e) {
       var tb = e.target.closest('.rv-tabs button');
       if (tb) { showDoc(tb.getAttribute('data-t')); return; }
+      if (e.target.closest('.rv-fs')) { enterFull(); return; }
+      if (e.target.closest('.rv-exit')) { leaveFull(); return; }
+      if (e.target.closest('.rv-prev')) { stepDoc(-1); return; }
+      if (e.target.closest('.rv-next')) { stepDoc(1); return; }
       if (e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) closeM(rbox);
       else if (e.target.classList.contains('md-next') && !rnext.disabled) goStep(2);
     });
@@ -145,24 +154,70 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   function showDoc(kind) {
     var fr = rbody.querySelector('.rv-frame'); if (!fr || !rtrip) return;
     rbody.querySelectorAll('.rv-tabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-t') === kind); });
+    updateNav();
     fr.style.visibility = 'hidden';
     fr.onload = function () { fitDoc(); fr.style.visibility = 'visible'; };
     fr.src = (kind === 'mdsd_print' ? '../admin/' : '../operator/') + kind + '.php?trip=' + rtrip + '&print=1';
   }
 
+  function docTabs() {
+    return [].slice.call(rbody.querySelectorAll('.rv-tabs button'));
+  }
+
+  function docIndex() {
+    var tabs = docTabs(), i = 0;
+    tabs.forEach(function (b, n) { if (b.classList.contains('on')) i = n; });
+    return i;
+  }
+
+  function updateNav() {
+    var tabs = docTabs(), i = docIndex(), p = rbody.querySelector('.rv-prev'), n = rbody.querySelector('.rv-next'), nm = rbody.querySelector('.rv-name');
+    if (!p || !n || !nm || !tabs.length) return;
+    p.disabled = i === 0; n.disabled = i === tabs.length - 1;
+    nm.textContent = tabs[i].textContent + ' (' + (i + 1) + ' of ' + tabs.length + ')';
+  }
+
+  function stepDoc(d) {
+    var tabs = docTabs(), i = docIndex() + d;
+    if (i >= 0 && i < tabs.length) showDoc(tabs[i].getAttribute('data-t'));
+  }
+
+  function fullEl() {
+    return document.fullscreenElement || document.webkitFullscreenElement || null;
+  }
+
+  function enterFull() {
+    var v = rbody.querySelector('.rv-view'); if (!v) return;
+    var f = v.requestFullscreen || v.webkitRequestFullscreen;
+    if (f) f.call(v);
+  }
+
+  function leaveFull() {
+    var f = document.exitFullscreen || document.webkitExitFullscreen;
+    if (fullEl() && f) f.call(document);
+  }
+
   function fitDoc() {
     var st = rbody && rbody.querySelector('.rv-stage'), fr = st && st.querySelector('.rv-frame'); if (!fr) return;
+    var view = st.parentNode, full = fullEl() === view;
     var w = 816, h = 1056;
     try { var d = fr.contentDocument.documentElement; w = Math.max(d.scrollWidth, 816); h = Math.max(d.scrollHeight, 1056); } catch (x) { }
     fr.style.width = w + 'px'; fr.style.height = h + 'px';
     st.style.width = '';
-    var k = Math.min(st.clientWidth / w, Math.max(320, window.innerHeight * 0.62) / h);
+    var k = full ? Math.min(view.clientWidth / w, (view.clientHeight - 96) / h) : Math.min(st.clientWidth / w, Math.max(320, window.innerHeight * 0.62) / h);
     st.style.height = Math.round(h * k) + 'px';
     fr.style.transform = 'scale(' + k + ')';
     st.style.width = Math.round(w * k) + 'px'; st.style.margin = '0 auto';
     fr.style.left = '0px';
   }
   window.addEventListener('resize', fitDoc);
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (ev) { document.addEventListener(ev, fitDoc); });
+  document.addEventListener('keydown', function (e) {
+    var v = rbody && rbody.querySelector('.rv-view');
+    if (!v || fullEl() !== v) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); stepDoc(1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); stepDoc(-1); }
+  });
 
   function submit(e) {
     e.preventDefault(); if (busy) return;
@@ -211,7 +266,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
         if (d.ok === false) { rsub.textContent = ''; show(rerr, d.error); return; }
         psub.textContent = d.sub; rsub.textContent = d.sub;
         rtrip = d.trip || 0;
-        rbody.innerHTML = rtrip ? '<div class="rv-tabs"><button type="button" class="on" data-t="print_crew">Crew list</button><button type="button" data-t="print">Manifest</button>' + (d.mdsd ? '<button type="button" data-t="mdsd_print">MDSD</button>' : '') + '</div><div class="rv-stage"><iframe class="rv-frame" title="Document preview" scrolling="no"></iframe></div>' : '<div class="alert bad">No trip was found for this boat.</div>';
+        rbody.innerHTML = rtrip ? '<div class="rv-tabs"><button type="button" class="on" data-t="print_crew">Crew list</button><button type="button" data-t="print">Manifest</button>' + (d.mdsd ? '<button type="button" data-t="mdsd_print">MDSD</button>' : '') + '</div><div class="rv-view"><div class="rv-bar"><button type="button" class="rv-prev" aria-label="Previous document">' + CHL + '</button><span class="rv-name"></span><button type="button" class="rv-next" aria-label="Next document">' + CHR + '</button><button type="button" class="rv-exit" aria-label="Exit full screen">' + CLOSE + '</button></div><div class="rv-stage"><iframe class="rv-frame" title="Document preview" scrolling="no"></iframe><button type="button" class="rv-fs" aria-label="Full screen">' + EXPAND + '</button></div></div>' : '<div class="alert bad">No trip was found for this boat.</div>';
         if (rtrip) showDoc('print_crew');
         rnext.disabled = false;
         pbody.innerHTML = d.pdic + '<div class="md-ins"><label for="pd-ins">Name of inspector</label><input id="pd-ins" name="inspector" type="text" maxlength="100" autocomplete="off"></div>';
