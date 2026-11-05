@@ -4019,16 +4019,16 @@ body.r-public .main>.lead {
     }
 }
 
-.r-admin .btn:not(.ghost):not(.mdl .btn) {
+.r-admin .btn:not(.ghost):not(.mdl .btn):not(.rg-new) {
     background: linear-gradient(180deg, #ff8f45, #f26b1d);
     box-shadow: inset 0 1px 0 #ffffff59, inset 0 -2px 0 #0003, 0 1px 2px #0006, 0 8px 24px -6px #f26b1d99;
 }
 
-.r-admin .btn:not(.ghost):not(.mdl .btn):hover {
+.r-admin .btn:not(.ghost):not(.mdl .btn):not(.rg-new):hover {
     box-shadow: inset 0 1px 0 #ffffff59, inset 0 -2px 0 #0003, 0 1px 2px #0006, 0 12px 28px -6px #f26b1dbb;
 }
 
-.r-admin .btn:not(.ghost):not(.mdl .btn):active {
+.r-admin .btn:not(.ghost):not(.mdl .btn):not(.rg-new):active {
     transform: translateY(1px);
     box-shadow: inset 0 1px 0 #ffffff33, inset 0 -1px 0 #0003, 0 1px 2px #0006, 0 4px 12px -6px #f26b1d99;
 }
