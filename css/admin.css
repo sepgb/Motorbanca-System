@@ -610,24 +610,29 @@ body.nav-open .pills {
 .depart {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    height: 44px;
-    padding: 0 20px;
+    gap: 14px;
+    height: 46px;
+    padding: 0 6px 0 22px;
     border: 0;
     border-radius: 999px;
-    background: var(--o);
+    background: #15803d;
     color: #fff;
     box-shadow: none;
-    font: 600 .88rem "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    font: 700 .9rem/1 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    letter-spacing: .01em;
     cursor: pointer;
     transition: background .15s;
 }
 
 .depart span {
-    display: inline-flex;
-    align-items: center;
-    color: inherit;
-    transition: transform .25s;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #ffffff2e;
+    color: #fff;
+    transition: background .2s, color .2s, transform .25s;
 }
 
 .depart .ico {
@@ -636,19 +641,21 @@ body.nav-open .pills {
 }
 
 .depart:hover {
-    background: #e45f12;
+    background: #136f35;
 }
 
 .depart:hover span {
-    transform: translate(2px, -2px);
+    background: #fff;
+    color: #15803d;
+    transform: rotate(45deg);
 }
 
 .depart:active {
-    background: #d95a0f;
+    background: #115f2d;
 }
 
 .depart:focus-visible {
-    outline: 3px solid #f26b1d55;
+    outline: 3px solid #15803d55;
     outline-offset: 3px;
 }
 
@@ -658,11 +665,18 @@ body.nav-open .pills {
     cursor: not-allowed;
 }
 
+.depart:disabled span {
+    background: #ffffffb3;
+    color: #a39a91;
+}
+
 .depart:disabled:hover {
     background: #ece6e0;
 }
 
 .depart:disabled:hover span {
+    background: #ffffffb3;
+    color: #a39a91;
     transform: none;
 }
 
