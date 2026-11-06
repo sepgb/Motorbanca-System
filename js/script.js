@@ -191,6 +191,8 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
         else if (e.target.closest('.rv-lb-next')) lbStep(1);
       });
     }
+    var md = rbody.closest('.mdl');
+    if (md) md.classList.add('lb-on');
     lb.classList.add('open');
     lbShow(cur.getAttribute('data-t'));
   }
@@ -198,6 +200,8 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   function lbClose() {
     if (!lb) return;
     lb.classList.remove('open');
+    var md = rbody.closest('.mdl');
+    if (md) md.classList.remove('lb-on');
     if (lbKind) showDoc(lbKind);
   }
 

@@ -5724,11 +5724,14 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     display: flex;
 }
 
+.mdl.lb-on .mdl-box {
+    visibility: hidden;
+}
+
 .rv-lb-name {
     position: absolute;
     top: 18px;
     left: 50%;
-    padding: 9px 20px;
     background: #fffffff2;
     border-radius: 999px;
     font-size: .92rem;
@@ -5737,6 +5740,10 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
     white-space: nowrap;
     color: #4a403a;
     transform: translateX(-50%);
+    box-sizing: border-box;
+    width: 230px;
+    padding: 9px 0;
+    text-align: center;
 }
 
 .rv-lb-x,
