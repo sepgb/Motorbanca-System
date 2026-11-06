@@ -179,7 +179,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
       lb.className = 'rv-lb';
       lb.setAttribute('role', 'dialog');
       lb.setAttribute('aria-modal', 'true');
-      lb.innerHTML = '<div class="rv-lb-top"><span class="rv-lb-name"></span><button type="button" class="rv-lb-x" aria-label="Close">' + CLOSE + '</button></div>' +
+      lb.innerHTML = '<span class="rv-lb-name"></span><button type="button" class="rv-lb-x" aria-label="Close">' + CLOSE + '</button>' +
         '<button type="button" class="rv-lb-prev" aria-label="Previous document">' + CHL + '</button>' +
         '<div class="rv-lb-stage"><iframe class="rv-lb-frame" title="Document" scrolling="no"></iframe></div>' +
         '<button type="button" class="rv-lb-next" aria-label="Next document">' + CHR + '</button>';
@@ -204,7 +204,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
   function lbShow(kind) {
     var tabs = docTabs(), i = docIndex(kind);
     lbKind = kind;
-    lb.querySelector('.rv-lb-name').textContent = tabs[i].textContent;
+    lb.querySelector('.rv-lb-name').textContent = tabs[i].textContent + '  \u00b7  ' + (i + 1) + ' of ' + tabs.length;
     lb.querySelector('.rv-lb-prev').disabled = i === 0;
     lb.querySelector('.rv-lb-next').disabled = i === tabs.length - 1;
     lbFrame.style.visibility = 'hidden';

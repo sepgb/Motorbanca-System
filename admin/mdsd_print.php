@@ -329,6 +329,14 @@ function bx($ans, $k, $val)
             font-weight: 700
         }
 
+        body.pv {
+            background: #fff
+        }
+
+        body.pv .page {
+            margin: 0 auto
+        }
+
         @media print {
             body {
                 background: #fff
@@ -364,7 +372,7 @@ function bx($ans, $k, $val)
     </style>
 </head>
 
-<body>
+<body<?= isset($_GET['print']) ? ' class="pv"' : '' ?>>
     <?php if (!isset($_GET['print'])): ?>
         <div class="bar">
             <button type="button" onclick="window.print()">Print / Save as PDF</button>
@@ -507,6 +515,6 @@ function bx($ans, $k, $val)
             });
         </script>
     <?php endif; ?>
-</body>
+    </body>
 
 </html>
