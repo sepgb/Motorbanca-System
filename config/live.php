@@ -334,7 +334,7 @@ function depart_form($id, $name = '', $ready = true)
 {
     $icon = ico('<path d="M7 17L17 7M8 7h9v9"/>');
     if (!$ready && !travel_suspended())
-        return "<button type='button' class='depart' style='margin-left:auto;opacity:.5;cursor:not-allowed;box-shadow:none' title='Waiting for the operator to mark the boat ready' disabled>Depart<span>$icon</span></button>";
+        return "<button type='button' class='depart' style='margin-left:auto' title='Waiting for the operator to mark the boat ready' disabled>Depart<span>$icon</span></button>";
     return "<form method='post' action='" . BASE . "/admin/depart.php' style='margin-left:auto' data-name='" . e($name) . "'>" .
         "<input type='hidden' name='mid' value='" . (int)$id . "'>" .
         "<button class='depart'>Depart<span>$icon</span></button></form>";

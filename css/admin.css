@@ -610,27 +610,23 @@ body.nav-open .pills {
 .depart {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     height: 44px;
-    padding: 0 5px 0 20px;
+    padding: 0 20px;
     border: 0;
     border-radius: 999px;
-    background: linear-gradient(135deg, #22a455, #15803d);
+    background: var(--o);
     color: #fff;
-    box-shadow: 0 10px 20px -8px #15803d99;
+    box-shadow: none;
     font: 600 .88rem "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
     cursor: pointer;
-    transition: transform .15s, box-shadow .15s;
+    transition: background .15s;
 }
 
 .depart span {
-    display: grid;
-    place-items: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: #fff;
-    color: #15803d;
+    display: inline-flex;
+    align-items: center;
+    color: inherit;
     transition: transform .25s;
 }
 
@@ -640,22 +636,34 @@ body.nav-open .pills {
 }
 
 .depart:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 14px 26px -8px #15803dcc;
+    background: #e45f12;
 }
 
 .depart:hover span {
-    transform: rotate(45deg);
+    transform: translate(2px, -2px);
 }
 
 .depart:active {
-    transform: none;
-    box-shadow: 0 6px 12px -6px #15803d99;
+    background: #d95a0f;
 }
 
 .depart:focus-visible {
-    outline: 3px solid #15803d;
+    outline: 3px solid #f26b1d55;
     outline-offset: 3px;
+}
+
+.depart:disabled {
+    background: #ece6e0;
+    color: #a39a91;
+    cursor: not-allowed;
+}
+
+.depart:disabled:hover {
+    background: #ece6e0;
+}
+
+.depart:disabled:hover span {
+    transform: none;
 }
 
 .r-admin .btn {
@@ -3817,6 +3825,14 @@ body.r-public .main>.lead {
 .r-admin .md-foot .md-go,
 .r-admin .md-foot .md-next {
     border: 1px solid transparent;
+    box-shadow: none;
+}
+
+.r-admin .md-foot .md-go:hover,
+.r-admin .md-foot .md-next:hover,
+.r-admin .md-foot .md-go:active,
+.r-admin .md-foot .md-next:active {
+    box-shadow: none;
 }
 
 .md-count {
@@ -4046,20 +4062,6 @@ body.r-public .main>.lead {
 
 .rm-btn {
     box-shadow: inset 0 1px 0 #fff, inset 0 -2px 0 #b4231814, 0 1px 2px #1f1a1726, 0 6px 16px -8px #b4231855;
-}
-
-.depart {
-    background: linear-gradient(180deg, #2fb766, #15803d);
-    box-shadow: inset 0 1px 0 #ffffff59, inset 0 -2px 0 #0003, 0 1px 2px #0006, 0 8px 24px -6px #15803d99;
-}
-
-.depart:hover {
-    box-shadow: inset 0 1px 0 #ffffff59, inset 0 -2px 0 #0003, 0 1px 2px #0006, 0 12px 28px -6px #15803dbb;
-}
-
-.depart:active {
-    transform: translateY(1px);
-    box-shadow: inset 0 1px 0 #ffffff33, inset 0 -1px 0 #0003, 0 1px 2px #0006, 0 4px 12px -6px #15803d99;
 }
 
 .r-admin .main>h1,
