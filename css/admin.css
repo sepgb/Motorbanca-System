@@ -4789,34 +4789,28 @@ body.r-operator .main>h1:has(+ .hx-none) {
 
 .ax-chips {
     display: flex;
-    flex-wrap: nowrap;
     gap: 8px;
-    padding-bottom: 4px;
-    overflow-x: auto;
-    scrollbar-width: none;
-}
-
-.ax-chips::-webkit-scrollbar {
-    display: none;
 }
 
 .ax-chips button {
     display: flex;
     align-items: center;
-    gap: 8px;
-    min-height: 42px;
-    padding: 0 12px;
+    gap: 7px;
+    min-height: 46px;
+    padding: 8px 10px;
     background: transparent;
     border: 1px solid var(--ln);
-    border-radius: 999px;
-    font: 700 .8rem/1.2 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
-    text-align: left;
+    border-radius: 16px;
+    font: 700 .78rem/1.2 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    text-align: center;
     color: var(--hx-tx);
     cursor: pointer;
     box-shadow: none;
     transition: background .15s;
-    flex: none;
-    white-space: nowrap;
+    flex: 1 1 auto;
+    white-space: normal;
+    justify-content: center;
+    min-width: 0;
 }
 
 .ax-chips button:hover {
@@ -4893,16 +4887,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
     border-color: var(--kl);
     box-shadow: none;
     outline: 0;
-}
-
-.ax .ax-comp .alert {
-    margin: 16px 0 0;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    font-size: .86rem;
-    line-height: 1.4;
 }
 
 .ax-foot {

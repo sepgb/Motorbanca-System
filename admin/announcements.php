@@ -78,7 +78,6 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             <input class="ax-title" name="title" id="a-title" maxlength="120" required placeholder="What is this announcement about?" autocomplete="off" value="<?= e($_POST['title'] ?? '') ?>">
             <label for="a-body" class="ax-l2">Context</label>
             <textarea class="ax-body" name="body" id="a-body" rows="6" maxlength="2000" required placeholder="Add the details operators and passengers need to know"><?= e($_POST['body'] ?? '') ?></textarea>
-            <div class="alert bad" id="a-actn" hidden></div>
         </div>
         <footer class="ax-foot">
             <span class="ax-cnt" id="a-cnt">0 / 2000</span>
@@ -118,8 +117,7 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             comp = document.getElementById('annf'),
             ti = document.getElementById('a-title'),
             bo = document.getElementById('a-body'),
-            cnt = document.getElementById('a-cnt'),
-            note = document.getElementById('a-actn');
+            cnt = document.getElementById('a-cnt');
 
         function detect() {
             var pass = [
@@ -147,9 +145,6 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 var t = T[x.dataset.i],
                     a = t[4] || '';
                 document.getElementById('a-act').value = a;
-                note.hidden = !a;
-                note.classList.toggle('good', a === 'resume');
-                note.textContent = a === 'suspend' ? 'Posting this will cancel the boats waiting for their next trip and block all new trips until a Resumption of travel notice is posted. The boat on queue is not departed automatically: you must depart and check it (PDIC) right away.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
                 ti.value = t[2];
                 bo.value = t[3];
                 sync();
