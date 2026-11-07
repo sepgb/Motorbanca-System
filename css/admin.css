@@ -864,7 +864,6 @@ body.nav-open .pills {
 }
 
 @media(prefers-reduced-motion:no-preference) {
-
     body.enter h1,
     body.enter .alert,
     body.enter .stat,
@@ -1000,7 +999,6 @@ body.nav-open .pills {
 }
 
 @media(prefers-reduced-motion:reduce) {
-
     .mdl,
     .mdl-box {
         transition: none;
@@ -1271,7 +1269,6 @@ body.nav-open .pills {
 }
 
 @media(max-width:999px) {
-
     .pills,
     .a-burger,
     body.nav-open .pills {
@@ -2360,7 +2357,6 @@ body.r-public .main>.lead {
 }
 
 @media(prefers-reduced-motion:reduce) {
-
     .btabs a.on .ico,
     .btabs a.pop .ico {
         animation: none;
@@ -3309,7 +3305,6 @@ body.r-public .main>.lead {
 }
 
 @media (max-width:699px) {
-
     .mpage .tablewrap td,
     .mpage .tablewrap th {
         padding: 12px 8px;
@@ -3338,7 +3333,6 @@ body.r-public .main>.lead {
 }
 
 @media (max-width:379px) {
-
     .mpage .tablewrap td,
     .mpage .tablewrap th {
         padding-left: 5px;
@@ -3894,7 +3888,6 @@ body.r-public .main>h1,
 }
 
 @media (min-width:700px) {
-
     .r-admin .main>h1,
     body.r-public .main>h1,
     .r-admin .rg-head>h1 {
@@ -4092,7 +4085,6 @@ body.r-operator .mp-alert {
 }
 
 @supports (appearance: base-select) {
-
     .thf select,
     .thf select::picker(select) {
         appearance: base-select;
@@ -4549,7 +4541,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
     .hx-ys,
     .hx-mb,
     .hx-row,
@@ -4708,7 +4699,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 @media (max-width: 1100px) {
-
     .rg-cols,
     .rg-row {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -4758,8 +4748,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
     flex: 1.2 1 520px;
     min-width: 0;
     background: #fff;
-    border: 1px solid var(--kl);
-    border-top: 4px solid var(--kc);
+    border: 1px solid var(--ln);
     border-radius: 26px;
     overflow: hidden;
     transition: border-color .3s;
@@ -4798,21 +4787,21 @@ body.r-operator .main>h1:has(+ .hx-none) {
     display: flex;
     align-items: center;
     gap: 10px;
-    min-height: 52px;
-    padding: 8px 12px 8px 8px;
-    background: var(--kb);
-    border: 1px solid transparent;
-    border-radius: 16px;
+    min-height: 46px;
+    padding: 0 14px;
+    background: transparent;
+    border: 1px solid var(--ln);
+    border-radius: 14px;
     font: 700 .84rem/1.25 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
     text-align: left;
     color: var(--hx-tx);
     cursor: pointer;
     box-shadow: none;
-    transition: border-color .15s;
+    transition: background .15s;
 }
 
 .ax-chips button:hover {
-    border-color: var(--kc);
+    background: var(--ot);
 }
 
 .ax-chips button:last-child:nth-child(odd) {
@@ -4820,13 +4809,8 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 .ax-chips i {
-    display: grid;
+    display: inline-flex;
     flex: none;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    background: #fff;
-    border-radius: 50%;
     color: var(--kc);
 }
 
@@ -4855,32 +4839,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
     align-items: flex-start;
     gap: 44px;
     margin-top: 20px;
-}
-
-.ax-auto {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 14px;
-    background: var(--kb);
-    border-radius: 999px;
-    font-size: .8rem;
-    font-weight: 700;
-    color: var(--kc);
-    transition: background .3s, color .3s;
-}
-
-.ax-auto i {
-    width: 8px;
-    height: 8px;
-    background: currentColor;
-    border-radius: 50%;
-}
-
-.ax-auto em {
-    font-style: normal;
-    font-weight: 600;
-    color: #9a8f86;
 }
 
 .ax .ax-title {
@@ -4929,18 +4887,18 @@ body.r-operator .main>h1:has(+ .hx-none) {
 .ax-foot {
     display: flex;
     align-items: center;
-    gap: 16px;
     padding: 16px 28px 22px;
     background: #fdfbf9;
     border-top: 1px solid var(--ln);
     flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
 }
 
 .ax-cnt {
     font-size: .84rem;
     font-weight: 600;
     color: var(--hx-mut);
-    margin-left: auto;
 }
 
 .ax-post {
@@ -5111,7 +5069,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
     .ax-comp,
     .ax-post,
     .ax-del {
@@ -5563,7 +5520,6 @@ body.r-admin:not(.r-operator):not(.r-public) .main>h2.sub {
 }
 
 @media (max-width:999px) {
-
     #annf>label:first-of-type,
     #annf #a-seg {
         display: none;
@@ -5633,7 +5589,6 @@ body.r-public .main>.lead {
 }
 
 @media (max-width:699px) {
-
     body.r-operator .main>h1,
     body.r-public .main>h1 {
         font-size: 25px;
@@ -6032,7 +5987,6 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
 }
 
 @keyframes apRing {
-
     0%,
     50%,
     100% {
@@ -6051,7 +6005,6 @@ body.r-public .mdl *:not(code):not(pre):not(kbd):not(samp) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
     .ap-ic::after,
     .ap-ic svg {
         animation: none;
@@ -6432,7 +6385,6 @@ body.r-operator .mp-note.mp-alert {
 }
 
 @keyframes mpdot {
-
     0%,
     80%,
     100% {
@@ -6656,7 +6608,6 @@ body.r-operator .mp-note.mp-alert {
 }
 
 @supports (appearance: base-select) {
-
     .trk-card select,
     .pf-form select,
     .trk-card select::picker(select),
@@ -7229,7 +7180,6 @@ body.r-operator .mpage .mp-count .bar>* {
 }
 
 @supports (appearance: base-select) {
-
     .trk-card select::picker(select),
     .pf-form select::picker(select) {
         padding: 6px;
@@ -7482,7 +7432,6 @@ body.r-public .btn:not(.mdl .btn) {
 }
 
 @media (max-width:999px) and (prefers-reduced-motion:no-preference) {
-
     body.r-public .main>h1,
     body.r-public .main>.fx .fx-head,
     body.r-public .fx-row,
@@ -8062,7 +8011,6 @@ body.r-public .trk .trk-link {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-
     body.r-public .trk #s1>*,
     body.r-public .trk #s2>* {
         animation: pxrise .5s cubic-bezier(.2, .8, .2, 1) both;

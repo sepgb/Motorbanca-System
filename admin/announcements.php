@@ -64,7 +64,6 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 ?>
 <h1>Announcements</h1>
 <?php if ($err): ?><div class="alert bad"><?= e($err) ?></div><?php endif; ?>
-<?php if ($msg): ?><div class="alert ok"><?= e($msg) ?></div><?php endif; ?>
 <div class="ax ax-grid">
     <form method="post" id="annf" class="ax-comp ax-k-<?= $cur ?>">
         <input type="hidden" name="act" id="a-act" value="">
@@ -82,7 +81,6 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             <div class="alert bad" id="a-actn" hidden></div>
         </div>
         <footer class="ax-foot">
-            <span class="ax-auto"><i></i><b id="c-k"><?= e(ANN_KINDS[$cur]) ?></b><em>set automatically</em></span>
             <span class="ax-cnt" id="a-cnt">0 / 2000</span>
             <button class="ax-post">Post announcement</button>
         </footer>
@@ -117,13 +115,11 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     (function() {
         var T = <?= json_encode($tpl, JSON_UNESCAPED_UNICODE) ?>,
             A = <?= json_encode($auto) ?>,
-            L = <?= json_encode(ANN_KINDS) ?>,
             comp = document.getElementById('annf'),
             ti = document.getElementById('a-title'),
             bo = document.getElementById('a-body'),
             cnt = document.getElementById('a-cnt'),
-            note = document.getElementById('a-actn'),
-            ck = document.getElementById('c-k');
+            note = document.getElementById('a-actn');
 
         function detect() {
             var pass = [
@@ -144,7 +140,6 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         function sync() {
             var k = detect();
             comp.className = comp.className.replace(/ax-k-\w+/, 'ax-k-' + k);
-            ck.textContent = L[k];
             cnt.textContent = bo.value.length + ' / 2000'
         }
         document.querySelectorAll('.ax-chips button').forEach(function(x) {
