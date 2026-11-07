@@ -4755,65 +4755,27 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 .ax-comp {
-    max-width: 880px;
-    margin-top: 20px;
+    flex: 1.2 1 520px;
+    min-width: 0;
     background: #fff;
     border: 1px solid var(--kl);
+    border-top: 4px solid var(--kc);
     border-radius: 26px;
     overflow: hidden;
     transition: border-color .3s;
 }
 
-.ax-ch {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 22px 28px;
-    background: var(--kb);
-    border-bottom: 1px solid var(--kl);
-    transition: background .3s, border-color .3s;
-}
-
-.ax-ci {
-    display: grid;
-    flex: none;
-    place-items: center;
-    width: 48px;
-    height: 48px;
-    background: var(--kc);
-    border-radius: 50%;
-    color: #fff;
-    transition: background .3s;
-}
-
-.ax-ci svg {
-    width: 24px;
-    height: 24px;
-}
-
-.ax-ch h2 {
-    margin: 0;
-    font: 700 1.4rem/1.2 "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
-    letter-spacing: -.02em;
-    color: var(--hx-tx);
-}
-
-.ax-ch p {
-    margin: 3px 0 0;
-    font-size: .88rem;
-    color: #7a7068;
-}
-
-.ax-ch .ax-state {
-    margin-left: auto;
+.ax-side {
+    flex: 1 1 340px;
+    min-width: 0;
 }
 
 .ax-cb {
-    padding: 24px 28px 26px;
+    padding: 26px 28px 28px;
 }
 
 .ax-qs {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .ax-qs>span {
@@ -4827,44 +4789,72 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 .ax-chips {
-    display: flex;
-    gap: 8px;
-    padding-bottom: 4px;
-    overflow-x: auto;
-    scrollbar-width: none;
-}
-
-.ax-chips::-webkit-scrollbar {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
 }
 
 .ax-chips button {
-    display: inline-flex;
-    flex: none;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    min-height: 38px;
-    padding: 0 15px;
-    background: transparent;
-    border: 1px solid var(--ln);
-    border-radius: 999px;
-    font: 600 .84rem/1 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    gap: 10px;
+    min-height: 52px;
+    padding: 8px 12px 8px 8px;
+    background: var(--kb);
+    border: 1px solid transparent;
+    border-radius: 16px;
+    font: 700 .84rem/1.25 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    text-align: left;
     color: var(--hx-tx);
     cursor: pointer;
     box-shadow: none;
-    transition: background .15s;
-}
-
-.ax-chips button::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    background: var(--kc);
-    border-radius: 50%;
+    transition: border-color .15s;
 }
 
 .ax-chips button:hover {
-    background: var(--ot);
+    border-color: var(--kc);
+}
+
+.ax-chips button:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+}
+
+.ax-chips i {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    background: #fff;
+    border-radius: 50%;
+    color: var(--kc);
+}
+
+.ax-chips i svg {
+    width: 18px;
+    height: 18px;
+}
+
+.ax-cb label {
+    display: block;
+    margin: 0 0 6px;
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--hx-mut);
+}
+
+.ax-cb label.ax-l2 {
+    margin-top: 24px;
+}
+
+.ax-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 44px;
+    margin-top: 20px;
 }
 
 .ax-auto {
@@ -4893,31 +4883,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
     color: #9a8f86;
 }
 
-.ax-state {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
-    background: #ecfdf3;
-    border-radius: 999px;
-    font-size: .78rem;
-    font-weight: 700;
-    color: #15803d;
-}
-
-.ax-state::before {
-    content: "";
-    width: 7px;
-    height: 7px;
-    background: currentColor;
-    border-radius: 50%;
-}
-
-.ax-state.off {
-    background: #fef3f2;
-    color: #b42318;
-}
-
 .ax .ax-title {
     width: 100%;
     margin: 0;
@@ -4940,7 +4905,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
 
 .ax .ax-body {
     min-height: 160px;
-    margin: 14px 0 0;
+    margin: 0;
     padding: 16px 18px;
     background: #ffffff99;
     border: 1px solid transparent;
@@ -4968,6 +4933,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
     padding: 16px 28px 22px;
     background: #fdfbf9;
     border-top: 1px solid var(--ln);
+    flex-wrap: wrap;
 }
 
 .ax-cnt {
@@ -4998,7 +4964,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin: 48px 0 24px;
+    margin: 0 0 22px;
     font: 700 1.6rem/1.2 "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
     letter-spacing: -.02em;
     color: var(--hx-tx);
@@ -5022,7 +4988,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
 
 .ax-tl {
     position: relative;
-    max-width: 880px;
 }
 
 .ax-tl::before {
@@ -5033,23 +4998,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
     left: 19px;
     width: 2px;
     background: #e8dfd6;
-}
-
-.ax-day {
-    position: relative;
-    margin: 0 0 20px;
-}
-
-.ax-day span {
-    display: inline-block;
-    padding: 6px 14px;
-    background: #efe7e0;
-    border-radius: 999px;
-    font-size: .72rem;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: #7a7068;
 }
 
 .ax-e {
@@ -5105,7 +5053,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
 
 .ax-e h4 {
     margin: 6px 0 0;
-    font: 700 1.2rem/1.3 "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+    font: 700 1.08rem/1.3 "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
     letter-spacing: -.01em;
     color: var(--hx-tx);
 }
@@ -5113,7 +5061,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
 .ax-e p {
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     margin: 6px 0 0;
     overflow: hidden;
     font-size: .95rem;
@@ -5165,8 +5113,6 @@ body.r-operator .main>h1:has(+ .hx-none) {
 @media (prefers-reduced-motion: reduce) {
 
     .ax-comp,
-    .ax-ch,
-    .ax-ci,
     .ax-post,
     .ax-del {
         transition: none;

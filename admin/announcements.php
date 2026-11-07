@@ -51,15 +51,8 @@ $tpl = [
 page_head('Announcements', 'admin');
 $rows = ann_all();
 $all = isset($_GET['all']);
-$more = count($rows) > 10;
-$shown = ($more && !$all) ? array_slice($rows, 0, 10) : $rows;
-try {
-    $today = (string)db()->query('SELECT CURDATE()')->fetchColumn();
-} catch (PDOException $x) {
-    $today = date('Y-m-d');
-}
-$grp = ['Today' => [], 'Earlier' => []];
-foreach ($shown as $a) $grp[substr($a['created_at'], 0, 10) === $today ? 'Today' : 'Earlier'][] = $a;
+$more = count($rows) > 4;
+$shown = $all ? $rows : array_slice($rows, 0, 4);
 $cur = ann_auto_kind($_POST['title'] ?? '', $_POST['body'] ?? '', $auto);
 $ic = [
     'danger' => '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>',
@@ -68,31 +61,24 @@ $ic = [
     'info' => '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
 ];
 $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $ic[$k] . '</svg>';
-$open = !travel_suspended();
 ?>
 <h1>Announcements</h1>
 <?php if ($err): ?><div class="alert bad"><?= e($err) ?></div><?php endif; ?>
 <?php if ($msg): ?><div class="alert ok"><?= e($msg) ?></div><?php endif; ?>
-<div class="ax">
+<div class="ax ax-grid">
     <form method="post" id="annf" class="ax-comp ax-k-<?= $cur ?>">
         <input type="hidden" name="act" id="a-act" value="">
-        <header class="ax-ch">
-            <span class="ax-ci" id="c-i"><?= $svg($cur) ?></span>
-            <div>
-                <h2>New announcement</h2>
-                <p>Goes to every operator and passenger the moment you post it.</p>
-            </div>
-            <span class="ax-state<?= $open ? '' : ' off' ?>"><?= $open ? 'Travel open' : 'Travel suspended' ?></span>
-        </header>
         <div class="ax-cb">
             <div class="ax-qs">
                 <span>Quick start</span>
                 <div class="ax-chips">
-                    <?php foreach ($tpl as $i => $t): ?><button type="button" class="ax-k-<?= $t[1] ?>" data-i="<?= $i ?>"><?= e($t[0]) ?></button><?php endforeach; ?>
+                    <?php foreach ($tpl as $i => $t): ?><button type="button" class="ax-k-<?= $t[1] ?>" data-i="<?= $i ?>"><i><?= $svg($t[1]) ?></i><span><?= e($t[0]) ?></span></button><?php endforeach; ?>
                 </div>
             </div>
-            <input class="ax-title" name="title" id="a-title" maxlength="120" required placeholder="Headline" autocomplete="off" value="<?= e($_POST['title'] ?? '') ?>">
-            <textarea class="ax-body" name="body" id="a-body" rows="6" maxlength="2000" required placeholder="Write the message for operators and passengers"><?= e($_POST['body'] ?? '') ?></textarea>
+            <label for="a-title">Title</label>
+            <input class="ax-title" name="title" id="a-title" maxlength="120" required placeholder="What is this announcement about?" autocomplete="off" value="<?= e($_POST['title'] ?? '') ?>">
+            <label for="a-body" class="ax-l2">Context</label>
+            <textarea class="ax-body" name="body" id="a-body" rows="6" maxlength="2000" required placeholder="Add the details operators and passengers need to know"><?= e($_POST['body'] ?? '') ?></textarea>
             <div class="alert bad" id="a-actn" hidden></div>
         </div>
         <footer class="ax-foot">
@@ -101,15 +87,13 @@ $open = !travel_suspended();
             <button class="ax-post">Post announcement</button>
         </footer>
     </form>
-
-    <h2 class="ax-h">Timeline <span><?= count($rows) == 1 ? '1 announcement' : count($rows) . ' announcements' ?></span></h2>
-    <?php if (!$rows): ?>
-        <p class="ax-none">Nothing has been announced yet.</p>
-    <?php endif; ?>
-    <div class="ax-tl">
-        <?php foreach ($grp as $label => $list): if (!$list) continue; ?>
-            <div class="ax-day"><span><?= $label ?></span></div>
-            <?php foreach ($list as $a):
+    <section class="ax-side">
+        <h2 class="ax-h">Timeline <span><?= count($rows) == 1 ? '1 announcement' : count($rows) . ' announcements' ?></span></h2>
+        <?php if (!$rows): ?>
+            <p class="ax-none">Nothing has been announced yet.</p>
+        <?php endif; ?>
+        <div class="ax-tl">
+            <?php foreach ($shown as $a):
                 $k = isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info'; ?>
                 <article class="ax-e ax-k-<?= $k ?>">
                     <span class="ax-mk"><?= $svg($k) ?></span>
@@ -123,24 +107,22 @@ $open = !travel_suspended();
                             </svg></button></form>
                 </article>
             <?php endforeach; ?>
-        <?php endforeach; ?>
-    </div>
-    <?php if ($more): ?>
-        <p class="ax-more"><?= $all ? '<a href="announcements.php">Show latest 10 only</a>' : '<a href="announcements.php?all=1">See all previous announcements</a>' ?></p>
-    <?php endif; ?>
+        </div>
+        <?php if ($more): ?>
+            <p class="ax-more"><?= $all ? '<a href="announcements.php">Show latest 4 only</a>' : '<a href="announcements.php?all=1">See all announcements</a>' ?></p>
+        <?php endif; ?>
+    </section>
 </div>
 <script>
     (function() {
         var T = <?= json_encode($tpl, JSON_UNESCAPED_UNICODE) ?>,
             A = <?= json_encode($auto) ?>,
-            I = <?= json_encode($ic) ?>,
             L = <?= json_encode(ANN_KINDS) ?>,
             comp = document.getElementById('annf'),
             ti = document.getElementById('a-title'),
             bo = document.getElementById('a-body'),
             cnt = document.getElementById('a-cnt'),
             note = document.getElementById('a-actn'),
-            ci = document.getElementById('c-i'),
             ck = document.getElementById('c-k');
 
         function detect() {
@@ -162,7 +144,6 @@ $open = !travel_suspended();
         function sync() {
             var k = detect();
             comp.className = comp.className.replace(/ax-k-\w+/, 'ax-k-' + k);
-            ci.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + I[k] + '</svg>';
             ck.textContent = L[k];
             cnt.textContent = bo.value.length + ' / 2000'
         }
