@@ -127,8 +127,8 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                     a = t[4] || '';
                 document.getElementById('a-act').value = a;
                 note.hidden = !a;
-                note.className = 'ax-note' + (a === 'resume' ? ' ax-ok' : '');
-                note.firstChild.textContent = a === 'resume' ? '\u2713' : '!';
+                note.className = 'ax-note';
+                note.firstChild.textContent = '!';
                 note.lastChild.textContent = a === 'suspend' ? 'Posting this will cancel the boats waiting for their next trip and block all new trips until a Resumption of travel notice is posted. The boat on queue is not departed automatically: you must depart and check it (PDIC) right away.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
                 ti.value = t[2];
                 bo.value = t[3];

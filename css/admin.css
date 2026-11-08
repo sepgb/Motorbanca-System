@@ -8255,3 +8255,19 @@ body.r-operator .mpage form.card .btn {
         top: 96px;
     }
 }
+
+.ax-note {
+    align-items: flex-start;
+    gap: 8px;
+    margin: -8px 0 18px;
+    font-size: .74rem;
+    font-weight: 600;
+    line-height: 1.15;
+    color: #b42318
+}
+
+.ax-note i {
+    width: 18px;
+    height: 18px;
+    font-size: .7rem
+}
