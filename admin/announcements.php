@@ -53,7 +53,6 @@ $rows = ann_all();
 $all = isset($_GET['all']);
 $more = count($rows) > 4;
 $shown = $all ? $rows : array_slice($rows, 0, 4);
-$cur = ann_auto_kind($_POST['title'] ?? '', $_POST['body'] ?? '', $auto);
 $ic = [
     'danger' => '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>',
     'warn' => '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>',
@@ -65,7 +64,7 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 <h1>Announcements</h1>
 <?php if ($err): ?><div class="alert bad"><?= e($err) ?></div><?php endif; ?>
 <div class="ax ax-grid">
-    <form method="post" id="annf" class="ax-comp ax-k-<?= $cur ?>">
+    <form method="post" id="annf" class="ax-comp">
         <input type="hidden" name="act" id="a-act" value="">
         <div class="ax-cb">
             <div class="ax-qs">
@@ -74,6 +73,7 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                     <?php foreach ($tpl as $i => $t): ?><button type="button" class="ax-k-<?= $t[1] ?>" data-i="<?= $i ?>"><i><?= $svg($t[1]) ?></i><span><?= e($t[0]) ?></span></button><?php endforeach; ?>
                 </div>
             </div>
+            <div class="ax-note" id="a-actn" hidden><i>!</i><span></span></div>
             <label for="a-title">Title</label>
             <input class="ax-title" name="title" id="a-title" maxlength="120" required placeholder="What is this announcement about?" autocomplete="off" value="<?= e($_POST['title'] ?? '') ?>">
             <label for="a-body" class="ax-l2">Context</label>
@@ -113,31 +113,12 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 <script>
     (function() {
         var T = <?= json_encode($tpl, JSON_UNESCAPED_UNICODE) ?>,
-            A = <?= json_encode($auto) ?>,
-            comp = document.getElementById('annf'),
             ti = document.getElementById('a-title'),
             bo = document.getElementById('a-body'),
-            cnt = document.getElementById('a-cnt');
-
-        function detect() {
-            var pass = [
-                [ti.value, ['ok', 'danger', 'warn']],
-                [bo.value, ['danger', 'warn', 'ok']]
-            ];
-            for (var p = 0; p < pass.length; p++) {
-                var text = pass[p][0].toLowerCase();
-                for (var o = 0; o < pass[p][1].length; o++) {
-                    var k = pass[p][1][o];
-                    for (var w = 0; w < A[k].length; w++)
-                        if (text.indexOf(A[k][w]) !== -1) return k
-                }
-            }
-            return 'info'
-        }
+            cnt = document.getElementById('a-cnt'),
+            note = document.getElementById('a-actn');
 
         function sync() {
-            var k = detect();
-            comp.className = comp.className.replace(/ax-k-\w+/, 'ax-k-' + k);
             cnt.textContent = bo.value.length + ' / 2000'
         }
         document.querySelectorAll('.ax-chips button').forEach(function(x) {
@@ -145,6 +126,10 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 var t = T[x.dataset.i],
                     a = t[4] || '';
                 document.getElementById('a-act').value = a;
+                note.hidden = !a;
+                note.className = 'ax-note' + (a === 'resume' ? ' ax-ok' : '');
+                note.firstChild.textContent = a === 'resume' ? '\u2713' : '!';
+                note.lastChild.textContent = a === 'suspend' ? 'Posting this will cancel the boats waiting for their next trip and block all new trips until a Resumption of travel notice is posted. The boat on queue is not departed automatically: you must depart and check it (PDIC) right away.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
                 ti.value = t[2];
                 bo.value = t[3];
                 sync();

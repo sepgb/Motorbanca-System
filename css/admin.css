@@ -4777,6 +4777,38 @@ body.r-operator .main>h1:has(+ .hx-none) {
     margin-bottom: 24px;
 }
 
+.ax-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: -8px 0 22px;
+    font-size: .8rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #b42318;
+}
+
+.ax-note i {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    background: #d92d20;
+    border-radius: 50%;
+    font: 700 .8rem/1 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    font-style: normal;
+    color: #fff;
+}
+
+.ax-note.ax-ok {
+    color: #15803d;
+}
+
+.ax-note.ax-ok i {
+    background: #15803d;
+}
+
 .ax-qs>span {
     display: block;
     margin-bottom: 10px;
@@ -4915,7 +4947,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
 .ax-post {
     min-height: 48px;
     padding: 0 28px;
-    background: var(--kc);
+    background: var(--o);
     border: 0;
     border-radius: 999px;
     font: 700 .95rem/1 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
@@ -4926,7 +4958,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 .ax-post:hover {
-    filter: brightness(.92);
+    background: #e45f12;
 }
 
 .ax-h {
