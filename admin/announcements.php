@@ -129,7 +129,7 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 note.hidden = !a;
                 note.className = 'ax-note';
                 note.firstChild.textContent = '!';
-                note.lastChild.textContent = a === 'suspend' ? 'Posting this will cancel the boats waiting for their next trip and block all new trips until a Resumption of travel notice is posted. The boat on queue is not departed automatically: you must depart and check it (PDIC) right away.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
+                note.lastChild.textContent = a === 'suspend' ? 'Posting this will cancel current next trip boats and block new trips until a resumption notice. Queued boats do not depart automatically, it must be dispatched and checked immediately.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
                 ti.value = t[2];
                 bo.value = t[3];
                 sync();

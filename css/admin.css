@@ -4858,7 +4858,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
 .ax-chips i {
     display: inline-flex;
     flex: none;
-    color: var(--kc);
+    color: #1f1a17;
 }
 
 .ax-chips i svg {
@@ -5008,7 +5008,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
     height: 40px;
     background: var(--kb);
     border-radius: 50%;
-    color: var(--kc);
+    color: #1f1a17;
     outline: 6px solid #faf7f4;
 }
 
@@ -8263,11 +8263,11 @@ body.r-operator .mpage form.card .btn {
     font-size: .74rem;
     font-weight: 600;
     line-height: 1.15;
-    color: #b42318
+    color: #b42318;
 }
 
 .ax-note i {
     width: 18px;
     height: 18px;
-    font-size: .7rem
+    font-size: .7rem;
 }
