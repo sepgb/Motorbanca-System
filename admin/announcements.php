@@ -85,7 +85,7 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         </footer>
     </form>
     <section class="ax-side">
-        <h2 class="ax-h">Timeline <span><?= count($rows) == 1 ? '1 announcement' : count($rows) . ' announcements' ?></span></h2>
+        <h2 class="ax-h">Recents</h2>
         <?php if (!$rows): ?>
             <p class="ax-none">Nothing has been announced yet.</p>
         <?php endif; ?>
