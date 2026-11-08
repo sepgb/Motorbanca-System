@@ -4852,11 +4852,10 @@ body.r-operator .main>h1:has(+ .hx-none) {
 }
 
 .ax-chips button:hover {
-    background: var(--ot);
+    border-color: var(--o);
 }
 
 .ax-chips button.on {
-    background: var(--ot);
     border-color: var(--o);
 }
 
@@ -4993,6 +4992,20 @@ body.r-operator .main>h1:has(+ .hx-none) {
     column-gap: 20px;
     padding-bottom: 18px;
     cursor: pointer;
+}
+
+.ax-e::after {
+    content: "";
+    position: absolute;
+    top: 46px;
+    bottom: 6px;
+    left: 19px;
+    width: 2px;
+    background: #e8dfd6;
+}
+
+.ax-e:last-child::after {
+    display: none;
 }
 
 .ax-mk {
@@ -8266,11 +8279,6 @@ body.r-operator .mpage form.card .btn {
     font-size: .7rem;
 }
 
-.ax-chips button.on {
-    background: transparent;
-    border-color: var(--o)
-}
-
 .ax-tl::before {
-    display: none
+    display: none;
 }
