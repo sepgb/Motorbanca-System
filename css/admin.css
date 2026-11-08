@@ -4855,15 +4855,9 @@ body.r-operator .main>h1:has(+ .hx-none) {
     background: var(--ot);
 }
 
-.ax-chips i {
-    display: inline-flex;
-    flex: none;
-    color: #1f1a17;
-}
-
-.ax-chips i svg {
-    width: 14px;
-    height: 14px;
+.ax-chips button.on {
+    background: var(--ot);
+    border-color: var(--o);
 }
 
 .ax-cb label {
@@ -5006,7 +5000,7 @@ body.r-operator .main>h1:has(+ .hx-none) {
     place-items: center;
     width: 40px;
     height: 40px;
-    background: var(--kb);
+    background: transparent;
     border-radius: 50%;
     color: #1f1a17;
     outline: 6px solid #faf7f4;
@@ -8270,4 +8264,13 @@ body.r-operator .mpage form.card .btn {
     width: 18px;
     height: 18px;
     font-size: .7rem;
+}
+
+.ax-chips button.on {
+    background: transparent;
+    border-color: var(--o)
+}
+
+.ax-tl::before {
+    display: none
 }

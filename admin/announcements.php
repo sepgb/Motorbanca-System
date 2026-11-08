@@ -43,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $tpl = [
     ['Suspension of travel', 'danger', 'Suspension of Travel', "Public Storm Warning Signal No. 1 is now raised over Binangonan. Under Coast Guard rules, Wind Signal No. 1 means travel is automatically suspended. All motorbanca trips from Binangonan port are suspended until the signal is lifted. Operators must not depart. Passengers are advised to stay safe and wait for the next announcement.", 'suspend'],
-    ['Gale warning', 'danger', 'Gale Warning', "A gale warning is in effect over Laguna de Bay. Small sea craft are advised not to venture out. Trips may be suspended at the discretion of the Coast Guard."],
     ['Resumption of travel', 'ok', 'Travel Resumes', "Weather conditions have improved and the wind signal has been lifted. Motorbanca trips from Binangonan port are now allowed to resume. Operators may start the inspection and queue process again.", 'resume'],
+    ['Gale warning', 'danger', 'Gale Warning', "A gale warning is in effect over Laguna de Bay. Small sea craft are advised not to venture out. Trips may be suspended at the discretion of the Coast Guard."],
     ['Limited trips', 'warn', 'Limited Trips', "Due to bad weather, only a few motorbancas are queuing at the port. Expect fewer trips and longer waiting times. Passengers are advised to wait for the Coast Guard's go signal and wear life jackets at all times."],
     ['Fare update', 'info', 'Fare Update', "The fare rates have been updated. Please check the Fares page for the new amounts."],
 ];
@@ -70,7 +70,7 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             <div class="ax-qs">
                 <span>Quick start</span>
                 <div class="ax-chips">
-                    <?php foreach ($tpl as $i => $t): ?><button type="button" class="ax-k-<?= $t[1] ?>" data-i="<?= $i ?>"><i><?= $svg($t[1]) ?></i><span><?= e($t[0]) ?></span></button><?php endforeach; ?>
+                    <?php foreach ($tpl as $i => $t): ?><button type="button" data-i="<?= $i ?>"><?= e($t[0]) ?></button><?php endforeach; ?>
                 </div>
             </div>
             <div class="ax-note" id="a-actn" hidden><i>!</i><span></span></div>
@@ -121,8 +121,12 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         function sync() {
             cnt.textContent = bo.value.length + ' / 2000'
         }
-        document.querySelectorAll('.ax-chips button').forEach(function(x) {
+        var chips = [].slice.call(document.querySelectorAll('.ax-chips button'));
+        chips.forEach(function(x) {
             x.addEventListener('click', function() {
+                chips.forEach(function(c) {
+                    c.classList.toggle('on', c === x)
+                });
                 var t = T[x.dataset.i],
                     a = t[4] || '';
                 document.getElementById('a-act').value = a;
