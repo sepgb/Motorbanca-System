@@ -7455,7 +7455,7 @@ body.r-public .trk-card .trk-btns #cancel:active {
 
 body.r-public .trk-card .trk-btns #go {
     background: #f26b1d !important;
-    color: white !important;
+    color: #fff !important;
 }
 
 body.r-public:has(#s3:not([hidden])) .trk-act #stop {
@@ -7794,15 +7794,15 @@ body.r-public .trk .trk-link {
     body.r-public:has(#s3:not([hidden])) .trk-box .trk-info small {
         margin-bottom: 4px;
         font-size: .64rem;
-        font-weight: 700;
+        font-weight: 600;
         letter-spacing: .12em;
         text-transform: uppercase;
         color: #8c8279;
     }
 
     body.r-public:has(#s3:not([hidden])) .trk-box .trk-info b {
-        font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
-        font-size: 1.25rem;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-size: 1.20rem;
         font-weight: 700;
         line-height: 1.1;
         letter-spacing: -.02em;
@@ -7990,4 +7990,15 @@ body.r-operator .mpage form.card .btn {
     .hx-mon>header {
         top: 90px;
     }
+}
+
+body.r-operator .atop {
+    background: #faf7f4;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+body.r-operator .hx-mon>header {
+    top: var(--hx-top, 0px);
+    box-shadow: 0 -30px 0 #faf7f4;
 }

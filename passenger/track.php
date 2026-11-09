@@ -16,7 +16,7 @@ page_head('Track my ride', 'public');
 <div class="trk" id="trk" data-api="<?= BASE ?>/api/track.php" data-cancel="<?= BASE ?>/api/cancel_trip.php">
     <div class="alert trk-sec" id="sec" hidden><b>Location needs a secure page.</b> This page was opened with plain http, so the browser will block your location. <a id="secgo" href="#">Open the secure (https) page</a>. If your browser warns about the certificate, tap Advanced, then Proceed.</div>
     <form class="card trk-card<?= $pf ? ' trk-lock' : '' ?>" id="s1" autocomplete="off">
-        <p class="muted"><?= $pf ? 'Your details come from your <a href="profile.php">profile</a>.' : 'Enter your details exactly as they were given to the boat operator, or set up your <a href="profile.php">profile</a> to fill this in automatically.' ?></p>
+        <p class="muted"><?= $pf ? 'Check if you are on a queued motorbanca. Your details come from your <a href="profile.php">profile</a>.' : 'Enter your details exactly as they were given to the boat operator, or set up your <a href="profile.php">profile</a> to fill this in automatically.' ?></p>
         <label>Full name<input name="name" maxlength="80" required<?= $pf ? ' readonly tabindex="-1"' : '' ?> value="<?= e($pf['full_name'] ?? '') ?>"></label>
         <div class="trk-row">
             <label>Age<input name="age" type="number" inputmode="numeric" min="0" max="120" required<?= $pf ? ' readonly tabindex="-1"' : '' ?> value="<?= e($pf['age'] ?? '') ?>"></label>
