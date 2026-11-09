@@ -23,7 +23,7 @@ page_head('Fares', 'public');
     <div class="fx-head">
         <span>Cluster</span>
         <span>Regular</span>
-        <span>PWD / Senior / Student<small>20% off</small></span>
+        <span>PWD / Senior / Student</span>
         <span>Children<small>4 to 11 years old</small></span>
     </div>
     <?php foreach (db()->query("SELECT * FROM clusters ORDER BY id")->fetchAll() as $c):
@@ -34,7 +34,7 @@ page_head('Fares', 'public');
         <div class="fx-row">
             <span class="fx-c"><i><?= e($n) ?></i><em><?= e($c['name']) ?></em></span>
             <b class="fx-reg" data-label="Regular"><?= peso($f[0]) ?></b>
-            <b data-label="PWD / Senior / Student" data-sub="20% off"><?= peso($f[1]) ?></b>
+            <b data-label="PWD / Senior / Student"><?= peso($f[1]) ?></b>
             <b data-label="Children" data-sub="4 to 11 years old"><?= peso($f[2]) ?></b>
         </div>
     <?php endforeach; ?>
