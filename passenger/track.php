@@ -16,7 +16,7 @@ page_head('Track my ride', 'public');
 <div class="trk" id="trk" data-api="<?= BASE ?>/api/track.php" data-cancel="<?= BASE ?>/api/cancel_trip.php">
     <div class="alert trk-sec" id="sec" hidden><b>Location needs a secure page.</b> This page was opened with plain http, so the browser will block your location. <a id="secgo" href="#">Open the secure (https) page</a>. If your browser warns about the certificate, tap Advanced, then Proceed.</div>
     <form class="card trk-card<?= $pf ? ' trk-lock' : '' ?>" id="s1" autocomplete="off">
-        <p class="muted"><?= $pf ? 'Your details come from your <a href="profile.php">Profile</a>.' : 'Enter your details exactly as they were given to the boat operator, or <a href="profile.php">set up your Profile</a> to fill this in automatically.' ?></p>
+        <p class="muted"><?= $pf ? 'Your details come from your <a href="profile.php">profile</a>.' : 'Enter your details exactly as they were given to the boat operator, or set up your <a href="profile.php">profile</a> to fill this in automatically.' ?></p>
         <label>Full name<input name="name" maxlength="80" required<?= $pf ? ' readonly tabindex="-1"' : '' ?> value="<?= e($pf['full_name'] ?? '') ?>"></label>
         <div class="trk-row">
             <label>Age<input name="age" type="number" inputmode="numeric" min="0" max="120" required<?= $pf ? ' readonly tabindex="-1"' : '' ?> value="<?= e($pf['age'] ?? '') ?>"></label>
@@ -29,13 +29,14 @@ page_head('Track my ride', 'public');
     </form>
 
     <section class="card trk-card" id="s2" hidden>
+        <p class="muted">Choose your destination</p>
         <div class="trk-found"><i class="dot"></i>
             <div><b id="fb"></b><span id="fc"></span></div>
         </div>
-        <label>Destination barangay<select id="dest"></select></label>
+        <label>Destination<select id="dest"></select></label>
         <div class="alert bad" id="e2" hidden></div>
         <div class="trk-btns">
-            <button class="btn ghost trk-cancel" id="cancel" type="button" hidden>Cancel trip</button>
+            <button class="btn ghost trk-cancel" id="cancel" type="button" hidden>Cancel my trip</button>
             <button class="btn" id="go">Share my location</button>
         </div>
         <button class="trk-link" id="back1" type="button">Not you? Go back</button>

@@ -7337,11 +7337,6 @@ body.r-public .btabs-lbl a.on::after {
     display: none;
 }
 
-body.r-operator .pills a .f,
-body.r-operator .btabs a .f {
-    display: none;
-}
-
 body.r-operator .pills a.on .f,
 body.r-operator .btabs a.on .f {
     display: inline;
@@ -7422,7 +7417,6 @@ body.r-public:has(#s3:not([hidden])) .trk-act #stop:active {
     height: 46px;
     border-radius: 50%;
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z'/%3E%3Ccircle cx='12' cy='9.5' r='2.5'/%3E%3C/svg%3E") center/22px no-repeat, linear-gradient(180deg, #f67f33, #ee6416);
-    box-shadow: none;
 }
 
 .trk-card .trk-found b {
@@ -7461,7 +7455,7 @@ body.r-public .trk-card .trk-btns #cancel:active {
 
 body.r-public .trk-card .trk-btns #go {
     background: #f26b1d !important;
-    color: #fff !important;
+    color: white !important;
 }
 
 body.r-public:has(#s3:not([hidden])) .trk-act #stop {
@@ -7624,11 +7618,12 @@ body.r-public .trk #s2 {
     gap: 16px;
 }
 
-body.r-public .trk #s1>p.muted {
-    margin: 0;
+body.r-public .trk #s1>p.muted,
+body.r-public .trk #s2>p.muted {
+    margin: -10px 0 15px 0;
     max-width: 36ch;
     font-size: .92rem;
-    line-height: 1.5;
+    line-height: 1.2;
     color: #6f655d;
 }
 
@@ -7637,9 +7632,9 @@ body.r-public .trk #s2 label {
     display: grid;
     gap: 8px;
     font-size: .7rem;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: .09em;
+    font-weight: 600;
+    line-height: 0;
+    letter-spacing: .05em;
     text-transform: uppercase;
     color: #8c8279;
 }
@@ -7700,25 +7695,29 @@ body.r-public .trk .trk-found {
     border: 1px solid #eadfd5;
     border-radius: 20px;
     background: #fff;
-    box-shadow: 0 20px 34px -24px #b4470a66;
 }
 
 body.r-public .trk .trk-found b {
     font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    line-height: 1.1;
+    line-height: .9;
     letter-spacing: -.02em;
     color: #1f1a17;
 }
 
 body.r-public .trk .trk-found span {
     margin-top: 6px;
-    font-size: .72rem;
+    font-size: .68rem;
     font-weight: 700;
     letter-spacing: .1em;
     text-transform: uppercase;
     color: #8c8279;
+}
+
+body.r-public .trk #s2 label {
+    margin-top: 10px;
+    font-weight: 700;
 }
 
 body.r-public .trk #s2 select {
