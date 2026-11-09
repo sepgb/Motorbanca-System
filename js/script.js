@@ -346,10 +346,9 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     document.body.appendChild(box);
     box.addEventListener('click', function (e) { if (e.target === box || e.target.classList.contains('x')) box.classList.remove('open'); });
   }
-  document.addEventListener('dblclick', function (e) {
+  document.addEventListener('click', function (e) {
     var r = e.target.closest ? e.target.closest('.trip-row') : null;
     if (!r) return;
-    if (window.getSelection) window.getSelection().removeAllRanges();
     if (!box) build();
     box.querySelector('h3').textContent = r.dataset.name || 'Trip';
     box.querySelector('.sub').textContent = 'Loading…';
@@ -433,7 +432,7 @@ setTimeout(function () { document.body.classList.remove('enter'); }, 900);
     shown = true; ax = lx; ay = ly;
   }
   document.addEventListener('mousemove', function (e) {
-    var r = e.target.closest ? e.target.closest('.mb-row,.trip-row,.th-row[data-hint]') : null;
+    var r = e.target.closest ? e.target.closest('.mb-row,.th-row[data-hint]') : null;
     if (!r) { hide(); lr = null; return; }
     if (shown && Math.abs(e.clientX - ax) < 6 && Math.abs(e.clientY - ay) < 6) return;
     hide();
