@@ -66,8 +66,11 @@ page_head('Trip History', 'operator');
         <?php foreach ($tree as $y => $months): foreach ($months as $mo => $days): [$mt, $mp] = hx_tally($days); ?>
                 <section class="hx-mon" data-y="<?= e($y) ?>" data-m="<?= $mo ?>" <?= (string)$y === $first ? '' : 'hidden' ?>>
                     <header>
-                        <h2><?= date('F', mktime(0, 0, 0, $mo, 1)) ?></h2>
-                        <span><?= hx_plural($mt, 'trip') ?> &middot; <?= hx_plural($mp, 'passenger') ?></span>
+                        <div class="hx-mt">
+                            <h2><?= date('F', mktime(0, 0, 0, $mo, 1)) ?></h2>
+                            <small><?= hx_plural($mt, 'trip') ?> &middot; <?= hx_plural($mp, 'passenger') ?></small>
+                        </div>
+                        <span>Queued</span><span></span><span>Departed</span><span>Wait time</span><span>Passengers</span><span></span>
                     </header>
                     <?php foreach ($days as $d => $list): ?>
                         <div class="hx-day">
@@ -79,11 +82,11 @@ page_head('Trip History', 'operator');
                                     <li>
                                         <button type="button" class="hx-row" data-trip="<?= (int)$r['id'] ?>" data-name="<?= e(date('M j, Y', strtotime($r['trip_date']))) ?>">
                                             <span class="hx-date"><?php if ($n === 0): ?><b><?= date('j', strtotime($d)) ?></b><span><?= date('D', strtotime($d)) ?></span><?php endif; ?></span>
-                                            <span class="hx-tm"><b><?= $tm($r['start_time']) ?></b><i>Queued</i></span>
+                                            <span class="hx-tm"><b><?= $tm($r['start_time']) ?></b></span>
                                             <?= $arw ?>
-                                            <span class="hx-tm<?= $gone ? '' : ' off' ?>"><b><?= $gone ? $tm($r['departure_time']) : 'On queue' ?></b><i>Departed</i></span>
-                                            <span class="hx-tm hx-wt<?= $w < 0 ? ' off' : '' ?>"><b><?= $wait ?></b><i>Wait time</i></span>
-                                            <span class="hx-px"><b><?= (int)$r['pax'] ?></b><i><?= (int)$r['pax'] == 1 ? 'passenger' : 'passengers' ?></i></span>
+                                            <span class="hx-tm<?= $gone ? '' : ' off' ?>"><b><?= $gone ? $tm($r['departure_time']) : 'On queue' ?></b></span>
+                                            <span class="hx-tm hx-wt<?= $w < 0 ? ' off' : '' ?>"><b><?= $wait ?></b></span>
+                                            <span class="hx-px"><b><?= (int)$r['pax'] ?></b></span>
                                             <?= $chev ?>
                                         </button>
                                     </li>

@@ -4038,23 +4038,45 @@ body.r-admin .main>h1:has(+ .hx-none) {
 }
 
 .hx-mon>header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 14px;
-    padding-bottom: 10px;
+    display: grid;
+    grid-template-columns: 128px minmax(0, 1fr) 20px minmax(0, 1fr) minmax(0, 1fr) 80px 18px;
+    align-items: end;
+    column-gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 12px 12px 10px;
+    background: #faf7f4;
     border-bottom: 2px solid #ddd3ca;
 }
 
 .hx-mon h2 {
     margin: 0;
-    font: 700 1.4rem/1.2 "Sora", "Figtree", system-ui, sans-serif;
+    font: 700 1.25rem/1.2 "Sora", "Figtree", system-ui, sans-serif;
     letter-spacing: -.03em;
     color: var(--hx-tx);
 }
 
 .hx-mon>header span {
-    font-size: .9rem;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--hx-mut);
+}
+
+.hx-mon>header span:nth-last-child(2) {
+    text-align: right;
+}
+
+.hx-mon>header.hx-a {
+    grid-template-columns: 128px minmax(0, 1.3fr) minmax(0, .9fr) 20px minmax(0, .9fr) minmax(0, .9fr) 80px 18px;
+}
+
+.hx-mt small {
+    display: block;
+    margin-top: 3px;
+    font-size: .74rem;
     font-weight: 600;
     color: var(--hx-mut);
 }
@@ -4099,11 +4121,11 @@ body.r-admin .main>h1:has(+ .hx-none) {
     appearance: none;
     -webkit-appearance: none;
     display: grid;
-    grid-template-columns: 88px minmax(0, 1fr) 20px minmax(0, 1fr) minmax(0, 1fr) 80px 18px;
+    grid-template-columns: 128px minmax(0, 1fr) 20px minmax(0, 1fr) minmax(0, 1fr) 80px 18px;
     align-items: center;
     column-gap: 14px;
     width: 100%;
-    min-height: 72px;
+    min-height: 64px;
     padding: 10px 12px;
     background: none;
     border: 0;
@@ -4117,7 +4139,7 @@ body.r-admin .main>h1:has(+ .hx-none) {
 }
 
 .hx-row.hx-a {
-    grid-template-columns: 88px minmax(0, 1.3fr) minmax(0, .9fr) 20px minmax(0, .9fr) minmax(0, .9fr) 80px 18px;
+    grid-template-columns: 128px minmax(0, 1.3fr) minmax(0, .9fr) 20px minmax(0, .9fr) minmax(0, .9fr) 80px 18px;
 }
 
 .hx-bt {
@@ -4170,15 +4192,6 @@ body.r-admin .main>h1:has(+ .hx-none) {
     font-variant-numeric: tabular-nums;
 }
 
-.hx-tm i {
-    font-size: .74rem;
-    font-style: normal;
-    font-weight: 700;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--hx-mut);
-}
-
 .hx-tm.off b {
     color: var(--hx-mut);
     font-weight: 600;
@@ -4203,13 +4216,6 @@ body.r-admin .main>h1:has(+ .hx-none) {
     letter-spacing: -.04em;
     color: var(--hx-tx);
     font-variant-numeric: tabular-nums;
-}
-
-.hx-px i {
-    font-size: .74rem;
-    font-style: normal;
-    font-weight: 600;
-    color: var(--hx-mut);
 }
 
 .hx-chev {
@@ -4243,6 +4249,16 @@ body.r-admin .main>h1:has(+ .hx-none) {
     }
 
     .hx-wt {
+        display: none;
+    }
+
+    .hx-mon>header {
+        grid-template-columns: 58px minmax(0, 1fr) 18px minmax(0, 1fr) 70px 16px;
+        column-gap: 10px;
+        padding: 12px 8px 10px;
+    }
+
+    .hx-mon>header span:nth-child(5) {
         display: none;
     }
 }
@@ -7960,5 +7976,19 @@ body.r-operator .mpage form.card .btn {
 
     .hx-a .hx-wt {
         display: none;
+    }
+
+    .hx-mon>header.hx-a {
+        grid-template-columns: 128px minmax(0, 1fr) minmax(0, .9fr) 20px minmax(0, .9fr) 80px 18px;
+    }
+
+    .hx-mon>header.hx-a span:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (min-width: 1000px) {
+    .hx-mon>header {
+        top: 90px;
     }
 }
