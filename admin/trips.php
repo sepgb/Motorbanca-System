@@ -101,6 +101,18 @@ page_head('Trip History', 'admin');
     </div>
     <script>
         (function() {
+            var a = document.querySelector('.atop');
+
+            function place() {
+                var h = a && getComputedStyle(a).position === 'sticky' ? Math.round(a.getBoundingClientRect().bottom) : 0;
+                document.documentElement.style.setProperty('--hx-top', h + 'px');
+            }
+            place();
+            window.addEventListener('resize', place);
+        })();
+    </script>
+    <script>
+        (function() {
             var root = document.getElementById('hx');
             if (!root) return;
             var dd = document.getElementById('hx-dd'),

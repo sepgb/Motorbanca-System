@@ -4138,12 +4138,13 @@ body.r-admin .main>h1:has(+ .hx-none) {
     flex-direction: column;
     gap: 3px;
     min-width: 0;
+    line-height: 1.1;
 }
 
 .hx-bt b {
     overflow: hidden;
-    font-size: 1.04rem;
-    font-weight: 700;
+    font-size: 1.07rem;
+    font-weight: 800;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: var(--hx-tx);
@@ -7957,13 +7958,117 @@ body.r-operator .mpage form.card .btn {
     }
 }
 
-body.r-operator .atop {
+body.r-operator .atop,
+body.r-admin:has(.hx) .atop {
     background: #faf7f4;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
 }
 
-body.r-operator .hx-mon>header {
+body.r-operator .hx-mon>header,
+body.r-admin .hx-mon>header {
     top: var(--hx-top, 0px);
     box-shadow: 0 -30px 0 #faf7f4;
+}
+
+.hx-mon>header {
+    padding: 12px 12px 8px;
+    border-bottom: 1px solid #ddd3ca
+}
+
+.hx-mon h2 {
+    font: 600 1.25rem/1.2 "Sora", "Figtree", system-ui, sans-serif;
+    letter-spacing: 0
+}
+
+.hx-mon>header span {
+    font-size: .8rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--hx-mut)
+}
+
+.hx-mt small {
+    margin-top: 4px;
+    font-size: .8rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums
+}
+
+.hx-date b {
+    font-weight: 600;
+    letter-spacing: -.02em
+}
+
+.hx-date span {
+    margin-top: 4px;
+    font-size: .8rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none
+}
+
+.hx-row {
+    min-height: 64px;
+    padding: 12px
+}
+
+.hx-bt,
+.hx-tm {
+    gap: 4px
+}
+
+.hx-bt b {
+    font-weight: 600
+}
+
+.hx-bt i {
+    font-size: .8rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none
+}
+
+.hx-tm b {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums
+}
+
+.hx-tm.off b {
+    font-weight: 500
+}
+
+.hx-px b {
+    font-weight: 600;
+    font-size: 1.4rem;
+    letter-spacing: 0
+}
+
+.hx-row:hover,
+.hx-row:active {
+    background: #f6f1ec
+}
+
+.hx-chev {
+    opacity: 0;
+    transition: opacity .15s, color .15s
+}
+
+.hx-row:hover .hx-chev,
+.hx-row:focus-visible .hx-chev {
+    opacity: 1
+}
+
+.hx-opts li {
+    animation-delay: 0s;
+    animation-duration: .16s
+}
+
+@media (hover: none) {
+    .hx-chev {
+        opacity: .5
+    }
 }
