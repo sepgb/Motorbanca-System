@@ -6,7 +6,8 @@ if (!$m) {
     header('Location: ../logout.php');
     exit;
 }
-$q = db()->prepare("SELECT t.id, DATE(COALESCE(t.departure_time, t.trip_date)) trip_date, t.start_time, t.departure_time, t.status, COUNT(p.id) pax FROM trips t
+$q = db()->prepare("SELECT t.id, DATE(COALESCE(t.departure_time, t.trip_date)) trip_date, t.start_time, t.departure_time, t.status, MAX(tc.crew) crew, COUNT(p.id) pax FROM trips t
+    LEFT JOIN trip_crew tc ON tc.trip_id=t.id
     LEFT JOIN passengers p ON p.trip_id=t.id
     WHERE t.motorbanca_id=? AND t.status IN ('Departed','Arrived','Completed')
     GROUP BY t.id ORDER BY COALESCE(t.departure_time, t.trip_date) DESC, t.id DESC");
@@ -16,6 +17,16 @@ $tree = [];
 foreach ($rows as $r) {
     $ts = strtotime($r['trip_date']);
     $tree[(string)date('Y', $ts)][(int)date('n', $ts)][$r['trip_date']][] = $r;
+}
+function hx_captain($json)
+{
+    $c = json_decode((string)$json, true);
+    if (is_array($c)) {
+        foreach ($c as $m) {
+            if (strtoupper(trim($m['position'] ?? '')) === 'BOAT CAPTAIN' && trim($m['name'] ?? '') !== '') return trim($m['name']);
+        }
+    }
+    return '';
 }
 function hx_tally($days)
 {
@@ -36,7 +47,6 @@ function hx_plural($n, $w)
 $tm = fn($v) => $v ? date('g:i A', strtotime($v)) : '&mdash;';
 $first = $tree ? (string)array_key_first($tree) : '';
 $k = 0;
-$arw = '<svg class="hx-arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 $chev = '<svg class="hx-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 page_head('Trip History', 'operator');
 ?>
@@ -70,22 +80,20 @@ page_head('Trip History', 'operator');
                             <h2><?= date('F', mktime(0, 0, 0, $mo, 1)) ?></h2>
                             <small><?= hx_plural($mt, 'trip') ?> &middot; <?= hx_plural($mp, 'passenger') ?></small>
                         </div>
-                        <span>Queued</span><span></span><span>Departed</span><span>Wait time</span><span>Passengers</span><span></span>
+                        <span>Captain</span><span>Queued</span><span>Departed</span><span>Passengers</span><span></span>
                     </header>
                     <?php foreach ($days as $d => $list): ?>
                         <div class="hx-day">
                             <ul class="hx-rows">
                                 <?php foreach ($list as $n => $r):
                                     $gone = $r['status'] === 'Departed' || $r['departure_time'];
-                                    $w = ($r['start_time'] && $r['departure_time']) ? strtotime($r['departure_time']) - strtotime($r['start_time']) : -1;
-                                    $wait = $w < 0 ? '&mdash;' : ($w >= 3600 ? floor($w / 3600) . 'h ' . floor($w % 3600 / 60) . 'm' : floor($w / 60) . ' min'); ?>
+                                    $cap = hx_captain($r['crew'] ?? ''); ?>
                                     <li>
                                         <button type="button" class="hx-row" data-trip="<?= (int)$r['id'] ?>" data-name="<?= e(date('M j, Y', strtotime($r['trip_date']))) ?>">
                                             <span class="hx-date"><?php if ($n === 0): ?><b><?= date('j', strtotime($d)) ?></b><span><?= date('D', strtotime($d)) ?></span><?php endif; ?></span>
+                                            <span class="hx-tm hx-cp<?= $cap === '' ? ' off' : '' ?>"><b><?= $cap === '' ? '&mdash;' : e($cap) ?></b></span>
                                             <span class="hx-tm"><b><?= $tm($r['start_time']) ?></b></span>
-                                            <?= $arw ?>
                                             <span class="hx-tm<?= $gone ? '' : ' off' ?>"><b><?= $gone ? $tm($r['departure_time']) : 'On queue' ?></b></span>
-                                            <span class="hx-tm hx-wt<?= $w < 0 ? ' off' : '' ?>"><b><?= $wait ?></b></span>
                                             <span class="hx-px"><b><?= (int)$r['pax'] ?></b></span>
                                             <?= $chev ?>
                                         </button>
