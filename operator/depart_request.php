@@ -24,6 +24,25 @@ foreach (mdsd_keys() as $k) {
     if (in_array($a, ['yes', 'no', 'na'], true)) $ans[$k] = $a;
 }
 if (count($ans) < count(mdsd_keys())) dr_out(['ok' => false, 'error' => 'Please answer every item of the declaration.']);
+$roles = ['BOAT CAPTAIN', 'MOTORMAN', 'CREW', 'CREW'];
+$names = (array)($_POST['cname'] ?? []);
+$ages = (array)($_POST['cage'] ?? []);
+$crew = [];
+$bad = '';
+foreach ($roles as $i => $role) {
+    $n = trim((string)($names[$i] ?? ''));
+    $a = trim((string)($ages[$i] ?? ''));
+    $crew[] = ['name' => $n, 'age' => $a, 'position' => $role];
+    if ($i === 0 && ($n === '' || $a === '')) $bad = 'The boat captain needs a name and an age.';
+    elseif ($n !== '' && (strlen($n) < 2 || strlen($n) > 80 || !ctype_digit($a) || (int)$a > 120)) $bad = 'Check the crew names and ages (age 0 to 120).';
+    elseif ($n === '' && $a !== '') $bad = 'Enter the name for every age you filled in.';
+}
+if ($bad) dr_out(['ok' => false, 'error' => $bad]);
+if (count(array_filter(array_slice($crew, 2), fn($c) => $c['name'] !== '')) < 1) dr_out(['ok' => false, 'error' => 'Add at least 1 crew member (Crew 3 or 4) besides the boat captain and the motorman.']);
 mdsd_save($tid, $ans);
+crew_table();
+$keep = array_values(array_filter($crew, fn($c) => $c['name'] !== ''));
+db()->prepare("REPLACE INTO trip_crew(trip_id,address,contact,crew) VALUES(?,?,?,?)")
+    ->execute([$tid, (string)($m['address'] ?? ''), (string)($m['contact'] ?? ''), json_encode($keep, JSON_UNESCAPED_UNICODE)]);
 db()->prepare("UPDATE motorbancas SET depart_req=NOW() WHERE id=? AND status='Queued'")->execute([$m['id']]);
 dr_out(['ok' => true]);

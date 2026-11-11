@@ -24,6 +24,9 @@ $ready = $trip && $m['status'] === 'Queued' && !empty($m['depart_req']);
 $open = $trip && $m['status'] === 'Queued' && $pos === 0 && !$ready;
 $canRm = $trip && $m['status'] === 'Queued' && !$ready;
 $canDepart = $open;
+$roles = ['BOAT CAPTAIN', 'MOTORMAN', 'CREW', 'CREW'];
+$last = $canDepart ? crew_last($m['id']) : null;
+$crew = $last['crew'] ?? [];
 $err = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_id']) && $canRm) {
   db()->prepare("DELETE FROM passengers WHERE id=? AND trip_id=?")->execute([(int)$_POST['remove_id'], $trip]);
@@ -245,14 +248,27 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
       <div class="mdl-head">
         <div class="mdl-title">
           <h3 id="dep-t">Master&rsquo;s Declaration of Safe Departure</h3>
-          <p class="sub">Declare the condition of your boat and its documents. Every item needs an answer.</p>
+          <p class="sub" id="dep-s">Declare the condition of your boat and its documents. Every item needs an answer.</p>
         </div>
         <div class="mdl-tools"><button type="button" class="x" aria-label="Close">&times;</button></div>
       </div>
-      <form class="md-form" id="dep-form" novalidate>
-        <div class="mdl-body md-body"><?= md_rows(['d2' => 'yes', 'd3' => 'yes'], false, true) ?></div>
+      <form class="md-form" id="dep-form" novalidate autocomplete="off">
+        <div class="dp-step">
+          <div class="mdl-body md-body"><?= md_rows(['d2' => 'yes', 'd3' => 'yes'], false, true) ?></div>
+        </div>
+        <div class="dp-step" hidden>
+          <div class="mdl-body md-body">
+            <?php foreach ($roles as $i => $role): ?>
+              <div class="dp-row">
+                <span><?= ucwords(strtolower($role)) ?></span>
+                <input name="cname[]" maxlength="80" placeholder="Full name" value="<?= e($crew[$i]['name'] ?? '') ?>">
+                <input name="cage[]" type="number" inputmode="numeric" min="0" max="120" placeholder="Age" value="<?= e($crew[$i]['age'] ?? '') ?>">
+              </div>
+            <?php endforeach; ?>
+          </div>
+        </div>
         <div class="alert bad md-err" hidden></div>
-        <div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel md-pair">Cancel</button><button type="submit" class="btn sm md-go md-go-wide md-pair">Submit and depart</button></div>
+        <div class="md-foot"><span class="md-count"></span><button type="button" class="btn sm ghost md-cancel md-pair">Cancel</button><button type="button" class="btn sm md-next md-go-wide md-pair">Next</button><button type="submit" class="btn sm md-go md-go-wide md-pair" hidden>Submit and depart</button></div>
       </form>
     </div>
   </div>
@@ -262,11 +278,17 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
         f = document.getElementById('dep-form'),
         err = m.querySelector('.md-err'),
         cnt = m.querySelector('.md-count'),
-        go = m.querySelector('.md-go'),
+        nextB = m.querySelector('.md-next'),
+        goB = m.querySelector('.md-go'),
+        backB = m.querySelector('.md-cancel'),
+        ti = document.getElementById('dep-t'),
+        sub = document.getElementById('dep-s'),
+        steps = f.querySelectorAll('.dp-step'),
+        step = 1,
         busy = false;
 
       function tally() {
-        cnt.textContent = f.querySelectorAll('.md-q input:checked').length + ' of ' + f.querySelectorAll('.md-q').length + ' answered'
+        cnt.textContent = steps[0].querySelectorAll('.md-q input:checked').length + ' of ' + steps[0].querySelectorAll('.md-q').length + ' answered'
       }
 
       function say(t) {
@@ -274,18 +296,69 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
         err.hidden = !t
       }
 
+      function show(n) {
+        step = n;
+        steps[0].hidden = n !== 1;
+        steps[1].hidden = n !== 2;
+        nextB.hidden = n !== 1;
+        goB.hidden = n !== 2;
+        cnt.hidden = n !== 1;
+        backB.textContent = n === 1 ? 'Cancel' : 'Back';
+        ti.textContent = n === 1 ? 'Master\u2019s Declaration of Safe Departure' : 'Crew list';
+        sub.textContent = n === 1 ? 'Declare the condition of your boat and its documents. Every item needs an answer.' : 'Fill in your crew for this trip. The boat captain is required.';
+        say('')
+      }
+
       function close() {
         m.classList.remove('open')
       }
+
+      function toCrew() {
+        var first = null;
+        steps[0].querySelectorAll('.md-q').forEach(function(q) {
+          var miss = !q.querySelector('input:checked');
+          q.classList.toggle('miss', miss);
+          if (miss && !first) first = q
+        });
+        if (first) {
+          say('Please answer every item of the declaration.');
+          first.scrollIntoView({
+            block: 'center',
+            behavior: 'smooth'
+          });
+          return
+        }
+        show(2);
+        steps[1].querySelector('input').focus()
+      }
+
+      function crewError() {
+        var n = steps[1].querySelectorAll('input[name="cname[]"]'),
+          a = steps[1].querySelectorAll('input[name="cage[]"]'),
+          extra = false;
+        for (var i = 0; i < n.length; i++) {
+          var nv = n[i].value.trim(),
+            av = a[i].value.trim();
+          if (i === 0 && (nv === '' || av === '')) return 'The boat captain needs a name and an age.';
+          if (nv !== '' && (nv.length < 2 || !/^[0-9]+$/.test(av) || +av > 120)) return 'Check the crew names and ages (age 0 to 120).';
+          if (nv === '' && av !== '') return 'Enter the name for every age you filled in.';
+          if (i >= 2 && nv !== '') extra = true
+        }
+        return extra ? '' : 'Add at least 1 crew member (Crew 3 or 4) besides the boat captain and the motorman.'
+      }
       document.addEventListener('click', function(e) {
         if (!e.target.closest('.dep-open')) return;
-        say('');
+        show(1);
         tally();
         void m.offsetWidth;
         m.classList.add('open')
       });
       m.addEventListener('click', function(e) {
-        if (e.target === m || e.target.classList.contains('x') || e.target.classList.contains('md-cancel')) close()
+        if (e.target === m || e.target.classList.contains('x')) close();
+        else if (e.target.classList.contains('md-cancel')) {
+          if (step === 2) show(1);
+          else close()
+        } else if (e.target.classList.contains('md-next')) toCrew()
       });
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && m.classList.contains('open')) close()
@@ -300,23 +373,18 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
       f.addEventListener('submit', function(e) {
         e.preventDefault();
         if (busy) return;
-        var first = null;
-        f.querySelectorAll('.md-q').forEach(function(q) {
-          var miss = !q.querySelector('input:checked');
-          q.classList.toggle('miss', miss);
-          if (miss && !first) first = q
-        });
-        if (first) {
-          say('Please answer every item of the declaration.');
-          first.scrollIntoView({
-            block: 'center',
-            behavior: 'smooth'
-          });
+        if (step === 1) {
+          toCrew();
+          return
+        }
+        var msg = crewError();
+        if (msg) {
+          say(msg);
           return
         }
         busy = true;
-        go.disabled = true;
-        go.textContent = 'Submitting\u2026';
+        goB.disabled = true;
+        goB.textContent = 'Submitting\u2026';
         say('');
         fetch('depart_request.php', {
             method: 'POST',
@@ -331,15 +399,15 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
             else {
               say(j.error || 'Could not submit. Try again.');
               busy = false;
-              go.disabled = false;
-              go.textContent = 'Submit and depart'
+              goB.disabled = false;
+              goB.textContent = 'Submit and depart'
             }
           })
           .catch(function() {
             say('Could not submit. Check your connection.');
             busy = false;
-            go.disabled = false;
-            go.textContent = 'Submit and depart'
+            goB.disabled = false;
+            goB.textContent = 'Submit and depart'
           })
       })
     })();

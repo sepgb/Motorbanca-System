@@ -8,7 +8,7 @@ if (!$m) {
 }
 $idle = in_array($m['status'], ['Not Queued', 'Departed'], true);
 $susp = $idle && travel_suspended();
-$wait = $idle && !$susp ? next_trip_at($m['id']) : null;   // a departed boat waits 1 hour before a new trip
+$wait = $idle && !$susp ? next_trip_at($m['id']) : null;
 page_head('Home', 'operator');
 ?>
 <h1><?= e($m['motorbanca_name']) ?></h1>
@@ -20,15 +20,19 @@ page_head('Home', 'operator');
   </section>
   <section class="card">
     <h3><?= $susp ? 'Travel suspended' : ($idle ? ($wait ? 'Trip departed' : 'Ready for a trip?') : 'Passenger list') ?></h3>
-    <?php if (!$wait && !$susp): ?><p class="muted" style="margin:0 0 16px"><?= $idle ? 'Join the queue to start a new trip.' : 'Add and view the passengers on your trip.' ?></p><?php endif; ?>
+    <?php if (!$wait && !$susp): ?><p class="muted" style="margin:0 0 16px"><?= $idle ? 'Request a new trip. The PCG will inspect your boat before it joins the queue.' : 'Add and view the passengers on your trip.' ?></p><?php endif; ?>
     <?php if ($susp): ?>
       <div class="dep-wait big susp"><span><?= $m['status'] === 'Departed' ? 'Your boat has departed. Due to the suspension of travel, you cannot start a new trip yet.' : 'Travel is suspended. You cannot start a new trip yet.' ?></span></div>
-      <button type="button" class="btn big" style="width:100%;opacity:.5;cursor:not-allowed;box-shadow:none" disabled>New trip</button>
+      <button type="button" class="btn big" style="width:100%;opacity:.5;cursor:not-allowed;box-shadow:none" disabled>Request new trip</button>
     <?php elseif ($wait): ?>
       <div class="dep-wait big"><span>Your boat has departed. You can start a new trip at least</span><b><?= e($wait) ?></b></div>
-      <button type="button" class="btn big" style="width:100%;opacity:.5;cursor:not-allowed;box-shadow:none" disabled>New trip</button>
+      <button type="button" class="btn big" style="width:100%;opacity:.5;cursor:not-allowed;box-shadow:none" disabled>Request new trip</button>
     <?php else: ?>
-      <a class="btn big" style="width:100%" href="<?= $idle ? 'crew.php' : 'manifest.php' ?>"><?= $idle ? 'New trip' : 'Open passenger list' ?></a>
+      <?php if ($idle): ?>
+        <form method="post" action="trip.php"><button class="btn big" style="width:100%">Request new trip</button></form>
+      <?php else: ?>
+        <a class="btn big" style="width:100%" href="manifest.php">Open passenger list</a>
+      <?php endif; ?>
     <?php endif; ?>
   </section>
 </div>
