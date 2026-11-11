@@ -76,13 +76,13 @@ page_head('Trip History', 'admin');
                     </header>
                     <?php foreach ($days as $d => $list): ?>
                         <div class="hx-day">
+                            <div class="hx-date"><b><?= date('j', strtotime($d)) ?></b><span><?= date('D', strtotime($d)) ?></span></div>
                             <ul class="hx-rows">
                                 <?php foreach ($list as $n => $r):
                                     $gone = $r['status'] === 'Departed' || $r['departure_time'];
                                     $cap = hx_captain($r['crew'] ?? ''); ?>
                                     <li>
                                         <button type="button" class="hx-row hx-a trip-row" data-name="<?= e($r['n']) ?>" data-url="<?= BASE ?>/admin/passengers.php?trip=<?= (int)$r['id'] ?>">
-                                            <span class="hx-date"><?php if ($n === 0): ?><b><?= date('j', strtotime($d)) ?></b><span><?= date('D', strtotime($d)) ?></span><?php endif; ?></span>
                                             <span class="hx-bt"><b><?= e($r['n']) ?></b><i><?= e($r['cname']) ?></i></span>
                                             <span class="hx-tm hx-cp<?= $cap === '' ? ' off' : '' ?>"><b><?= $cap === '' ? '&mdash;' : e($cap) ?></b></span>
                                             <span class="hx-tm"><b><?= $tm($r['start_time']) ?></b></span>
@@ -104,8 +104,10 @@ page_head('Trip History', 'admin');
             var a = document.querySelector('.atop');
 
             function place() {
-                var h = a && getComputedStyle(a).position === 'sticky' ? Math.round(a.getBoundingClientRect().bottom) : 0;
+                var h = a && getComputedStyle(a).position === 'sticky' ? Math.round(a.getBoundingClientRect().bottom) : 0,
+                    m = document.querySelector('.hx-mon:not([hidden])>header');
                 document.documentElement.style.setProperty('--hx-top', h + 'px');
+                document.documentElement.style.setProperty('--hx-hd', (m ? m.offsetHeight : 66) + 'px');
             }
             place();
             window.addEventListener('resize', place);
