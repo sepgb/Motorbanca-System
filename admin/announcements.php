@@ -53,58 +53,50 @@ $rows = ann_all();
 $all = isset($_GET['all']);
 $more = count($rows) > 4;
 $shown = $all ? $rows : array_slice($rows, 0, 4);
-$ic = [
-    'danger' => '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>',
-    'warn' => '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>',
-    'ok' => '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',
-    'info' => '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
-];
-$svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $ic[$k] . '</svg>';
+$cur = ann_auto_kind($_POST['title'] ?? '', $_POST['body'] ?? '', $auto);
 ?>
 <h1>Announcements</h1>
 <?php if ($err): ?><div class="alert bad"><?= e($err) ?></div><?php endif; ?>
 <div class="ax ax-grid">
-    <form method="post" id="annf" class="ax-comp">
+    <form method="post" id="annf" class="ax-sheet">
         <input type="hidden" name="act" id="a-act" value="">
-        <div class="ax-cb">
-            <div class="ax-qs">
-                <span>Quick start</span>
-                <div class="ax-chips">
-                    <?php foreach ($tpl as $i => $t): ?><button type="button" data-i="<?= $i ?>"><?= e($t[0]) ?></button><?php endforeach; ?>
-                </div>
+        <span class="ax-pn ax-k-<?= $cur ?>" id="a-pn" role="img" aria-label="Detected type: <?= e(ANN_KINDS[$cur]) ?>"></span>
+        <div class="ax-qs">
+            <span>Quick start</span>
+            <div class="ax-chips">
+                <?php foreach ($tpl as $i => $t): ?><button type="button" data-i="<?= $i ?>"><?= e($t[0]) ?></button><?php endforeach; ?>
             </div>
-            <div class="ax-note" id="a-actn" hidden><i>!</i><span></span></div>
-            <label for="a-title">Title</label>
-            <input class="ax-title" name="title" id="a-title" maxlength="120" required placeholder="What is this announcement about?" autocomplete="off" value="<?= e($_POST['title'] ?? '') ?>">
-            <label for="a-body" class="ax-l2">Context</label>
-            <textarea class="ax-body" name="body" id="a-body" rows="6" maxlength="2000" required placeholder="Add the details operators and passengers need to know"><?= e($_POST['body'] ?? '') ?></textarea>
         </div>
-        <footer class="ax-foot">
+        <div class="ax-note" id="a-actn" hidden><i>!</i><span></span></div>
+        <label for="a-title">Title</label>
+        <input class="ax-title" name="title" id="a-title" maxlength="120" required placeholder="Short and specific" autocomplete="off" value="<?= e($_POST['title'] ?? '') ?>">
+        <label for="a-body">Context</label>
+        <textarea class="ax-body" name="body" id="a-body" rows="6" maxlength="2000" required placeholder="What operators and passengers need to know"><?= e($_POST['body'] ?? '') ?></textarea>
+        <div class="ax-foot">
             <span class="ax-cnt" id="a-cnt">0 / 2000</span>
             <button class="ax-post">Post announcement</button>
-        </footer>
+        </div>
     </form>
     <section class="ax-side">
         <h2 class="ax-h">Recents</h2>
         <?php if (!$rows): ?>
             <p class="ax-none">Nothing has been announced yet.</p>
         <?php endif; ?>
-        <div class="ax-tl">
-            <?php foreach ($shown as $a):
-                $k = isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info'; ?>
-                <article class="ax-e ax-k-<?= $k ?>">
-                    <span class="ax-mk"><?= $svg($k) ?></span>
-                    <div class="ax-eb">
-                        <div class="ax-em"><b><?= e(ANN_KINDS[$k]) ?></b><time><?= date('M j, Y \a\t g:i A', strtotime($a['created_at'])) ?></time></div>
-                        <h4><?= e($a['title']) ?></h4>
-                        <p><?= e($a['body']) ?></p>
-                    </div>
-                    <form method="post" class="ann-del"><input type="hidden" name="del" value="<?= (int)$a['id'] ?>"><button class="ax-del" aria-label="Delete announcement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
-                            </svg></button></form>
-                </article>
-            <?php endforeach; ?>
-        </div>
+        <?php foreach ($shown as $a):
+            $k = isset(ANN_KINDS[$a['kind']]) ? $a['kind'] : 'info';
+            $ts = strtotime($a['created_at']); ?>
+            <article class="ax-e">
+                <span class="ax-pn ax-k-<?= $k ?>" role="img" aria-label="<?= e(ANN_KINDS[$k]) ?>"></span>
+                <div class="ax-eb">
+                    <div class="ax-em"><b><?= e(ANN_KINDS[$k]) ?></b><time><?= date('M j, Y', $ts) ?> &middot; <?= date('g:i A', $ts) ?></time></div>
+                    <h4><?= e($a['title']) ?></h4>
+                    <p><?= e($a['body']) ?></p>
+                </div>
+                <form method="post" class="ann-del"><input type="hidden" name="del" value="<?= (int)$a['id'] ?>"><button class="ax-del" aria-label="Delete announcement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+                        </svg></button></form>
+            </article>
+        <?php endforeach; ?>
         <?php if ($more): ?>
             <p class="ax-more"><?= $all ? '<a href="announcements.php">Show latest 4 only</a>' : '<a href="announcements.php?all=1">See all announcements</a>' ?></p>
         <?php endif; ?>
@@ -113,12 +105,34 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 <script>
     (function() {
         var T = <?= json_encode($tpl, JSON_UNESCAPED_UNICODE) ?>,
+            A = <?= json_encode($auto) ?>,
+            L = <?= json_encode(ANN_KINDS) ?>,
             ti = document.getElementById('a-title'),
             bo = document.getElementById('a-body'),
             cnt = document.getElementById('a-cnt'),
-            note = document.getElementById('a-actn');
+            note = document.getElementById('a-actn'),
+            pn = document.getElementById('a-pn');
+
+        function detect() {
+            var pass = [
+                [ti.value, ['ok', 'danger', 'warn']],
+                [bo.value, ['danger', 'warn', 'ok']]
+            ];
+            for (var p = 0; p < pass.length; p++) {
+                var text = pass[p][0].toLowerCase();
+                for (var o = 0; o < pass[p][1].length; o++) {
+                    var k = pass[p][1][o];
+                    for (var w = 0; w < A[k].length; w++)
+                        if (text.indexOf(A[k][w]) !== -1) return k
+                }
+            }
+            return 'info'
+        }
 
         function sync() {
+            var k = detect();
+            pn.className = 'ax-pn ax-k-' + k;
+            pn.setAttribute('aria-label', 'Detected type: ' + L[k]);
             cnt.textContent = bo.value.length + ' / 2000'
         }
         var chips = [].slice.call(document.querySelectorAll('.ax-chips button'));
@@ -131,9 +145,7 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                     a = t[4] || '';
                 document.getElementById('a-act').value = a;
                 note.hidden = !a;
-                note.className = 'ax-note';
-                note.firstChild.textContent = '!';
-                note.lastChild.textContent = a === 'suspend' ? 'Posting this will cancel current next trip boats and block new trips until a resumption notice. Queued boats do not depart automatically, it must be dispatched and checked immediately.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
+                note.lastChild.textContent = a === 'suspend' ? 'Posting this will cancel the boats waiting for their next trip and block all new trips until a Resumption of travel notice is posted. The boat on queue is not departed automatically: you must depart and check it (PDIC) right away.' : (a === 'resume' ? 'Posting this lets operators start new trips again.' : '');
                 ti.value = t[2];
                 bo.value = t[3];
                 sync();

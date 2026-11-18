@@ -20,7 +20,7 @@ page_head('Home', 'operator');
   </section>
   <section class="card">
     <h3><?= $susp ? 'Travel suspended' : ($idle ? ($wait ? 'Trip departed' : 'Ready for a trip?') : 'Passenger list') ?></h3>
-    <?php if (!$wait && !$susp): ?><p class="muted" style="margin:0 0 16px"><?= $idle ? 'Request a new trip. The PCG will inspect your boat before it joins the queue.' : 'Add and view the passengers on your trip.' ?></p><?php endif; ?>
+    <?php if (!$wait && !$susp): ?><p class="muted" style="margin:0 0 16px"><?= $idle ? 'PCG will check your latest MDSD before approving your spot.' : 'Add and view the passengers on your trip.' ?></p><?php endif; ?>
     <?php if ($susp): ?>
       <div class="dep-wait big susp"><span><?= $m['status'] === 'Departed' ? 'Your boat has departed. Due to the suspension of travel, you cannot start a new trip yet.' : 'Travel is suspended. You cannot start a new trip yet.' ?></span></div>
       <button type="button" class="btn big" style="width:100%;opacity:.5;cursor:not-allowed;box-shadow:none" disabled>Request new trip</button>

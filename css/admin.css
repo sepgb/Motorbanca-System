@@ -4398,89 +4398,71 @@ body.r-admin .main>h1:has(+ .hx-none) {
 }
 
 .ax-k-danger {
-    --kc: #b42318;
-    --kb: #fef3f2;
-    --kl: #fecdca;
+    --kc: #c2362c;
 }
 
 .ax-k-warn {
-    --kc: #b45309;
-    --kb: #fffaeb;
-    --kl: #fedf89;
+    --kc: #b7791f;
 }
 
 .ax-k-ok {
-    --kc: #15803d;
-    --kb: #ecfdf3;
-    --kl: #abefc6;
+    --kc: #2f7d4f;
 }
 
 .ax-k-info {
-    --kc: #2563eb;
-    --kb: #eff6ff;
-    --kl: #b2ddff;
+    --kc: #7b7266;
 }
 
-.ax-comp {
-    flex: 1.2 1 520px;
+.ax-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 48px;
+    margin-top: 24px;
+}
+
+.ax-sheet {
+    flex: 1.3 1 520px;
     min-width: 0;
-    background: #fff;
-    border: 1px solid var(--ln);
-    border-radius: 26px;
-    overflow: hidden;
-    transition: border-color .3s;
+    padding: 32px;
+    background: #fffdfa;
+    border: 1px solid #1f1b1614;
+    border-radius: 16px;
 }
 
 .ax-side {
-    flex: 1 1 340px;
+    flex: 1 1 320px;
     min-width: 0;
 }
 
-.ax-cb {
-    padding: 26px 28px 28px;
+.ax-pn {
+    display: block;
+    width: 14px;
+    height: 16px;
+    background: var(--kc);
+    clip-path: polygon(0 0, 100% 0, 75% 50%, 100% 100%, 0 100%);
+    transition: background-color 150ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ax-sheet>.ax-pn {
+    margin-bottom: 24px;
+}
+
+.ax-qs>span,
+.ax-sheet label {
+    display: block;
+    margin-bottom: 8px;
+    font: 500 13px/20px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    color: #7b7266;
 }
 
 .ax-qs {
     margin-bottom: 24px;
 }
 
-.ax-note {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: -8px 0 22px;
-    font-size: .8rem;
-    font-weight: 600;
-    line-height: 1.25;
-    color: #b42318;
-}
-
-.ax-note i {
-    display: grid;
-    flex: none;
-    place-items: center;
-    width: 22px;
-    height: 22px;
-    background: #d92d20;
-    border-radius: 50%;
-    font: 700 .8rem/1 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
-    font-style: normal;
-    color: #fff;
-}
-
-.ax-qs>span {
-    display: block;
-    margin-bottom: 10px;
-    font-size: .74rem;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--hx-mut);
-}
-
 .ax-chips {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     overflow-x: auto;
     scrollbar-width: none;
 }
@@ -4490,92 +4472,86 @@ body.r-admin .main>h1:has(+ .hx-none) {
 }
 
 .ax-chips button {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-height: 38px;
-    padding: 0 10px;
+    flex: 1 1 auto;
+    height: 32px;
+    padding: 0 12px;
     background: transparent;
-    border: 1px solid var(--ln);
-    border-radius: 999px;
-    font: 700 .72rem/1 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
-    text-align: center;
-    color: var(--hx-tx);
+    border: 1px solid #1f1b141f;
+    border-radius: 8px;
+    font: 500 13px/20px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    white-space: nowrap;
+    color: #5e554a;
     cursor: pointer;
     box-shadow: none;
-    transition: background .15s;
-    flex: 1 1 auto;
-    white-space: nowrap;
-    justify-content: center;
-    min-width: 0;
+    transition: border-color 150ms cubic-bezier(0.22, 1, 0.36, 1), color 150ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.ax-chips button:hover {
-    background: var(--ot);
-}
-
+.ax-chips button:hover,
 .ax-chips button.on {
-    background: var(--ot);
-    border-color: var(--o);
+    border-color: #f26b1d;
+    color: #1f1b16;
 }
 
-.ax-cb label {
-    display: block;
-    margin: 0 0 6px;
-    font-size: .74rem;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--hx-mut);
-}
-
-.ax-cb label.ax-l2 {
-    margin-top: 24px;
-}
-
-.ax-grid {
+.ax-note {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 44px;
-    margin-top: 20px;
+    align-items: center;
+    gap: 8px;
+    margin: -8px 0 24px;
+    font-size: .74rem;
+    font-weight: 500;
+    line-height: 1.15;
+    color: #b42318;
+}
+
+.ax-note i {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    background: #d92d20;
+    border-radius: 50%;
+    font: 700 .72rem/1 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    font-style: normal;
+    color: #fff;
 }
 
 .ax .ax-title {
     width: 100%;
-    margin: 0;
-    padding: 10px 0;
+    margin: 0 0 24px;
+    padding: 0 0 8px;
     background: transparent;
     border: 0;
-    border-bottom: 2px solid var(--kl);
+    border-bottom: 1px solid #1f1b1626;
     border-radius: 0;
-    font: 700 1.55rem/1.25 "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
-    letter-spacing: -.02em;
-    color: var(--hx-tx);
-    transition: border-color .2s;
+    font: 600 32px/40px "Newsreader", Georgia, serif;
+    color: #1f1b16;
+    transition: border-color 150ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .ax .ax-title:focus {
-    border-bottom-color: var(--kc);
+    border-bottom-color: #1f1b16;
     box-shadow: none;
     outline: 0;
 }
 
 .ax .ax-body {
+    display: block;
+    width: 100%;
     min-height: 160px;
     margin: 0;
-    padding: 16px 18px;
-    background: #ffffff99;
-    border: 1px solid transparent;
-    border-radius: 18px;
-    font: 500 1rem/1.6 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
-    color: var(--hx-tx);
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid #1f1b1626;
+    border-radius: 8px;
+    font: 400 15px/24px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    color: #1f1b16;
     resize: vertical;
+    transition: border-color 150ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .ax .ax-body:focus {
-    background: #fff;
-    border-color: var(--kl);
+    border-color: #1f1b16;
     box-shadow: none;
     outline: 0;
 }
@@ -4583,136 +4559,112 @@ body.r-admin .main>h1:has(+ .hx-none) {
 .ax-foot {
     display: flex;
     align-items: center;
-    padding: 16px 28px 22px;
-    background: #fdfbf9;
-    border-top: 1px solid var(--ln);
-    flex-wrap: wrap;
     justify-content: space-between;
     gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #1f1b141a;
 }
 
 .ax-cnt {
-    font-size: .84rem;
-    font-weight: 600;
-    color: var(--hx-mut);
+    font: 400 12px/16px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    color: #7b7266;
 }
 
 .ax-post {
-    min-height: 48px;
-    padding: 0 28px;
-    background: var(--o);
+    height: 40px;
+    padding: 0 20px;
+    background: #c44f0a;
     border: 0;
-    border-radius: 999px;
-    font: 700 .95rem/1 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    border-radius: 8px;
+    font: 500 14px/20px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
     color: #fff;
     cursor: pointer;
     box-shadow: none;
-    transition: background .2s, filter .15s;
+    transition: background-color 150ms cubic-bezier(0.22, 1, 0.36, 1), transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .ax-post:hover {
-    background: #e45f12;
+    background: #ad4408;
+}
+
+.ax-post:active {
+    transform: scale(0.98);
+}
+
+.ax-post:focus-visible,
+.ax-chips button:focus-visible,
+.ax-del:focus-visible {
+    outline: 2px solid #f26b1d;
+    outline-offset: 2px;
 }
 
 .ax-h {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 0 0 22px;
-    font: 700 1.6rem/1.2 "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
-    letter-spacing: -.02em;
-    color: var(--hx-tx);
+    margin: 0 0 16px;
+    font: 600 18px/28px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    color: #1f1b16;
 }
 
 .ax-none {
     margin: 0;
-    padding: 24px 0;
-    font-weight: 500;
-    color: var(--hx-mut);
-}
-
-.ax-tl {
-    position: relative;
-}
-
-.ax-tl::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 19px;
-    width: 2px;
-    background: #e8dfd6;
+    padding: 16px 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: #7b7266;
 }
 
 .ax-e {
-    position: relative;
     display: grid;
-    grid-template-columns: 40px minmax(0, 1fr) auto;
-    column-gap: 20px;
-    padding-bottom: 18px;
+    grid-template-columns: 14px minmax(0, 1fr) 32px;
+    column-gap: 16px;
+    padding: 16px 0;
+    border-top: 1px solid #1f1b141a;
     cursor: pointer;
 }
 
-.ax-mk {
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    border-radius: 50%;
-    color: #1f1a17;
-    outline: 6px solid #faf7f4;
+.ax-e:last-of-type {
+    border-bottom: 1px solid #1f1b141a;
 }
 
-.ax-mk svg {
-    width: 20px;
-    height: 20px;
+.ax-e .ax-pn {
+    margin-top: 4px;
 }
 
 .ax-eb {
     min-width: 0;
-    padding-top: 2px;
 }
 
 .ax-em {
     display: flex;
-    align-items: baseline;
     flex-wrap: wrap;
-    gap: 2px 10px;
+    gap: 0 8px;
+    font: 400 12px/16px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    color: #7b7266;
 }
 
 .ax-em b {
-    font-size: .74rem;
-    font-weight: 700;
-    letter-spacing: .09em;
-    text-transform: uppercase;
-    color: var(--kc);
-}
-
-.ax-em time {
-    font-size: .82rem;
-    font-weight: 600;
-    color: var(--hx-mut);
+    font: 500 12px/16px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    color: #5e554a;
 }
 
 .ax-e h4 {
-    margin: 3px 0 0;
-    font: 700 1.08rem/1.3 "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
-    letter-spacing: -.01em;
-    color: var(--hx-tx);
+    margin: 4px 0 0;
+    font: 500 16px/24px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    color: #1f1b16;
 }
 
 .ax-e p {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    margin: 3px 0 0;
+    margin: 4px 0 0;
     overflow: hidden;
-    font-size: .95rem;
-    line-height: 1.42;
+    font-size: 14px;
+    line-height: 22px;
     white-space: pre-line;
-    color: #6f655d;
+    color: #5e554a;
 }
 
 .ax-e.open p {
@@ -4723,43 +4675,66 @@ body.r-admin .main>h1:has(+ .hx-none) {
 .ax-del {
     display: grid;
     place-items: center;
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     padding: 0;
     background: transparent;
     border: 0;
-    border-radius: 50%;
-    color: #b6aca3;
+    border-radius: 8px;
+    color: #7b7266;
+    opacity: 0;
     cursor: pointer;
     box-shadow: none;
-    transition: background .15s, color .15s;
+    transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1), background-color 150ms cubic-bezier(0.22, 1, 0.36, 1), color 150ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .ax-del svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
 }
 
 .ax-e:hover .ax-del,
 .ax-del:focus-visible {
-    background: #fef3f2;
-    color: #b42318;
+    opacity: 1;
+}
+
+.ax-del:hover {
+    background: #efe9df;
+    color: #c2362c;
 }
 
 .ax-more {
-    margin: 4px 0 0 60px;
-    font-weight: 600;
+    margin: 16px 0 0;
+    font: 500 14px/20px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
 }
 
 .ax-more a {
-    color: var(--o);
+    color: #1f1b16;
+    text-decoration: underline;
+    text-decoration-color: #1f1b1640;
+    text-underline-offset: 4px;
+    transition: color 150ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ax-more a:hover {
+    color: #c44f0a;
+}
+
+@media (hover: none) {
+    .ax-del {
+        opacity: 1;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
 
-    .ax-comp,
+    .ax-pn,
+    .ax-chips button,
+    .ax .ax-title,
+    .ax .ax-body,
     .ax-post,
-    .ax-del {
+    .ax-del,
+    .ax-more a {
         transition: none;
     }
 }
@@ -7677,31 +7652,6 @@ body.r-operator .mpage form.card .btn {
         position: sticky;
         top: 96px;
     }
-}
-
-.ax-note {
-    align-items: flex-start;
-    gap: 8px;
-    margin: -8px 0 18px;
-    font-size: .74rem;
-    font-weight: 600;
-    line-height: 1.15;
-    color: #b42318;
-}
-
-.ax-note i {
-    width: 18px;
-    height: 18px;
-    font-size: .7rem;
-}
-
-.ax-chips button.on {
-    background: transparent;
-    border-color: var(--o);
-}
-
-.ax-tl::before {
-    display: none;
 }
 
 @media (min-width: 1000px) {

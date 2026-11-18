@@ -167,37 +167,8 @@ $td = $trip ? db()->query("SELECT trip_date FROM trips WHERE id=" . (int)$trip)-
           }, 5000);
         </script>
       <?php endif; ?>
-      <?php if ($trip): ?>
-        <div class="card mp-details">
-          <h3 style="margin:0 0 8px">Manifest details</h3>
-          <dl class="kv">
-            <dt>Pangalan ng bangka</dt>
-            <dd><?= e($m['motorbanca_name']) ?></dd>
-            <dt>Date</dt>
-            <dd><?= $td ? date('F j, Y', strtotime($td)) : '&mdash;' ?></dd>
-            <dt>Pangalan ng tauhan</dt>
-            <dd><?php if ($tc && $tc['crew']) foreach ($tc['crew'] as $c) echo "<div class='mp-cm'><span class='mp-nm'>" . e($c['name']) . "</span><small>" . ucwords(strtolower(e($c['position']))) . "</small></div>";
-                else echo '&mdash;'; ?></dd>
-          </dl>
-        </div>
-      <?php endif; ?>
     </div>
-    <?php if ($trip): ?>
-      <div class="tablewrap">
-        <table>
-          <tr>
-            <th>No.</th>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Barangay</th>
-            <?php if ($canRm): ?><th class="rm-col"><span>Action</span></th><?php endif; ?>
-          </tr>
-          <?php foreach ($pax as $i => $p) echo "<tr><td>" . ($i + 1) . "</td><td>" . e($p['name']) . "</td><td>{$p['age']}</td><td>" . e($p['barangay']) . "</td>"
-            . ($canRm ? "<td class='rm-cell'><button type='button' class='rm-btn' data-id='" . (int)$p['id'] . "' data-name='" . e($p['name']) . "'>Remove</button></td>" : '') . "</tr>"; ?>
-          <?php if (!$pax) echo "<tr><td colspan='" . ($canRm ? 5 : 4) . "' class='muted' style='text-align:center;padding:22px'>No passengers yet.</td></tr>"; ?>
-        </table>
-      </div>
-    <?php endif; ?>
+
   </div>
 </div>
 <?php if ($canRm): ?>
